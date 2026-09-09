@@ -1,6 +1,6 @@
 # AapdaNetra-X
 
-**Emergency Intelligence Platform — Full-Stack ML Disaster Monitoring & Response System**
+**An Explainable AI-Driven Real-Time Disaster Intelligence and Emergency Response Optimization**
 
 AapdaNetra-X is an open-source, research-grade decision-support platform designed for real-time disaster monitoring, flood risk evaluation, and evacuation planning. Built using a decoupled FastAPI + React architecture, the system combines **machine-learning risk prediction**, **SHAP explainability**, and **NetworkX graph-based route optimization** to help emergency operators evaluate evolving disaster scenarios.
 
