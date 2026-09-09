@@ -140,17 +140,21 @@ def run_simulation_engine(
 
     # 2. Modify water level & trend (mitigated by drainage efficiency)
     drain_eff = max(0.1, drainageEfficiency)
-    water_add = waterLevelIncrease * 0.05 + (rf_mult - 1.0) * 1.5 / drain_eff
+    water_add = waterLevelIncrease * 0.15 + (rf_mult - 1.0) * 1.8 / drain_eff
     scenario_features["water_level"] = min(15.0, max(0.0, base_features["water_level"] + water_add))
+    
+    # Scale water level trend proportionally with rainfall & drainage factor
+    wl_trend_add = (rf_mult - 1.0) * 0.50 / drain_eff
     scenario_features["water_level_trend"] = min(
-        5.0, base_features["water_level_trend"] + (water_add * 0.2)
+        5.0, max(-2.0, base_features["water_level_trend"] + wl_trend_add + (water_add * 0.15))
     )
 
-    # 3. Modify population exposure & road congestion (impacted by evacuation pace & route blockage)
+    # 3. Modify population exposure & road congestion (impacted by evacuation pace, rainfall & route blockage)
     pace = max(0.3, evacuationPace)
     blockage_factor = 1.35 if routeBlockage else 1.0
+    rf_congestion_add = max(0.0, (rf_mult - 1.0) * 0.12)
     scenario_features["road_congestion"] = min(
-        1.0, max(0.0, (base_features["road_congestion"] * blockage_factor) / pace)
+        1.0, max(0.0, ((base_features["road_congestion"] + rf_congestion_add) * blockage_factor) / pace)
     )
     scenario_features["population_exposure"] = min(
         100000.0, max(0.0, base_features["population_exposure"] + populationMovement)

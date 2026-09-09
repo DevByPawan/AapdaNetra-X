@@ -1,8 +1,13 @@
 """Simulated data — Python-side mirror of /data/simulated/*.json"""
 from datetime import datetime
 
+def get_current_incident_id() -> str:
+    now = datetime.now()
+    return f"INC-{now.strftime('%Y-%m%d')}"
+
+
 INCIDENT = {
-    "id": "INC-2026-0817",
+    "id": get_current_incident_id(),
     "type": "FLOOD",
     "status": "ACTIVE",
     "startedAt": "2026-09-09T08:00:00Z",

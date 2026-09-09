@@ -1,7 +1,15 @@
 import type { Incident, RiskState, Forecast, RoutesData, AlertsData } from '../types';
 
+export function getDynamicIncidentId(): string {
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `INC-${yyyy}-${mm}${dd}`;
+}
+
 export const simulatedIncident: Incident = {
-  id: 'INC-2026-0817',
+  id: getDynamicIncidentId(),
   type: 'FLOOD',
   status: 'ACTIVE',
   startedAt: '2026-09-09T08:00:00Z',
