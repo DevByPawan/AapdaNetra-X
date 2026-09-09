@@ -42,15 +42,15 @@ class RouteOptimizer:
                 d["risk_score"] = min(100.0, base_r * (norm_pred_risk / 50.0))
                 if norm_pred_risk > 85.0:
                     d["congestion"] = min(1.0, float(d.get("congestion", 0.7)) * 1.25)
-            # Central Corridor (Checkpoint E) receives moderate escalation
+            # Central Corridor (Checkpoint E) receives risk-sensitive escalation
             elif "Checkpoint_E" in (u, v):
-                d["risk_score"] = min(100.0, base_r * (1.0 + (norm_pred_risk - 50.0) * 0.005))
+                d["risk_score"] = min(100.0, base_r * (1.0 + (norm_pred_risk - 30.0) * 0.025))
             # South Corridor (Checkpoint F/G) stays safer
             else:
                 d["risk_score"] = max(5.0, base_r)
 
-            # Apply route blockage flag if enabled
-            if route_blockage and ("Checkpoint_D" in (u, v) or "Sector_B" in (u, v) and "Checkpoint_D" in (u, v)):
+            # Apply route blockage flag to active central corridor (Checkpoint_E) if enabled
+            if route_blockage and "Checkpoint_E" in (u, v):
                 d["is_blocked"] = True
 
             # Calculate composite edge traversal cost

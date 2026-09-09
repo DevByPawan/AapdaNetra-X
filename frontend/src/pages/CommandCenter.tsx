@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchIncident, fetchRisk, fetchForecast, fetchRoutes, fetchAlerts } from '../services/api';
+import { getDynamicIncidentId } from '../data/simulatedData';
 import { useMapStore } from '../store';
 
 import { Header } from '../components/layout/Header';
@@ -67,7 +68,7 @@ export function CommandCenter() {
         {/* Right column */}
         <div className="grid gap-4" style={{ alignContent: 'start' }}>
           <IncidentOverview riskState={risk.data} />
-          <AIRecommendation routesData={routes.data} incidentId={incident.data?.id ?? 'INC-2026-0817'} />
+          <AIRecommendation routesData={routes.data} incidentId={incident.data?.id ?? getDynamicIncidentId()} />
           <ActiveAlerts alertsData={alerts.data} />
         </div>
       </section>

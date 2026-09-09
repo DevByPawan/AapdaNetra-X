@@ -8,4 +8,7 @@ router = APIRouter()
 
 @router.get("/incident", response_model=IncidentResponse)
 async def get_incident():
-    return IncidentResponse(**INCIDENT)
+    data = dict(INCIDENT)
+    now = datetime.now()
+    data["id"] = f"INC-{now.strftime('%Y-%m%d')}"
+    return IncidentResponse(**data)
