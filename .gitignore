@@ -1,0 +1,33 @@
+# Operating System Files
+.DS_Store
+Thumbs.db
+
+# Python & Environment
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+env/
+venv/
+ENV/
+
+# Node & Frontend Build
+node_modules/
+dist/
+dist-ssr/
+*.local
+.env
+.env.*.local
+
+# IDE & Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary & Test Files
+.pytest_cache/
+.coverage
+htmlcov/
+*.log

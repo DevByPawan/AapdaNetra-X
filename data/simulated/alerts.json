@@ -1,0 +1,33 @@
+{
+  "open": 4,
+  "alerts": [
+    {
+      "id": "alert-001",
+      "severity": "CRITICAL",
+      "title": "Bridge-04 risk elevated",
+      "description": "Failure probability crossed 70%. Structural assessment required.",
+      "timestamp": "2026-09-09T14:18:00Z"
+    },
+    {
+      "id": "alert-002",
+      "severity": "HIGH",
+      "title": "Sector B escalation",
+      "description": "Predicted risk exceeds threshold in 18 min. Evacuation recommended.",
+      "timestamp": "2026-09-09T14:22:00Z"
+    },
+    {
+      "id": "alert-003",
+      "severity": "INFO",
+      "title": "Sensor conflict detected",
+      "description": "2 sources disagree on water level at gauge S-21. Manual verification needed.",
+      "timestamp": "2026-09-09T14:28:00Z"
+    },
+    {
+      "id": "alert-004",
+      "severity": "HIGH",
+      "title": "Rainfall intensity spike",
+      "description": "Intensity increased by 34% in the last 15 minutes. Model updating.",
+      "timestamp": "2026-09-09T14:30:00Z"
+    }
+  ]
+}

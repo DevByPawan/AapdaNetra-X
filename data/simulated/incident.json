@@ -1,0 +1,13 @@
+{
+  "id": "INC-2026-0817",
+  "type": "FLOOD",
+  "status": "ACTIVE",
+  "startedAt": "2026-09-09T08:00:00Z",
+  "sector": "B",
+  "severity": "HIGH",
+  "location": {
+    "name": "Yamuna Floodplain — Sector B",
+    "lat": 28.6448,
+    "lng": 77.2167
+  }
+}

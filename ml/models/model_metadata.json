@@ -1,0 +1,38 @@
+{
+  "model_type": "scikit-learn.GradientBoostingRegressor",
+  "random_seed": 42,
+  "n_samples": 1000,
+  "features": [
+    "rainfall_intensity",
+    "rainfall_trend",
+    "water_level",
+    "water_level_trend",
+    "road_congestion",
+    "population_exposure",
+    "infrastructure_vulnerability"
+  ],
+  "hyperparameters": {
+    "n_estimators": 120,
+    "learning_rate": 0.08,
+    "max_depth": 4,
+    "min_samples_split": 5
+  },
+  "metrics": {
+    "train": {
+      "mae": 1.3353,
+      "rmse": 1.6953,
+      "r2": 0.986
+    },
+    "val": {
+      "mae": 3.2441,
+      "rmse": 4.0092,
+      "r2": 0.9104
+    },
+    "test": {
+      "mae": 3.3364,
+      "rmse": 4.2142,
+      "r2": 0.9258
+    }
+  },
+  "disclaimer": "Metrics evaluated on synthetic disaster data. Not verified for real-world operational deployments."
+}

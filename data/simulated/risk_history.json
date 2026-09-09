@@ -1,0 +1,88 @@
+{
+  "horizons": [
+    {
+      "index": 0,
+      "label": "NOW",
+      "currentRisk": 74,
+      "predictedRisk": 91,
+      "riskCategory": "HIGH",
+      "confidence": 0.91,
+      "affectedPopulation": 12430,
+      "criticalPopulation": 3180,
+      "criticalAssets": 17,
+      "affectedAssets": 4,
+      "trend": "+12% / 20 min",
+      "mapStatusText": "High-risk zone expanding toward Sector B",
+      "predictionNote": "Current state: Sector B is high risk and expanding.",
+      "heatmapZones": [
+        { "id": "zone-critical", "lat": 28.6448, "lng": 77.2167, "radiusMeters": 1100, "level": "CRITICAL" },
+        { "id": "zone-high",     "lat": 28.6530, "lng": 77.2320, "radiusMeters": 1050, "level": "HIGH" },
+        { "id": "zone-moderate", "lat": 28.6310, "lng": 77.2450, "radiusMeters":  920, "level": "MODERATE" },
+        { "id": "zone-low",      "lat": 28.6380, "lng": 77.2050, "radiusMeters":  800, "level": "LOW" }
+      ]
+    },
+    {
+      "index": 1,
+      "label": "+10 MIN",
+      "currentRisk": 81,
+      "predictedRisk": 94,
+      "riskCategory": "HIGH",
+      "confidence": 0.93,
+      "affectedPopulation": 13200,
+      "criticalPopulation": 3800,
+      "criticalAssets": 17,
+      "affectedAssets": 6,
+      "trend": "+19% / 20 min",
+      "mapStatusText": "High-risk zone expanding toward Sector B",
+      "predictionNote": "Early escalation: Route A begins accumulating hazard exposure.",
+      "heatmapZones": [
+        { "id": "zone-critical", "lat": 28.6448, "lng": 77.2167, "radiusMeters": 1300, "level": "CRITICAL" },
+        { "id": "zone-high",     "lat": 28.6530, "lng": 77.2320, "radiusMeters": 1200, "level": "HIGH" },
+        { "id": "zone-moderate", "lat": 28.6310, "lng": 77.2450, "radiusMeters": 1050, "level": "MODERATE" },
+        { "id": "zone-low",      "lat": 28.6380, "lng": 77.2050, "radiusMeters":  850, "level": "LOW" }
+      ]
+    },
+    {
+      "index": 2,
+      "label": "+20 MIN",
+      "currentRisk": 88,
+      "predictedRisk": 97,
+      "riskCategory": "HIGH",
+      "confidence": 0.95,
+      "affectedPopulation": 14100,
+      "criticalPopulation": 4600,
+      "criticalAssets": 17,
+      "affectedAssets": 9,
+      "trend": "+26% / 20 min",
+      "mapStatusText": "Critical escalation predicted; Route A increasingly unsafe",
+      "predictionNote": "Critical window: Route A failure probability rises sharply.",
+      "heatmapZones": [
+        { "id": "zone-critical", "lat": 28.6448, "lng": 77.2167, "radiusMeters": 1600, "level": "CRITICAL" },
+        { "id": "zone-high",     "lat": 28.6530, "lng": 77.2320, "radiusMeters": 1400, "level": "CRITICAL" },
+        { "id": "zone-moderate", "lat": 28.6310, "lng": 77.2450, "radiusMeters": 1200, "level": "HIGH" },
+        { "id": "zone-low",      "lat": 28.6380, "lng": 77.2050, "radiusMeters":  950, "level": "MODERATE" }
+      ]
+    },
+    {
+      "index": 3,
+      "label": "+30 MIN",
+      "currentRisk": 94,
+      "predictedRisk": 99,
+      "riskCategory": "CRITICAL",
+      "confidence": 0.97,
+      "affectedPopulation": 15800,
+      "criticalPopulation": 6200,
+      "criticalAssets": 17,
+      "affectedAssets": 13,
+      "trend": "+32% / 20 min",
+      "mapStatusText": "Critical escalation predicted; Route A increasingly unsafe",
+      "predictionNote": "Projected peak: Sector B requires immediate evacuation.",
+      "heatmapZones": [
+        { "id": "zone-critical", "lat": 28.6448, "lng": 77.2167, "radiusMeters": 2000, "level": "CRITICAL" },
+        { "id": "zone-high",     "lat": 28.6530, "lng": 77.2320, "radiusMeters": 1800, "level": "CRITICAL" },
+        { "id": "zone-moderate", "lat": 28.6310, "lng": 77.2450, "radiusMeters": 1500, "level": "HIGH" },
+        { "id": "zone-low",      "lat": 28.6380, "lng": 77.2050, "radiusMeters": 1100, "level": "HIGH" }
+      ]
+    }
+  ]
+}

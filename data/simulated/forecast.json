@@ -1,0 +1,14 @@
+{
+  "points": [
+    { "minutesOffset": 0,  "risk": 74 },
+    { "minutesOffset": 10, "risk": 81 },
+    { "minutesOffset": 20, "risk": 88 },
+    { "minutesOffset": 30, "risk": 94 },
+    { "minutesOffset": 45, "risk": 97 },
+    { "minutesOffset": 60, "risk": 99 }
+  ],
+  "peakAt": "~22 min",
+  "trend": "ESCALATING",
+  "confidence": 0.91,
+  "trendLabel": "Escalating"
+}

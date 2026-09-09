@@ -1,0 +1,39 @@
+{
+  "recommended": {
+    "id": "route-B",
+    "name": "B \u2192 E \u2192 H",
+    "eta": 11,
+    "failureProbability": 0.12,
+    "safetyScore": 0.88,
+    "waypoints": [
+      { "id": "wp-B", "lat": 28.6448, "lng": 77.2167, "label": "Sector B (Origin)" },
+      { "id": "wp-E", "lat": 28.6390, "lng": 77.2290, "label": "Checkpoint E" },
+      { "id": "wp-H", "lat": 28.6350, "lng": 77.2420, "label": "SHELTER-04 (Safe Zone)" }
+    ]
+  },
+  "alternatives": [
+    {
+      "id": "route-A",
+      "name": "A \u2192 D \u2192 H",
+      "eta": 8,
+      "failureProbability": 0.68,
+      "safetyScore": 0.32,
+      "waypoints": [
+        { "id": "wp-A",  "lat": 28.6530, "lng": 77.2060, "label": "Sector A (Origin)" },
+        { "id": "wp-D",  "lat": 28.6475, "lng": 77.2200, "label": "Checkpoint D (HIGH RISK)" },
+        { "id": "wp-H2", "lat": 28.6350, "lng": 77.2420, "label": "SHELTER-04 (Safe Zone)" }
+      ]
+    }
+  ],
+  "recommendation": {
+    "title": "Evacuate Sector B",
+    "text": "Route A is predicted to become unsafe within 15\u201320 minutes. Route B provides lower future hazard exposure and better shelter access.",
+    "confidence": 0.91
+  },
+  "decisionTrace": [
+    { "factor": "Rainfall trend",    "contribution": "+18%" },
+    { "factor": "Water-level trend", "contribution": "+27%" },
+    { "factor": "Predicted flooding","contribution": "+31%" },
+    { "factor": "Congestion exposure","contribution": "+9%" }
+  ]
+}

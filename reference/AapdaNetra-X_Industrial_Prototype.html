@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AapdaNetra-X | Emergency Intelligence Platform</title>
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1a2b; --panel2:#101f33; --line:#21334a;
+  --text:#eaf1f8; --muted:#8fa3b8; --cyan:#35c7d9; --red:#ff5d6c;
+  --orange:#ffad4d; --green:#4bd39b; --yellow:#f4d35e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 70% 10%,#10243a 0,#07111f 38%,#050c16 100%);
+font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}
+button{font:inherit}
+.app{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+.sidebar{border-right:1px solid var(--line);background:#071321;padding:22px 14px;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 24px}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#27c7d8,#176a8e);display:grid;place-items:center;font-weight:900}
+.brand b{font-size:15px;letter-spacing:.4px}.brand span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.nav{display:grid;gap:6px}.nav button{border:0;background:transparent;color:#91a4b8;text-align:left;padding:11px 12px;border-radius:9px;cursor:pointer}
+.nav button.active,.nav button:hover{background:#12263b;color:#fff}.nav button.active{box-shadow:inset 3px 0 var(--cyan)}
+.sideBottom{margin-top:auto;border-top:1px solid var(--line);padding:16px 8px 0;color:var(--muted);font-size:11px}
+.main{padding:20px 22px 24px;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.crumb{color:var(--muted);font-size:12px}.crumb strong{color:#dbe8f4}
+.live{display:flex;align-items:center;gap:10px;font-size:11px;color:#a9bdcf}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+.incident{display:flex;gap:12px;align-items:center}.incidentId{font-size:12px;color:#c8d6e3}
+.clock{font-variant-numeric:tabular-nums;color:#fff;font-weight:700}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:16px}
+.panel{background:linear-gradient(180deg,rgba(16,31,51,.96),rgba(10,23,38,.96));border:1px solid var(--line);border-radius:13px;box-shadow:0 12px 35px rgba(0,0,0,.18)}
+.mapPanel{height:570px;position:relative;overflow:hidden}
+.panelHead{height:55px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.panelTitle{font-size:12px;font-weight:800;letter-spacing:.8px;text-transform:uppercase}.sub{color:var(--muted);font-size:10px;margin-left:8px}
+.mapTools{display:flex;gap:6px}.tool{border:1px solid var(--line);background:#0b1829;color:#a8bbcd;padding:6px 9px;border-radius:7px;font-size:10px;cursor:pointer}.tool.active{color:#fff;border-color:#2f7890;background:#123047}
+.map{position:absolute;left:0;right:0;top:55px;bottom:0;background:
+linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px),
+linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+radial-gradient(circle at 38% 52%,rgba(255,84,102,.16),transparent 18%),
+radial-gradient(circle at 66% 32%,rgba(255,174,75,.12),transparent 20%),
+#0a1828;background-size:42px 42px}
+.map svg{width:100%;height:100%}
+.road{fill:none;stroke:#4c647c;stroke-width:6;stroke-linecap:round}.road2{fill:none;stroke:#172d43;stroke-width:12;stroke-linecap:round}
+.route{fill:none;stroke:var(--cyan);stroke-width:5;stroke-linecap:round;stroke-dasharray:9 7;filter:drop-shadow(0 0 5px rgba(53,199,217,.55))}
+.risk{opacity:.45}.risk.r1{fill:#ff5d6c}.risk.r2{fill:#ffad4d}.risk.r3{fill:#f4d35e}.risk.r4{fill:#4bd39b}
+.node{fill:#d9eef5;stroke:#08121f;stroke-width:3}.shelter{fill:#4bd39b;stroke:#07111f;stroke-width:3}.sensor{fill:#35c7d9;stroke:#07111f;stroke-width:2}
+.mapLabel{font-size:10px;fill:#b7c9d8;font-weight:700}.routeLabel{font-size:10px;fill:#8fe6ef;font-weight:800}
+.mapLegend{position:absolute;left:14px;bottom:14px;background:rgba(7,17,31,.88);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:9px;color:var(--muted)}
+.legendRow{display:flex;align-items:center;gap:7px;margin:5px 0}.sw{width:9px;height:9px;border-radius:50%}
+.mapStatus{position:absolute;top:70px;left:14px;background:rgba(7,17,31,.88);border:1px solid var(--line);border-radius:9px;padding:10px 12px}
+.mapStatus b{font-size:11px}.mapStatus div{font-size:9px;color:var(--muted);margin-top:3px}
+.right{display:grid;gap:16px;align-content:start}
+.metricGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px}
+.metric{background:#0b1829;border:1px solid #1b2d43;border-radius:9px;padding:12px}.metric small{color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.6px}.metric strong{display:block;font-size:20px;margin-top:5px}.metric em{font-style:normal;font-size:9px;color:var(--muted)}
+.badge{display:inline-flex;padding:4px 7px;border-radius:5px;font-size:9px;font-weight:800}.high{background:rgba(255,93,108,.13);color:#ff8490}.good{background:rgba(75,211,155,.12);color:#6fe4b0}.warn{background:rgba(255,173,77,.12);color:#ffc277}
+.aiBody{padding:14px}.recommend{border:1px solid #28516a;background:linear-gradient(135deg,#0d2639,#0b1a2a);border-radius:9px;padding:13px}.recommend h3{font-size:14px;margin:0 0 5px}.recommend p{font-size:10px;color:var(--muted);line-height:1.5;margin:0 0 12px}
+.routeStats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}.routeStats div{background:#081522;border-radius:7px;padding:8px}.routeStats small{font-size:8px;color:var(--muted);display:block}.routeStats b{font-size:11px}
+.primary{width:100%;margin-top:11px;border:0;background:#20aabd;color:#03131b;font-weight:900;border-radius:8px;padding:10px;cursor:pointer}.primary:hover{background:#35c7d9}
+.why{margin-top:10px;padding:10px;border-top:1px solid var(--line);display:none}.why.show{display:block}.whyRow{display:flex;justify-content:space-between;font-size:9px;margin:6px 0;color:#b6c6d5}.whyRow span:last-child{color:#fff}
+.bottom{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:16px;margin-top:16px}
+.chart{height:210px;padding:12px 14px}.chart svg{width:100%;height:125px;margin-top:8px}.chartMeta{display:flex;justify-content:space-between;color:var(--muted);font-size:9px}
+.sliderWrap{padding:12px 14px}.slider{width:100%;accent-color:var(--cyan)}.timeLabels{display:flex;justify-content:space-between;color:var(--muted);font-size:8px;margin-top:5px}
+.simBody{padding:14px}.simRow{display:flex;align-items:center;justify-content:space-between;margin:10px 0;font-size:10px}.simRow input[type=range]{width:135px;accent-color:var(--orange)}.simValue{width:48px;text-align:right;color:#fff;font-weight:800}
+.result{margin-top:10px;padding:10px;background:#081522;border:1px solid var(--line);border-radius:8px;display:none}.result.show{display:block}.result b{font-size:10px}.result p{margin:5px 0 0;font-size:9px;color:var(--muted);line-height:1.45}
+.alerts{padding:14px}.alert{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid #1a2a3d}.alert:last-child{border-bottom:0}.alertIcon{width:8px;height:8px;border-radius:50%;margin-top:4px}.alert b{font-size:9px}.alert p{margin:2px 0 0;color:var(--muted);font-size:8px}
+.toast{position:fixed;right:22px;bottom:22px;background:#10283b;border:1px solid #2c6077;border-radius:9px;padding:12px 15px;font-size:10px;box-shadow:0 15px 35px rgba(0,0,0,.35);transform:translateY(30px);opacity:0;pointer-events:none;transition:.3s}.toast.show{transform:none;opacity:1}
+@media(max-width:1050px){.grid{grid-template-columns:1fr}.right{grid-template-columns:repeat(2,1fr)}.bottom{grid-template-columns:1fr 1fr}.mapPanel{height:500px}}
+@media(max-width:750px){.app{grid-template-columns:1fr}.sidebar{display:none}.main{padding:12px}.right,.bottom{grid-template-columns:1fr}.mapPanel{height:470px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">AX</div><div><b>AapdaNetra-X</b><span>Emergency Intelligence</span></div></div>
+  <nav class="nav">
+    <button class="active">◈ Command Center</button>
+    <button>◉ Live Map</button>
+    <button>◫ Forecast</button>
+    <button>⚑ Evacuation</button>
+    <button>▣ Resources</button>
+    <button>◌ Simulation</button>
+    <button>▤ Analytics</button>
+  </nav>
+  <div class="sideBottom">SYSTEM HEALTH<br><span style="color:#6fe4b0">● All core services operational</span><br><br>Model v0.1 • Prototype</div>
+</aside>
+
+<main class="main">
+  <header class="top">
+    <div class="crumb">COMMAND CENTER / <strong>FLOOD INCIDENT</strong></div>
+    <div class="incident">
+      <div class="incidentId">INC-2026-0817</div>
+      <div class="live"><span class="dot"></span>LIVE</div>
+      <div class="clock" id="clock">14:32:00</div>
+    </div>
+  </header>
+
+  <section class="grid">
+    <div class="panel mapPanel">
+      <div class="panelHead">
+        <div><span class="panelTitle">Situational Awareness</span><span class="sub">Dynamic Risk Map</span></div>
+        <div class="mapTools">
+          <button class="tool active" data-layer="risk">Risk</button>
+          <button class="tool" data-layer="route">Routes</button>
+          <button class="tool" data-layer="assets">Assets</button>
+        </div>
+      </div>
+      <div class="map" id="map">
+        <div class="mapStatus"><b id="mapTime">CURRENT · 14:32</b><div id="mapStatus">High-risk zone expanding toward Sector B</div></div>
+        <svg viewBox="0 0 800 515" preserveAspectRatio="none">
+          <circle class="risk r1 riskLayer" cx="280" cy="260" r="110"/>
+          <circle class="risk r2 riskLayer" cx="455" cy="185" r="105"/>
+          <circle class="risk r3 riskLayer" cx="610" cy="350" r="92"/>
+          <circle class="risk r4 riskLayer" cx="125" cy="390" r="80"/>
+          <g class="roadsLayer">
+            <path class="road2" d="M70 430 L210 320 L350 365 L500 245 L730 310"/>
+            <path class="road" d="M70 430 L210 320 L350 365 L500 245 L730 310"/>
+            <path class="road2" d="M105 90 L210 320 L420 115 L500 245 L640 105"/>
+            <path class="road" d="M105 90 L210 320 L420 115 L500 245 L640 105"/>
+            <path class="road2" d="M210 320 L420 420 L500 245"/>
+            <path class="road" d="M210 320 L420 420 L500 245"/>
+          </g>
+          <path id="route" class="route" d="M210 320 L350 365 L500 245 L730 310"/>
+          <g>
+            <circle class="node" cx="210" cy="320" r="7"/><circle class="node" cx="350" cy="365" r="7"/><circle class="node" cx="500" cy="245" r="7"/><circle class="node" cx="730" cy="310" r="7"/>
+            <circle class="shelter" cx="730" cy="310" r="10"/><text class="mapLabel" x="742" y="314">SHELTER-04</text>
+            <circle class="sensor" cx="420" cy="115" r="7"/><text class="mapLabel" x="430" y="112">S-21</text>
+            <circle class="sensor" cx="105" cy="90" r="7"/><text class="mapLabel" x="115" y="87">S-08</text>
+            <text class="mapLabel" x="176" y="300">SECTOR A</text><text class="mapLabel" x="430" y="225">SECTOR B</text><text class="mapLabel" x="585" y="390">SECTOR C</text>
+            <text class="routeLabel" x="365" y="355">RECOMMENDED EVACUATION ROUTE</text>
+          </g>
+        </svg>
+        <div class="mapLegend">
+          <div style="color:#dce8f2;font-weight:800;margin-bottom:6px">RISK LEVEL</div>
+          <div class="legendRow"><i class="sw" style="background:#ff5d6c"></i> Critical</div>
+          <div class="legendRow"><i class="sw" style="background:#ffad4d"></i> High</div>
+          <div class="legendRow"><i class="sw" style="background:#f4d35e"></i> Moderate</div>
+          <div class="legendRow"><i class="sw" style="background:#4bd39b"></i> Low</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="panel">
+        <div class="panelHead"><span class="panelTitle">Incident Overview</span><span class="badge high">HIGH</span></div>
+        <div class="metricGrid">
+          <div class="metric"><small>Current Risk</small><strong id="risk">74%</strong><em>↑ 12% / 20 min</em></div>
+          <div class="metric"><small>Population at Risk</small><strong>12,430</strong><em>3,180 critical</em></div>
+          <div class="metric"><small>Forecast</small><strong id="forecast">91%</strong><em>peak in ~22 min</em></div>
+          <div class="metric"><small>Critical Assets</small><strong>17</strong><em>4 affected</em></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panelHead"><span class="panelTitle">AI Response Recommendation</span><span class="badge good">91% CONF.</span></div>
+        <div class="aiBody">
+          <div class="recommend">
+            <h3 id="recommendTitle">Evacuate Sector B</h3>
+            <p id="recommendText">Route A is predicted to become unsafe within 15–20 minutes. Route B provides lower future hazard exposure and better shelter access.</p>
+            <div class="routeStats">
+              <div><small>Route</small><b id="routeName">B → E → H</b></div>
+              <div><small>ETA</small><b id="eta">11 min</b></div>
+              <div><small>Failure</small><b id="failure">12%</b></div>
+            </div>
+            <button class="primary" id="approve">✓ Approve Response Plan</button>
+          </div>
+          <div class="why" id="why">
+            <div style="font-size:10px;font-weight:800;margin-bottom:7px">DECISION TRACE</div>
+            <div class="whyRow"><span>Rainfall trend</span><span>+18%</span></div>
+            <div class="whyRow"><span>Water-level trend</span><span>+27%</span></div>
+            <div class="whyRow"><span>Predicted flooding</span><span>+31%</span></div>
+            <div class="whyRow"><span>Congestion exposure</span><span>+9%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panelHead"><span class="panelTitle">Active Alerts</span><span class="badge warn">4 OPEN</span></div>
+        <div class="alerts">
+          <div class="alert"><i class="alertIcon" style="background:#ff5d6c"></i><div><b>Bridge-04 risk elevated</b><p>Failure probability crossed 70%.</p></div></div>
+          <div class="alert"><i class="alertIcon" style="background:#ffad4d"></i><div><b>Sector B escalation</b><p>Predicted risk exceeds threshold in 18 min.</p></div></div>
+          <div class="alert"><i class="alertIcon" style="background:#35c7d9"></i><div><b>Sensor conflict detected</b><p>2 sources disagree on water level.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom">
+    <div class="panel chart">
+      <div class="panelHead" style="margin:-12px -14px 0"><span class="panelTitle">Hazard Forecast</span><span class="sub" id="forecastLabel">Next 60 minutes</span></div>
+      <svg viewBox="0 0 600 125" preserveAspectRatio="none">
+        <line x1="0" y1="110" x2="600" y2="110" stroke="#20334a"/><line x1="0" y1="65" x2="600" y2="65" stroke="#172a40"/><line x1="0" y1="20" x2="600" y2="20" stroke="#172a40"/>
+        <path id="area" d="M0 95 L100 85 L200 70 L300 58 L400 40 L500 28 L600 18 L600 110 L0 110Z" fill="rgba(255,93,108,.10)"/>
+        <polyline id="forecastLine" points="0,95 100,85 200,70 300,58 400,40 500,28 600,18" fill="none" stroke="#ff6d7a" stroke-width="3"/>
+        <text x="8" y="121" fill="#71869b" font-size="8">NOW</text><text x="286" y="121" fill="#71869b" font-size="8">+30 MIN</text><text x="565" y="121" fill="#71869b" font-size="8">+60</text>
+      </svg>
+      <div class="chartMeta"><span>Risk trend: <b style="color:#ff8791">Escalating</b></span><span>Model confidence: <b style="color:#6fe4b0">91%</b></span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panelHead"><span class="panelTitle">Time Horizon</span><span class="sub">Predictive view</span></div>
+      <div class="sliderWrap">
+        <div style="display:flex;justify-content:space-between;font-size:10px"><b id="timeValue">NOW</b><span style="color:#8fa3b8">Move to inspect predicted state</span></div>
+        <input class="slider" id="timeSlider" type="range" min="0" max="3" value="0">
+        <div class="timeLabels"><span>NOW</span><span>+10M</span><span>+20M</span><span>+30M</span></div>
+        <div style="margin-top:12px;background:#081522;border-radius:8px;padding:10px;font-size:9px;color:#9eb1c2" id="predictionNote">Current state: Sector B is high risk and expanding.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panelHead"><span class="panelTitle">What-if Simulation</span><span class="sub">Scenario builder</span></div>
+      <div class="simBody">
+        <div class="simRow"><span>Rainfall increase</span><input id="rain" type="range" min="0" max="50" value="20"><span class="simValue" id="rainVal">+20%</span></div>
+        <div class="simRow"><span>Population movement</span><input id="crowd" type="range" min="0" max="5000" value="2000" step="500"><span class="simValue" id="crowdVal">+2,000</span></div>
+        <button class="primary" id="simulate" style="background:#b66d28;color:#fff">Run Scenario Simulation</button>
+        <div class="result" id="result"><b id="resultTitle">Scenario outcome</b><p id="resultText"></p></div>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+<div class="toast" id="toast">Response plan approved.</div>
+
+<script>
+const clock=document.getElementById('clock');
+function tick(){let d=new Date();clock.textContent=d.toLocaleTimeString('en-GB',{hour12:false});}
+setInterval(tick,1000);tick();
+
+const slider=document.getElementById('timeSlider');
+const timeValue=document.getElementById('timeValue');
+const predictionNote=document.getElementById('predictionNote');
+const mapTime=document.getElementById('mapTime');
+const risk=document.getElementById('risk');
+const forecast=document.getElementById('forecast');
+const notes=[
+ ['NOW','Current state: Sector B is high risk and expanding.','74%','91%'],
+ ['+10 MIN','Early escalation: Route A begins accumulating hazard exposure.','81%','94%'],
+ ['+20 MIN','Critical window: Route A failure probability rises sharply.','88%','97%'],
+ ['+30 MIN','Projected peak: Sector B requires immediate evacuation.','94%','99%']
+];
+slider.addEventListener('input',()=>{
+ const i=+slider.value,n=notes[i];
+ timeValue.textContent=n[0];predictionNote.textContent=n[1];risk.textContent=n[2];forecast.textContent=n[3];
+ mapTime.textContent=(n[0]==='NOW'?'CURRENT · 14:32':'PREDICTED · '+n[0]);
+ document.getElementById('mapStatus').textContent=i<2?'High-risk zone expanding toward Sector B':'Critical escalation predicted; Route A increasingly unsafe';
+});
+
+document.querySelectorAll('.tool').forEach(b=>b.addEventListener('click',()=>{
+ document.querySelectorAll('.tool').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+ const layer=b.dataset.layer;
+ document.querySelector('.riskLayer').style.opacity=layer==='risk'?'.45':'.16';
+ document.getElementById('route').style.opacity=layer==='route'?'1':'.35';
+ document.querySelectorAll('.sensor,.shelter').forEach(x=>x.style.opacity=layer==='assets'?'1':'.55');
+}));
+
+document.getElementById('approve').addEventListener('click',()=>{
+ document.getElementById('why').classList.toggle('show');
+ const t=document.getElementById('toast');t.textContent='Response plan approved — evacuation workflow initiated.';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);
+});
+
+function bindRange(id,out,fmt){const el=document.getElementById(id),o=document.getElementById(out);el.addEventListener('input',()=>o.textContent=fmt(+el.value));}
+bindRange('rain','rainVal',v=>'+'+v+'%');bindRange('crowd','crowdVal',v=>'+'+v.toLocaleString());
+
+document.getElementById('simulate').addEventListener('click',()=>{
+ const rain=+document.getElementById('rain').value,crowd=+document.getElementById('crowd').value;
+ const newRisk=Math.min(99,74+Math.round(rain*.45)+Math.round(crowd/1000)*3);
+ const result=document.getElementById('result');result.classList.add('show');
+ document.getElementById('resultTitle').textContent='Scenario outcome · Risk '+newRisk+'%';
+ document.getElementById('resultText').textContent = rain>=30 || crowd>=3500
+ ? 'The simulation predicts severe escalation. Route A becomes unreliable; the engine switches the recommendation to Route B and flags Bridge-04 for immediate review.'
+ : 'The system detects moderate additional exposure. Route B remains the preferred evacuation path, with continuous monitoring recommended.';
+ const t=document.getElementById('toast');t.textContent='Counterfactual scenario evaluated.';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);
+});
+</script>
+</body>
+</html>

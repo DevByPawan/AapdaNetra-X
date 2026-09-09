@@ -1,0 +1,79 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --color-bg:       #07111f;
+  --color-panel:    #0d1a2b;
+  --color-panel2:   #101f33;
+  --color-line:     #21334a;
+  --color-ax-text:  #eaf1f8;
+  --color-ax-muted: #8fa3b8;
+  --color-ax-cyan:  #35c7d9;
+  --color-ax-danger:   #ff5d6c;
+  --color-ax-warning:  #ffad4d;
+  --color-ax-success:  #4bd39b;
+  --color-ax-moderate: #f4d35e;
+
+  --font-family-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ── Global resets ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: radial-gradient(circle at 70% 10%, #10243a 0, #07111f 38%, #050c16 100%);
+  background-attachment: fixed;
+  color: var(--color-ax-text);
+  font-family: var(--font-family-sans);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--color-panel); }
+::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #2f4a66; }
+
+/* ── Range inputs ───────────────────────────────────────────────────────── */
+input[type="range"] { cursor: pointer; }
+input[type="range"].accent-cyan  { accent-color: var(--color-ax-cyan); }
+input[type="range"].accent-orange { accent-color: var(--color-ax-warning); }
+
+/* ── Leaflet overrides ──────────────────────────────────────────────────── */
+.leaflet-container {
+  background: #0a1828 !important;
+  font-family: var(--font-family-sans) !important;
+}
+.leaflet-tile-pane { filter: brightness(0.45) saturate(0.5) hue-rotate(200deg); }
+.leaflet-control-attribution { display: none !important; }
+.leaflet-control-zoom a {
+  background: #0d1a2b !important;
+  color: #8fa3b8 !important;
+  border-color: #21334a !important;
+}
+.leaflet-control-zoom a:hover { background: #12263b !important; color: #fff !important; }
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--color-ax-success); }
+  50%       { opacity: 0.4; box-shadow: 0 0 14px var(--color-ax-success); }
+}
+@keyframes slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes dash-move {
+  to { stroke-dashoffset: -32; }
+}
+
+.animate-pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+.animate-slide-up  { animation: slide-up 0.3s ease forwards; }
+.animate-fade-in   { animation: fade-in  0.25s ease forwards; }
