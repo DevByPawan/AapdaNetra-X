@@ -7,17 +7,6 @@ AapdaNetra-X is an open-source, research-grade decision-support platform designe
 > [!NOTE]
 > **Research & Development Prototype Disclaimer**: AapdaNetra-X is currently operating in **Research-Grade Local Prototype Mode** using physics-informed synthetic hydro-meteorological datasets for software architecture, ML pipeline, and explainability evaluation. It is **not** currently certified for real-world life-safety emergency dispatch operations.
 
----
-
-## 📸 Dashboard Screenshots
-
-````carousel
-![AapdaNetra-X — Command Center Top Section](docs/screenshots/dashboard_top.png)
-<!-- slide -->
-![AapdaNetra-X — Forecast Chart, Time Horizon & What-If Simulation](docs/screenshots/dashboard_bottom.png)
-````
-
----
 
 ## 🌟 Key Capabilities
 
