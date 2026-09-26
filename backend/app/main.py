@@ -58,10 +58,20 @@ app.include_router(explainability.router, prefix=prefix, tags=["Explainability"]
 # ── Health ────────────────────────────────────────────────────────────────
 @app.get("/health", tags=["System"])
 async def health():
+    try:
+        from app.data.providers.data_adapter import get_data_adapter
+        adapter = get_data_adapter()
+        telemetry = adapter.get_telemetry_metadata()
+    except Exception:
+        telemetry = {"data_mode": settings.data_mode, "fallback_used": True, "providers": {}}
+
     return {
         "status": "operational",
         "version": settings.api_version,
         "simulated": settings.use_simulated_data,
+        "data_mode": settings.data_mode,
+        "providers": telemetry.get("providers", {}),
+        "telemetry": telemetry,
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
