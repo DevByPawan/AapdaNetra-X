@@ -12,7 +12,8 @@ AapdaNetra-X is an open-source, research-grade decision-support platform designe
 
 - **ML Disaster Risk Prediction**: `scikit-learn` GradientBoostingRegressor trained on multi-parameter hydro-meteorological inputs to predict continuous flood risk scores ($0 - 100$).
 - **SHAP Explainability**: `shap.TreeExplainer` feature attributions providing decision trace explanations (*"Why did the system assign this risk score?"*).
-- **NetworkX Evacuation Route Optimization**: Risk-aware graph Dijkstra search over road networks balancing travel time, road distance, traffic congestion, and flood hazard exposure.
+- **NetworkX Evacuation Route Optimization**: Risk-aware graph Dijkstra search over road networks balancing travel time, road distance, traffic congestion, and flood hazard exposure. Supports both simulated 8-node representative graph and real-world **OpenStreetMap (OSM)** road networks via local GraphML caching.
+- **Real-World Data Providers (Phase 6.1 & 6.2)**: Modular Adapter pattern supporting live OpenWeatherMap weather API, gauge water levels, and cached OpenStreetMap GIS road topology (`ROUTING_MODE=simulated|osm|auto`).
 - **Time-Horizon Forecasting**: Dynamic risk, SHAP attributions, and evacuation path recalculation across `NOW`, `+10 MIN`, `+20 MIN`, `+30 MIN` projections.
 - **What-If Scenario Simulation**: Counterfactual disaster simulator evaluating changes in rainfall intensity, evacuation pace, drainage efficiency, and road blockages.
 - **Command Center UI**: Dark industrial glassmorphism dashboard built with React 19, Leaflet maps, and Recharts forecast timelines.

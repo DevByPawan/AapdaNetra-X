@@ -1,6 +1,7 @@
 """
 AapdaNetra-X — Risk Engine with ML Inference Integration
 Connects backend APIs directly to the scikit-learn GBR model via ml.inference.
+Phase 6.1: Routes through DataAdapter for live/hybrid data when configured.
 """
 import sys
 from pathlib import Path
@@ -16,6 +17,7 @@ from ml.features.schema import categorize_risk
 from app.models.schemas import SimulationResponse, RiskResponse, HeatmapZone, RiskLevel
 
 # Baseline Real-Time Hydro-Meteorological Features (Yamuna Sector B)
+# Canonical values — used as fallback when data_mode='simulated' or provider returns None.
 BASE_SENSOR_FEATURES = {
     "rainfall_intensity": 95.0,          # mm/h
     "rainfall_trend": 12.0,              # mm/h² escalation
@@ -39,12 +41,31 @@ HORIZON_DELTAS = [
 ]
 
 
+def _get_base_features() -> Dict[str, float]:
+    """
+    Returns the base sensor feature dict.
+    Phase 6.1: Routes through DataAdapter when data_mode is 'live' or 'hybrid'.
+    When data_mode='simulated' (default), returns BASE_SENSOR_FEATURES unchanged.
+    """
+    from app.config import settings
+    if settings.data_mode == "simulated":
+        return dict(BASE_SENSOR_FEATURES)
+
+    try:
+        from app.data.providers.data_adapter import get_data_adapter
+        adapter = get_data_adapter()
+        return adapter.get_base_features()
+    except Exception:
+        # Fallback to simulated if adapter initialization fails
+        return dict(BASE_SENSOR_FEATURES)
+
+
 def get_horizon_features(horizon_index: int = 0) -> Dict[str, float]:
     """Returns evolved features for a given time horizon index (0=NOW, 1=+10M, 2=+20M, 3=+30M)."""
     idx = max(0, min(3, horizon_index))
     delta = HORIZON_DELTAS[idx]
-    
-    features = dict(BASE_SENSOR_FEATURES)
+
+    features = _get_base_features()
     features["rainfall_intensity"] = min(300.0, features["rainfall_intensity"] * delta["rainfall_mul"])
     features["water_level"] = min(15.0, features["water_level"] + delta["water_add"])
     features["water_level_trend"] = min(5.0, features["water_level_trend"] + delta["trend_add"])
@@ -122,12 +143,12 @@ def run_simulation_engine(
     Modifies physical scenario inputs and returns baseline risk, scenario risk, risk delta,
     prediction reliability, and category.
     """
-    base_features = dict(BASE_SENSOR_FEATURES)
+    base_features = _get_base_features()
     baseline_ml = predict_risk(base_features)
     baseline_risk = baseline_ml["risk_score"]
 
     # Calculate scenario-modified feature vector
-    scenario_features = dict(BASE_SENSOR_FEATURES)
+    scenario_features = _get_base_features()
 
     # 1. Modify rainfall intensity & trend
     rf_mult = max(0.1, rainfallMultiplier)
