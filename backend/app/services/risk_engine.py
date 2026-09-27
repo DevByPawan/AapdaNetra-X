@@ -220,3 +220,169 @@ def run_simulation_engine(
         narrative=narrative,
         severity="SEVERE" if is_severe else ("MODERATE" if scenario_risk >= 50.0 else "MINOR"),
     )
+
+
+async def compute_risk_state_async(horizon: int = 0) -> RiskResponse:
+    """Async wrapper executing compute_risk_state and triggering assessment pipeline persistence & SSE event publication."""
+    response = compute_risk_state(horizon)
+
+    from app.services.persistence_service import get_persistence_service
+
+    ps = get_persistence_service()
+    import uuid
+    from app.db.models import (
+        TelemetryObservation,
+        RiskPrediction,
+        SHAPRecord,
+        EvacuationRoute,
+    )
+    from ml.explainability import explain_prediction
+    from ml.routing import optimize_routes
+
+    now_features = get_horizon_features(0)
+    horizon_features = get_horizon_features(horizon)
+    exp = explain_prediction(horizon_features)
+    opt = optimize_routes(
+        predicted_risk_score=response.predictedRisk,
+        route_blockage=False,
+        horizon_index=horizon,
+    )
+
+    obs = TelemetryObservation(
+        id=uuid.uuid4(),
+        data_mode="simulated",
+        fallback_used=False,
+        rainfall_intensity=now_features["rainfall_intensity"],
+        rainfall_trend=now_features["rainfall_trend"],
+        water_level=now_features["water_level"],
+        water_level_trend=now_features["water_level_trend"],
+        road_congestion=now_features["road_congestion"],
+        population_exposure=now_features["population_exposure"],
+        infrastructure_vulnerability=now_features[
+            "infrastructure_vulnerability"
+        ],
+        provenance={"source": "risk_engine_pipeline"},
+    )
+
+    pred = RiskPrediction(
+        id=uuid.uuid4(),
+        horizon=response.index,
+        horizon_label=response.label,
+        current_risk=response.currentRisk,
+        predicted_risk=response.predictedRisk,
+        risk_category=response.riskCategory,
+        confidence=response.confidence,
+        prediction_reliability=response.predictionReliability,
+        affected_population=response.affectedPopulation,
+        critical_population=response.criticalPopulation,
+        critical_assets_count=response.criticalAssets,
+        affected_assets_count=response.affectedAssets,
+        trend=response.trend,
+        map_status_text=response.mapStatusText,
+        prediction_note=response.predictionNote,
+        input_features=horizon_features,
+        heatmap_zones=[z.model_dump() for z in response.heatmapZones],
+    )
+
+    shap = SHAPRecord(
+        id=uuid.uuid4(),
+        risk_prediction_id=pred.id,
+        horizon=horizon,
+        prediction=exp["prediction"],
+        base_value=exp["base_value"],
+        total_shap_delta=exp["total_shap_delta"],
+        features=exp["features"],
+        decision_trace=exp["decision_trace"],
+    )
+
+    rec_route = EvacuationRoute(
+        id=uuid.uuid4(),
+        route_name=opt.recommended.name,
+        route_type="primary",
+        is_recommended=True,
+        origin_name="Sector B Origin",
+        origin_lat=28.6448,
+        origin_lon=77.2167,
+        destination_name="Relief Shelter Alpha",
+        destination_lat=28.6600,
+        destination_lon=77.2300,
+        waypoint_coords=[
+            [wp.lat, wp.lng] for wp in opt.recommended.waypoints
+        ],
+        distance_km=opt.recommended.distance_km,
+        estimated_minutes=float(opt.recommended.eta),
+        safety_score=opt.recommended.safetyScore,
+        congestion_index=now_features["road_congestion"],
+    )
+
+    if ps.is_enabled:
+        await ps.persist_assessment_pipeline(
+            incident_id="INC-2026-DEFAULT",
+            telemetry=obs,
+            prediction=pred,
+            shap_record=shap,
+            routes=[rec_route],
+        )
+    else:
+        # Disabled mode: publish in-memory event directly
+        ps._publish_pipeline_events(
+            incident_id="INC-2026-DEFAULT",
+            telemetry=obs,
+            prediction=pred,
+            routes=[rec_route],
+            status="disabled",
+        )
+
+    return response
+
+
+async def run_simulation_engine_async(
+    evacuationPace: float = 1.0,
+    rainfallMultiplier: float = 1.0,
+    drainageEfficiency: float = 1.0,
+    routeBlockage: bool = False,
+    rainfallIncrease: float = 0.0,
+    populationMovement: int = 0,
+    waterLevelIncrease: float = 0.0,
+) -> SimulationResponse:
+    """Async wrapper executing run_simulation_engine and triggering simulation persistence."""
+    res = run_simulation_engine(
+        evacuationPace=evacuationPace,
+        rainfallMultiplier=rainfallMultiplier,
+        drainageEfficiency=drainageEfficiency,
+        routeBlockage=routeBlockage,
+        rainfallIncrease=rainfallIncrease,
+        populationMovement=populationMovement,
+        waterLevelIncrease=waterLevelIncrease,
+    )
+
+    from app.services.persistence_service import get_persistence_service
+
+    ps = get_persistence_service()
+    if ps.is_enabled and ps.db_available:
+        import uuid
+        from app.db.models import Simulation
+
+        sim = Simulation(
+            id=uuid.uuid4(),
+            incident_id="INC-2026-DEFAULT",
+            evacuation_pace=evacuationPace,
+            rainfall_multiplier=rainfallMultiplier,
+            drainage_efficiency=drainageEfficiency,
+            route_blockage=routeBlockage,
+            rainfall_increase=rainfallIncrease,
+            population_movement=populationMovement,
+            water_level_increase=waterLevelIncrease,
+            baseline_risk=res.baselineRisk,
+            scenario_risk=res.scenarioRisk,
+            risk_delta=res.riskDelta,
+            risk_category=res.riskCategory,
+            prediction_reliability=res.predictionReliability,
+            route_recommendation=res.routeRecommendation,
+            flagged_assets=res.flaggedAssets,
+            narrative=res.narrative,
+            severity=res.severity,
+        )
+        await ps.save_simulation(sim)
+
+    return res

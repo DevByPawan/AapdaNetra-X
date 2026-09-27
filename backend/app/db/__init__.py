@@ -9,10 +9,12 @@ Controlled by PERSISTENCE_MODE environment variable:
 
 from app.db.session import (
     DatabaseManager,
+    get_db,
     get_db_manager,
 )
 
 __all__ = [
     "DatabaseManager",
+    "get_db",
     "get_db_manager",
 ]

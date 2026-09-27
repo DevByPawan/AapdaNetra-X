@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import settings
-from app.routers import incident, risk, forecast, routes, alerts, simulation, response, explainability
+from app.routers import incident, risk, forecast, routes, alerts, simulation, response, explainability, events
 
 # ── Logging ──────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -104,6 +104,7 @@ app.include_router(alerts.router,         prefix=prefix, tags=["Alerts"])
 app.include_router(simulation.router,     prefix=prefix, tags=["Simulation"])
 app.include_router(response.router,       prefix=prefix, tags=["Response"])
 app.include_router(explainability.router, prefix=prefix, tags=["Explainability"])
+app.include_router(events.router,         prefix=prefix, tags=["Events"])
 
 
 # ── Health ────────────────────────────────────────────────────────────────
