@@ -1,5 +1,6 @@
 """AapdaNetra-X FastAPI Backend — Entry Point"""
 import logging
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
 from fastapi import FastAPI, Request
@@ -17,6 +18,54 @@ logging.basicConfig(
 )
 logger = logging.getLogger("aapdanetra")
 
+
+# ── Phase 6.5A: Application Lifespan ─────────────────────────────────────
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Manage startup and shutdown of the database layer."""
+    # ── Startup ───────────────────────────────────────────────────────
+    mode = settings.persistence_mode.lower()
+
+    if mode == "disabled":
+        logger.info("Persistence mode: disabled — skipping database initialization")
+    else:
+        from app.db.session import get_db_manager
+
+        db = get_db_manager()
+        url = settings.effective_database_url
+        success = await db.initialize(
+            database_url=url,
+            pool_size=settings.db_pool_size,
+            max_overflow=settings.db_max_overflow,
+            echo=settings.db_echo,
+        )
+
+        if success:
+            logger.info("Persistence mode: %s — database ready", mode)
+        elif mode == "required":
+            logger.error(
+                "Persistence mode: required — database unavailable: %s",
+                db.initialization_error,
+            )
+            # Do NOT crash — let /health surface the failure.
+        else:
+            # optional mode — log and continue
+            logger.warning(
+                "Persistence mode: optional — database unavailable, "
+                "continuing with in-memory behavior: %s",
+                db.initialization_error,
+            )
+
+    yield  # ── Application runs here ──
+
+    # ── Shutdown ──────────────────────────────────────────────────────
+    if mode != "disabled":
+        from app.db.session import get_db_manager
+
+        db = get_db_manager()
+        await db.dispose()
+
+
 # ── App ──────────────────────────────────────────────────────────────────
 app = FastAPI(
     title="AapdaNetra-X API",
@@ -24,6 +73,7 @@ app = FastAPI(
     version=settings.api_version,
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
 # ── CORS ─────────────────────────────────────────────────────────────────
@@ -55,6 +105,7 @@ app.include_router(simulation.router,     prefix=prefix, tags=["Simulation"])
 app.include_router(response.router,       prefix=prefix, tags=["Response"])
 app.include_router(explainability.router, prefix=prefix, tags=["Explainability"])
 
+
 # ── Health ────────────────────────────────────────────────────────────────
 @app.get("/health", tags=["System"])
 async def health():
@@ -65,13 +116,25 @@ async def health():
     except Exception:
         telemetry = {"data_mode": settings.data_mode, "fallback_used": True, "providers": {}}
 
+    # Phase 6.5A: persistence metadata (non-sensitive)
+    from app.db.session import get_db_manager
+    persistence = get_db_manager().get_health_metadata(settings.persistence_mode)
+
+    # Required persistence unavailable → system is degraded, not operational
+    mode = settings.persistence_mode.lower()
+    if mode == "required" and not persistence.get("available", False):
+        status = "degraded"
+    else:
+        status = "operational"
+
     return {
-        "status": "operational",
+        "status": status,
         "version": settings.api_version,
         "simulated": settings.use_simulated_data,
         "data_mode": settings.data_mode,
         "providers": telemetry.get("providers", {}),
         "telemetry": telemetry,
+        "persistence": persistence,
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
