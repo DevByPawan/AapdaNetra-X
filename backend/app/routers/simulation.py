@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from app.models.schemas import SimulationRequest, SimulationResponse
-from app.services.risk_engine import run_simulation_engine
+from app.services.risk_engine import run_simulation_engine, run_simulation_engine_async
 
 router = APIRouter()
 
@@ -10,7 +10,7 @@ async def run_simulation(request: SimulationRequest):
     """
     Runs counterfactual disaster simulation against the trained scikit-learn ML model.
     """
-    return run_simulation_engine(
+    return await run_simulation_engine_async(
         evacuationPace=request.evacuationPace,
         rainfallMultiplier=request.rainfallMultiplier,
         drainageEfficiency=request.drainageEfficiency,

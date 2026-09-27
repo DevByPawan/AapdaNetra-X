@@ -181,6 +181,16 @@ def get_db_manager() -> DatabaseManager:
     return _db_manager
 
 
+async def get_db():
+    """FastAPI dependency yielding an AsyncSession."""
+    manager = get_db_manager()
+    session = manager.get_session()
+    try:
+        yield session
+    finally:
+        await session.close()
+
+
 def _reset_db_manager() -> None:
     """Reset the singleton — used only in tests."""
     global _db_manager
