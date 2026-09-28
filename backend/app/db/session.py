@@ -65,6 +65,11 @@ class DatabaseManager:
         database_url: str,
         pool_size: int = 5,
         max_overflow: int = 10,
+        pool_timeout: int = 30,
+        pool_recycle: int = 1800,
+        pool_pre_ping: bool = True,
+        connect_timeout: int = 10,
+        command_timeout: int = 30,
         echo: bool = False,
     ) -> bool:
         """Create the async engine and verify connectivity.
@@ -73,6 +78,11 @@ class DatabaseManager:
             database_url: Async-compatible PostgreSQL connection string.
             pool_size: Number of persistent connections in the pool.
             max_overflow: Maximum overflow connections beyond pool_size.
+            pool_timeout: Seconds to wait before timing out on getting a connection.
+            pool_recycle: Seconds after which to recycle connections.
+            pool_pre_ping: Whether to check connection health before checkout.
+            connect_timeout: Driver connection timeout in seconds.
+            command_timeout: Driver query command execution timeout in seconds.
             echo: Whether to log all SQL statements (debug only).
 
         Returns:
@@ -83,8 +93,13 @@ class DatabaseManager:
                 database_url,
                 pool_size=pool_size,
                 max_overflow=max_overflow,
-                pool_pre_ping=True,
-                pool_recycle=1800,  # recycle connections every 30 minutes
+                pool_timeout=pool_timeout,
+                pool_recycle=pool_recycle,
+                pool_pre_ping=pool_pre_ping,
+                connect_args={
+                    "timeout": connect_timeout,
+                    "command_timeout": command_timeout,
+                },
                 echo=echo,
             )
 
@@ -154,7 +169,7 @@ class DatabaseManager:
 
         Never exposes credentials, URLs, or connection strings.
         """
-        configured = persistence_mode != "disabled"
+        configured = persistence_mode.lower() != "disabled"
         return {
             "mode": persistence_mode,
             "configured": configured,
@@ -162,6 +177,65 @@ class DatabaseManager:
             "backend": "postgresql" if configured else None,
             "error": self._initialization_error if (configured and not self._available) else None,
         }
+
+    async def check_health(self, persistence_mode: str) -> dict:
+        """Perform active DB connectivity check, measure latency, verify PostGIS, and return sanitized health info."""
+        base_meta = self.get_health_metadata(persistence_mode)
+        mode = persistence_mode.lower()
+
+        if mode == "disabled" or self._engine is None or not self._available:
+            base_meta["database"] = {
+                "status": "disabled" if mode == "disabled" else "unreachable",
+                "reachable": False,
+                "latency_ms": None,
+            }
+            base_meta["postgis"] = {
+                "status": "disabled" if mode == "disabled" else "unavailable",
+                "version": None,
+            }
+            return base_meta
+
+        import time
+        from sqlalchemy import text
+
+        try:
+            start_time = time.perf_counter()
+            async with self._engine.connect() as conn:
+                await conn.execute(text("SELECT 1"))
+                latency_ms = round((time.perf_counter() - start_time) * 1000, 2)
+
+                postgis_ver = None
+                try:
+                    res = await conn.execute(text("SELECT PostGIS_Full_Version()"))
+                    postgis_ver = res.scalar()
+                except Exception:
+                    pass
+
+            base_meta["database"] = {
+                "status": "healthy",
+                "reachable": True,
+                "latency_ms": latency_ms,
+            }
+            base_meta["postgis"] = {
+                "status": "available" if postgis_ver else "unavailable",
+                "version": postgis_ver,
+            }
+            return base_meta
+
+        except Exception as exc:
+            sanitized_err = _sanitize_db_error(str(exc))
+            base_meta["available"] = False
+            base_meta["error"] = sanitized_err
+            base_meta["database"] = {
+                "status": "unreachable",
+                "reachable": False,
+                "latency_ms": None,
+            }
+            base_meta["postgis"] = {
+                "status": "unavailable",
+                "version": None,
+            }
+            return base_meta
 
 
 # ── Module-level singleton ────────────────────────────────────────────

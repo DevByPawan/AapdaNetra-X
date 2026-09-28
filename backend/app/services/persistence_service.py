@@ -85,6 +85,9 @@ class PersistenceService:
             logger.warning("Persistence mode: optional — database unavailable, skipping pipeline persistence")
             return False
 
+        import time
+
+        start_time = time.perf_counter()
         try:
             db_mgr = get_db_manager()
             async with db_mgr.get_session() as session:
@@ -112,10 +115,12 @@ class PersistenceService:
                     route_repo = EvacuationRouteRepository(session)
                     await route_repo.save_routes(routes)
 
+            duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
             logger.info(
-                "Atomic assessment pipeline persisted successfully for incident %s (prediction_id=%s)",
+                "Atomic assessment pipeline persisted successfully for incident %s (prediction_id=%s, duration=%.2fms)",
                 incident_id,
                 prediction.id,
+                duration_ms,
             )
 
             # Publish real-time events post-commit
@@ -123,7 +128,13 @@ class PersistenceService:
             return True
 
         except Exception as exc:
-            logger.error("Failed to persist assessment pipeline: %s", exc)
+            duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
+            logger.error(
+                "Failed to persist assessment pipeline for incident %s after %.2fms: %s",
+                incident_id,
+                duration_ms,
+                exc,
+            )
             if self.mode == "required":
                 raise RuntimeError(f"Database transaction failed in required mode: {exc}") from exc
             return False

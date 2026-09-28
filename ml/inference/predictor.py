@@ -2,7 +2,10 @@
 AapdaNetra-X — Model-Agnostic Risk Inference Engine
 Loads trained model artifact, validates input features, computes normalized risk,
 determines risk category, and calculates prediction reliability safely.
+
+Phase 6.12: Model versioning, metadata loading, feature schema validation.
 """
+import json
 import os
 import sys
 from pathlib import Path
@@ -31,6 +34,9 @@ class RiskPredictor:
     """
     Model-agnostic inference predictor. Encapsulates ML model loading, feature
     transformation, prediction execution, and reliability evaluation.
+
+    Phase 6.12: Now loads model metadata, validates feature schema,
+    and exposes model_data_status (synthetic/real/hybrid).
     """
 
     _instance: Optional["RiskPredictor"] = None
@@ -38,7 +44,9 @@ class RiskPredictor:
     def __init__(self, model_path: Optional[Path] = None):
         self.model_path = model_path or MODEL_PATH
         self.model = None
+        self._metadata: Optional[Dict[str, Any]] = None
         self._load_model()
+        self._load_metadata()
 
     def _load_model(self):
         """Loads the trained GBR model artifact from disk, or auto-trains if missing."""
@@ -56,6 +64,61 @@ class RiskPredictor:
                 self.model, _ = train_and_evaluate(n_samples=1000, random_seed=42)
             except Exception as e:
                 print(f"[RiskPredictor] Error auto-training model: {e}")
+
+    def _load_metadata(self):
+        """Loads model metadata JSON if available. Validates feature schema compatibility."""
+        metadata_path = self.model_path.parent / "model_metadata.json" if isinstance(self.model_path, Path) else Path(str(self.model_path)).parent / "model_metadata.json"
+        if os.path.exists(metadata_path):
+            try:
+                with open(metadata_path, "r") as f:
+                    self._metadata = json.load(f)
+                # Validate feature schema compatibility
+                model_features = self._metadata.get("feature_names") or self._metadata.get("features", [])
+                if model_features and model_features != FEATURE_NAMES:
+                    print(
+                        f"[RiskPredictor] WARNING: Feature schema mismatch. "
+                        f"Model expects {model_features}, pipeline uses {FEATURE_NAMES}"
+                    )
+            except Exception as e:
+                print(f"[RiskPredictor] Warning: Could not load metadata: {e}")
+                self._metadata = None
+        else:
+            self._metadata = None
+
+    @property
+    def model_data_status(self) -> str:
+        """Returns the training data status: synthetic, real, hybrid, or unavailable."""
+        if self._metadata:
+            return self._metadata.get("model_data_status", "synthetic")
+        return "synthetic"
+
+    @property
+    def model_version(self) -> str:
+        """Returns the model version string."""
+        if self._metadata:
+            return self._metadata.get("model_version", "0.1.0")
+        return "0.1.0"
+
+    @property
+    def model_info(self) -> Dict[str, Any]:
+        """Returns a summary of the loaded model for API/observability."""
+        from ml.uncertainty import get_conformal_quantifier
+        quantifier = get_conformal_quantifier()
+        calib_data = quantifier.calibration_data or {
+            "uncertainty_method": "conformal_regression",
+            "nominal_coverage": 0.90,
+            "data_status": self.model_data_status,
+        }
+        return {
+            "model_name": "GradientBoostingRegressor",
+            "model_version": self.model_version,
+            "model_data_status": self.model_data_status,
+            "feature_schema_version": self._metadata.get("feature_schema_version", "1.0.0") if self._metadata else "1.0.0",
+            "training_timestamp": self._metadata.get("training_timestamp", "") if self._metadata else "",
+            "training_dataset": self._metadata.get("training_dataset", "synthetic_1000") if self._metadata else "synthetic_1000",
+            "uncertainty_calibration": calib_data,
+            "disclaimer": self._metadata.get("disclaimer", "Model trained on synthetic data. Not validated for real-world deployment.") if self._metadata else "Model trained on synthetic data. Not validated for real-world deployment.",
+        }
 
     def predict(self, raw_features: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -90,11 +153,23 @@ class RiskPredictor:
         # 4. Calculate prediction reliability deterministically
         reliability = self._calculate_reliability(raw_features, cleaned)
 
+        # 5. Compute split-conformal prediction interval
+        from ml.uncertainty import quantify_uncertainty
+        interval = quantify_uncertainty(risk_score)
+        uncertainty_dict = interval.to_dict()
+
         return {
             "risk_score": risk_score,
             "risk_category": risk_category,
             "prediction_reliability": reliability,
             "cleaned_features": cleaned,
+            "model_data_status": self.model_data_status,
+            "model_version": self.model_version,
+            "uncertainty": uncertainty_dict,
+            "prediction_interval": [interval.lower_bound, interval.upper_bound],
+            "interval_lower": interval.lower_bound,
+            "interval_upper": interval.upper_bound,
+            "nominal_coverage": interval.nominal_coverage,
         }
 
     def _heuristic_fallback(self, cleaned: Dict[str, float]) -> float:

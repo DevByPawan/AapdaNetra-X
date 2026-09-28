@@ -54,3 +54,35 @@ class RiskPredictionRepository(BaseRepository[RiskPrediction]):
         )
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
+
+    async def get_history_paginated(
+        self,
+        incident_id: str,
+        horizon: Optional[int] = None,
+        params: Optional[PaginationParams] = None,
+    ) -> PageResult:
+        """Fetch historical risk predictions using keyset pagination."""
+        from app.db.pagination import apply_keyset_pagination, build_page_result, PaginationParams, PageResult
+
+        p = params or PaginationParams()
+        stmt = select(RiskPrediction).where(RiskPrediction.incident_id == incident_id)
+
+        if horizon is not None:
+            stmt = stmt.where(RiskPrediction.horizon == horizon)
+
+        stmt = apply_keyset_pagination(
+            stmt=stmt,
+            timestamp_col=RiskPrediction.created_at,
+            id_col=RiskPrediction.id,
+            params=p,
+            id_is_uuid=True,
+        )
+        result = await self.session.execute(stmt)
+        items = list(result.scalars().all())
+
+        return build_page_result(
+            items=items,
+            limit=p.limit,
+            get_timestamp=lambda item: item.created_at,
+            get_id=lambda item: item.id,
+        )

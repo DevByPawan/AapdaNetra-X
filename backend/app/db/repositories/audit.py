@@ -63,3 +63,33 @@ class AuditEventRepository(BaseRepository[AuditEvent]):
         stmt = select(AuditEvent).order_by(AuditEvent.created_at.desc()).limit(limit)
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
+
+    async def get_history_paginated(
+        self,
+        incident_id: Optional[str] = None,
+        params: Optional[PaginationParams] = None,
+    ) -> PageResult:
+        """Fetch audit events using keyset pagination."""
+        from app.db.pagination import apply_keyset_pagination, build_page_result, PaginationParams, PageResult
+
+        p = params or PaginationParams()
+        stmt = select(AuditEvent)
+        if incident_id:
+            stmt = stmt.where(AuditEvent.incident_id == incident_id)
+
+        stmt = apply_keyset_pagination(
+            stmt=stmt,
+            timestamp_col=AuditEvent.created_at,
+            id_col=AuditEvent.id,
+            params=p,
+            id_is_uuid=True,
+        )
+        result = await self.session.execute(stmt)
+        items = list(result.scalars().all())
+
+        return build_page_result(
+            items=items,
+            limit=p.limit,
+            get_timestamp=lambda item: item.created_at,
+            get_id=lambda item: item.id,
+        )

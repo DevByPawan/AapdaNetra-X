@@ -164,14 +164,15 @@ class TestOptionalModeUnavailable:
                 with patch("app.db.session.get_db_manager") as mock_get:
                     mock_mgr = MagicMock()
                     mock_mgr.is_available = False
-                    mock_mgr.initialization_error = "connection refused"
-                    mock_mgr.get_health_metadata.return_value = {
+                    health_dict = {
                         "mode": "optional",
                         "configured": True,
                         "available": False,
                         "backend": "postgresql",
                         "error": "connection refused",
                     }
+                    mock_mgr.get_health_metadata.return_value = health_dict
+                    mock_mgr.check_health = AsyncMock(return_value=health_dict)
                     mock_get.return_value = mock_mgr
 
                     from app.main import app
@@ -241,14 +242,15 @@ class TestRequiredModeUnavailable:
                 with patch("app.db.session.get_db_manager") as mock_get:
                     mock_mgr = MagicMock()
                     mock_mgr.is_available = False
-                    mock_mgr.initialization_error = "connection refused"
-                    mock_mgr.get_health_metadata.return_value = {
+                    health_dict = {
                         "mode": "required",
                         "configured": True,
                         "available": False,
                         "backend": "postgresql",
                         "error": "connection refused",
                     }
+                    mock_mgr.get_health_metadata.return_value = health_dict
+                    mock_mgr.check_health = AsyncMock(return_value=health_dict)
                     mock_get.return_value = mock_mgr
 
                     from app.main import app

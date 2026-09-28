@@ -1,5 +1,5 @@
 """Pydantic models for all API request/response types."""
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional, Literal, Dict, Any
 from datetime import datetime
 
@@ -40,6 +40,22 @@ class HeatmapZone(BaseModel):
     level: RiskLevel
 
 
+class PredictionInterval(BaseModel):
+    lower: float = 0.0
+    upper: float = 100.0
+    intervalWidth: float = 0.0
+    interval_width: float = 0.0
+    nominalCoverage: float = 0.90
+    nominal_coverage: float = 0.90
+    method: str = "conformal_regression"
+    dataStatus: str = "synthetic"
+    data_status: str = "synthetic"
+    isClipped: bool = False
+    is_clipped: bool = False
+    status: str = "AVAILABLE"
+    disclaimer: str = "Prediction interval calibrated on synthetic data under split-conformal assumptions."
+
+
 class RiskResponse(BaseModel):
     index: int
     label: str
@@ -57,6 +73,8 @@ class RiskResponse(BaseModel):
     mapStatusText: str
     predictionNote: str
     heatmapZones: List[HeatmapZone]
+    predictionInterval: Optional[PredictionInterval] = None
+    prediction_interval: Optional[Dict[str, Any]] = None
 
 
 # ── Forecast ─────────────────────────────────────────────────────────────
@@ -107,6 +125,7 @@ class DecisionFactor(BaseModel):
     direction: Optional[str] = "increases_risk"
     percent: Optional[float] = 0.0
     shapValue: Optional[float] = 0.0
+    attributionStatement: Optional[str] = ""
 
 
 class RoutesResponse(BaseModel):
@@ -129,6 +148,8 @@ class ExplainabilityFeature(BaseModel):
     contribution_percent: float
     formatted_contribution: str
     raw_value: float
+    contribution_magnitude: Optional[float] = 0.0
+    attribution_statement: Optional[str] = ""
 
 
 class ExplainabilityResponse(BaseModel):
@@ -139,6 +160,9 @@ class ExplainabilityResponse(BaseModel):
     features: List[ExplainabilityFeature]
     decision_trace: List[DecisionFactor]
     decisionTrace: List[DecisionFactor]
+    is_shap_consistent: Optional[bool] = True
+    predictionInterval: Optional[PredictionInterval] = None
+    prediction_interval: Optional[Dict[str, Any]] = None
 
 
 # ── Alerts ───────────────────────────────────────────────────────────────
@@ -159,14 +183,24 @@ class AlertsResponse(BaseModel):
 
 
 # ── Simulation ───────────────────────────────────────────────────────────
+import math
+from pydantic import field_validator
+
 class SimulationRequest(BaseModel):
-    evacuationPace: float = 1.0
-    rainfallMultiplier: float = 1.0
-    drainageEfficiency: float = 1.0
-    routeBlockage: bool = False
-    rainfallIncrease: float = 0.0
-    populationMovement: int = 0
-    waterLevelIncrease: float = 0.0
+    evacuationPace: float = Field(default=1.0, ge=0.1, le=5.0, description="Evacuation pace multiplier")
+    rainfallMultiplier: float = Field(default=1.0, ge=0.0, le=10.0, description="Rainfall intensity multiplier")
+    drainageEfficiency: float = Field(default=1.0, ge=0.0, le=1.0, description="Drainage capacity efficiency ratio")
+    routeBlockage: bool = Field(default=False, description="Whether primary evacuation route is blocked")
+    rainfallIncrease: float = Field(default=0.0, ge=0.0, le=500.0, description="Additional rainfall intensity mm/h")
+    populationMovement: int = Field(default=0, ge=-100000, le=100000, description="Net population movement delta")
+    waterLevelIncrease: float = Field(default=0.0, ge=0.0, le=20.0, description="Additional river gauge water level in meters")
+
+    @field_validator("evacuationPace", "rainfallMultiplier", "drainageEfficiency", "rainfallIncrease", "waterLevelIncrease")
+    @classmethod
+    def validate_no_inf_nan(cls, v: float) -> float:
+        if math.isnan(v) or math.isinf(v):
+            raise ValueError("Numeric parameter cannot be NaN or Infinity")
+        return v
 
 
 class SimulationResponse(BaseModel):
@@ -188,8 +222,8 @@ class SimulationResponse(BaseModel):
 
 # ── Response approval ─────────────────────────────────────────────────────
 class ApproveRequest(BaseModel):
-    incidentId: str
-    responderId: str = "OPERATOR-01"
+    incidentId: str = Field(..., min_length=1, max_length=64, description="Target incident identifier")
+    responderId: str = Field(default="OPERATOR-01", min_length=1, max_length=64, description="Approving responder ID")
 
 
 class ApproveResponse(BaseModel):

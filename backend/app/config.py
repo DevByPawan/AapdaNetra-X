@@ -68,6 +68,11 @@ class Settings(BaseSettings):
     # Connection pool tuning
     db_pool_size: int = 5
     db_max_overflow: int = 10
+    db_pool_timeout: int = 30
+    db_pool_recycle: int = 1800
+    db_pool_pre_ping: bool = True
+    db_connect_timeout: int = 10
+    db_command_timeout: int = 30
     db_echo: bool = False
 
     @property

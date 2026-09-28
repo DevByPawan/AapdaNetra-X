@@ -91,6 +91,9 @@ class DataAdapter:
                 logger.warning(f"[DataAdapter] Weather adapter error: {e}")
                 self._record_fallback("rainfall_intensity")
                 self._record_fallback("rainfall_trend")
+        else:
+            self._record_fallback("rainfall_intensity")
+            self._record_fallback("rainfall_trend")
 
         # 2. Water level provider
         if self.water_level_adapter is not None:
@@ -107,6 +110,9 @@ class DataAdapter:
                 logger.warning(f"[DataAdapter] Water level adapter error: {e}")
                 self._record_fallback("water_level")
                 self._record_fallback("water_level_trend")
+        else:
+            self._record_fallback("water_level")
+            self._record_fallback("water_level_trend")
 
         # 3. Traffic provider
         if self.traffic_adapter is not None:
@@ -121,6 +127,8 @@ class DataAdapter:
             except Exception as e:
                 logger.warning(f"[DataAdapter] Traffic adapter error: {e}")
                 self._record_fallback("road_congestion")
+        else:
+            self._record_fallback("road_congestion")
 
         # 4. Population dataset provider
         if self.population_adapter is not None:
@@ -135,6 +143,8 @@ class DataAdapter:
             except Exception as e:
                 logger.warning(f"[DataAdapter] Population adapter error: {e}")
                 self._record_fallback("population_exposure")
+        else:
+            self._record_fallback("population_exposure")
 
         # 5. Infrastructure dataset provider
         if self.infrastructure_adapter is not None:
@@ -149,6 +159,8 @@ class DataAdapter:
             except Exception as e:
                 logger.warning(f"[DataAdapter] Infrastructure adapter error: {e}")
                 self._record_fallback("infrastructure_vulnerability")
+        else:
+            self._record_fallback("infrastructure_vulnerability")
 
         logger.info(f"[DataAdapter] Feature provenance ({self.data_mode}): {self._provenance}")
         return merged
@@ -292,6 +304,10 @@ def _create_adapter_from_settings() -> DataAdapter:
 
     population = None
     pop_path = getattr(settings, "population_dataset_path", "")
+    if not pop_path:
+        default_pop = Path(__file__).resolve().parent.parent / "population_delhi_sample.json"
+        if default_pop.exists():
+            pop_path = str(default_pop)
     if data_mode in ("live", "hybrid") and pop_path and Path(pop_path).exists():
         population = PopulationAdapter(
             dataset_path=Path(pop_path),
@@ -300,6 +316,10 @@ def _create_adapter_from_settings() -> DataAdapter:
 
     infrastructure = None
     infra_path = getattr(settings, "infrastructure_dataset_path", "")
+    if not infra_path:
+        default_infra = Path(__file__).resolve().parent.parent / "infrastructure_delhi_sample.json"
+        if default_infra.exists():
+            infra_path = str(default_infra)
     if data_mode in ("live", "hybrid") and infra_path and Path(infra_path).exists():
         infrastructure = InfrastructureAdapter(
             dataset_path=Path(infra_path),

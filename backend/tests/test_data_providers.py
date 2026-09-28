@@ -316,7 +316,7 @@ class TestDataAdapter:
         assert result["water_level"] == BASE_SENSOR_FEATURES["water_level"]
         assert result["road_congestion"] == BASE_SENSOR_FEATURES["road_congestion"]
         assert adapter.provenance["rainfall_intensity"] == "live:weather"
-        assert adapter.provenance["water_level"] == "simulated"
+        assert adapter.provenance["water_level"] == "fallback:simulated"
 
     def test_live_water_level_overrides(self):
         """Live water level data should override water features in hybrid mode."""

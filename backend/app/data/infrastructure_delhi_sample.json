@@ -1,0 +1,54 @@
+{
+  "dataset_name": "OSM Critical Infrastructure Assets (Delhi Sector B)",
+  "dataset_version": "v2023.1",
+  "methodology": "provisional vulnerability weighting",
+  "bbox": [77.1900, 28.6100, 77.2600, 28.6700],
+  "vulnerability_index": 0.78,
+  "critical_assets": [
+    {
+      "id": "asset-hosp-01",
+      "name": "LNJP Hospital Emergency Center",
+      "category": "hospital",
+      "latitude": 28.6385,
+      "longitude": 77.2382,
+      "exposure_score": 0.85,
+      "osm_tags": {"amenity": "hospital", "emergency": "yes"}
+    },
+    {
+      "id": "asset-sub-02",
+      "name": "Yamuna Power Substation 220kV",
+      "category": "substation",
+      "latitude": 28.6492,
+      "longitude": 77.2280,
+      "exposure_score": 0.90,
+      "osm_tags": {"power": "substation"}
+    },
+    {
+      "id": "asset-brg-03",
+      "name": "Old Yamuna Bridge (Loha Pul)",
+      "category": "bridge",
+      "latitude": 28.6601,
+      "longitude": 77.2485,
+      "exposure_score": 0.95,
+      "osm_tags": {"man_made": "bridge"}
+    },
+    {
+      "id": "asset-water-04",
+      "name": "Wazirabad Water Treatment Works",
+      "category": "water_works",
+      "latitude": 28.6550,
+      "longitude": 77.2350,
+      "exposure_score": 0.80,
+      "osm_tags": {"man_made": "water_works"}
+    },
+    {
+      "id": "asset-shelter-05",
+      "name": "ISBT Relief Shelter Alpha",
+      "category": "shelter",
+      "latitude": 28.6680,
+      "longitude": 77.2290,
+      "exposure_score": 0.50,
+      "osm_tags": {"amenity": "shelter"}
+    }
+  ]
+}

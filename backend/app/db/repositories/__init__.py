@@ -3,6 +3,7 @@
 Exposes all persistence repository classes for database interactions.
 """
 
+from app.db.repositories.analytics import AnalyticsRepository
 from app.db.repositories.base import BaseRepository
 from app.db.repositories.alert import AlertRepository
 from app.db.repositories.asset import CriticalAssetRepository
@@ -16,6 +17,7 @@ from app.db.repositories.telemetry import TelemetryRepository
 
 __all__ = [
     "BaseRepository",
+    "AnalyticsRepository",
     "IncidentRepository",
     "TelemetryRepository",
     "RiskPredictionRepository",

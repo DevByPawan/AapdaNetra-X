@@ -109,6 +109,11 @@ class SHAPExplainer:
         prediction = round(float(np.clip(raw_pred, 0.0, 100.0)), 1)
         base_value = round(float(expected_val), 1)
 
+        # Mathematical consistency verification: prediction ≈ expected_value + sum(shap_values)
+        shap_sum = float(np.sum(shap_arr))
+        reconstruction_diff = float(abs(expected_val + shap_sum - raw_pred))
+        is_consistent = reconstruction_diff < 1e-3
+
         # Calculate relative contribution percentages based on total absolute SHAP magnitude
         abs_sum = float(np.sum(np.abs(shap_arr)))
         if abs_sum <= 1e-6:
@@ -124,6 +129,14 @@ class SHAPExplainer:
             )
             direction_symbol = "↑" if s_val > 0.01 else ("↓" if s_val < -0.01 else "→")
 
+            # Scientifically precise attribution language (avoiding causal claims)
+            if s_val > 0.01:
+                attr_statement = f"Contributed positively to predicted risk (+{s_val:.2f})"
+            elif s_val < -0.01:
+                attr_statement = f"Contributed negatively to predicted risk ({s_val:.2f})"
+            else:
+                attr_statement = "Had a neutral SHAP contribution to predicted risk (0.00)"
+
             feature_items.append({
                 "feature": name,
                 "label": FEATURE_LABEL_MAP.get(name, name),
@@ -131,6 +144,8 @@ class SHAPExplainer:
                 "direction": direction,
                 "direction_symbol": direction_symbol,
                 "contribution_percent": pct,
+                "contribution_magnitude": round(abs(s_val), 3),
+                "attribution_statement": attr_statement,
                 "formatted_contribution": f"{direction_symbol} {pct:.0f}%" if direction != "neutral" else f"{pct:.0f}%",
                 "raw_value": cleaned[name],
             })
@@ -146,14 +161,19 @@ class SHAPExplainer:
                 "direction": item["direction"],
                 "percent": item["contribution_percent"],
                 "shapValue": item["shap_value"],
+                "attributionStatement": item["attribution_statement"],
             }
             for item in sorted_features
         ]
 
         return {
             "prediction": prediction,
+            "raw_prediction": round(raw_pred, 3),
             "base_value": base_value,
+            "raw_base_value": round(expected_val, 3),
             "total_shap_delta": round(prediction - base_value, 1),
+            "shap_reconstruction_diff": round(reconstruction_diff, 5),
+            "is_shap_consistent": is_consistent,
             "features": sorted_features,
             "decision_trace": decision_trace,
         }

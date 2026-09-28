@@ -82,3 +82,220 @@ export async function approveResponse(incidentId: string): Promise<{ approved: b
   const res = await client.post('/response/approve', { incidentId, responderId: 'OPERATOR-01' });
   return extractData<{ approved: boolean; workflowId: string }>(res);
 }
+
+// ── Phase 6.6 Historical & Timeline API Functions ─────────────────────────
+import type {
+  PaginationParams,
+  PaginatedResponse,
+  IncidentHistoryItem,
+  TelemetryHistoryItem,
+  RiskHistoryItem,
+  RouteHistoryItem,
+  AuditHistoryItem,
+  TimelineEventItem,
+  SHAPHistoryResponse,
+} from '../types';
+
+function buildPaginationQuery(params?: PaginationParams): string {
+  if (!params) return '';
+  const q = new URLSearchParams();
+  if (params.limit !== undefined) q.append('limit', String(params.limit));
+  if (params.cursor_timestamp) q.append('cursor_timestamp', params.cursor_timestamp);
+  if (params.cursor_id) q.append('cursor_id', params.cursor_id);
+  if (params.from_time) q.append('from_time', params.from_time);
+  if (params.to_time) q.append('to_time', params.to_time);
+  const str = q.toString();
+  return str ? `?${str}` : '';
+}
+
+export async function fetchIncidentsHistory(params?: PaginationParams): Promise<PaginatedResponse<IncidentHistoryItem>> {
+  if (USE_SIMULATED) {
+    return {
+      items: [
+        {
+          id: 'INC-2026-DEFAULT',
+          incident_type: 'flood',
+          status: 'ACTIVE',
+          started_at: new Date().toISOString(),
+          sector: 'Sector B',
+          severity: 'HIGH',
+          location_name: 'Yamuna Sector B',
+          latitude: 28.61,
+          longitude: 77.23,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ],
+      next_cursor: null,
+      has_more: false,
+    };
+  }
+  const res = await client.get(`/incidents${buildPaginationQuery(params)}`);
+  return extractData<PaginatedResponse<IncidentHistoryItem>>(res);
+}
+
+export async function fetchIncidentDetail(incidentId: string): Promise<IncidentHistoryItem> {
+  if (USE_SIMULATED) {
+    return {
+      id: incidentId,
+      incident_type: 'flood',
+      status: 'ACTIVE',
+      started_at: new Date().toISOString(),
+      sector: 'Sector B',
+      severity: 'HIGH',
+      location_name: 'Yamuna Sector B',
+      latitude: 28.61,
+      longitude: 77.23,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+  }
+  const res = await client.get(`/incidents/${incidentId}`);
+  return extractData<IncidentHistoryItem>(res);
+}
+
+export async function fetchTelemetryHistory(
+  incidentId: string,
+  params?: PaginationParams
+): Promise<PaginatedResponse<TelemetryHistoryItem>> {
+  if (USE_SIMULATED) return { items: [], next_cursor: null, has_more: false };
+  const res = await client.get(`/incidents/${incidentId}/telemetry/history${buildPaginationQuery(params)}`);
+  return extractData<PaginatedResponse<TelemetryHistoryItem>>(res);
+}
+
+export async function fetchRiskHistory(
+  incidentId: string,
+  horizon?: number,
+  params?: PaginationParams
+): Promise<PaginatedResponse<RiskHistoryItem>> {
+  if (USE_SIMULATED) return { items: [], next_cursor: null, has_more: false };
+  const q = new URLSearchParams();
+  if (horizon !== undefined) q.append('horizon', String(horizon));
+  if (params?.limit) q.append('limit', String(params.limit));
+  if (params?.cursor_timestamp) q.append('cursor_timestamp', params.cursor_timestamp);
+  if (params?.cursor_id) q.append('cursor_id', params.cursor_id);
+  if (params?.from_time) q.append('from_time', params.from_time);
+  if (params?.to_time) q.append('to_time', params.to_time);
+  const queryStr = q.toString() ? `?${q.toString()}` : '';
+  const res = await client.get(`/incidents/${incidentId}/risk/history${queryStr}`);
+  return extractData<PaginatedResponse<RiskHistoryItem>>(res);
+}
+
+export async function fetchRouteHistory(
+  incidentId: string,
+  params?: PaginationParams
+): Promise<PaginatedResponse<RouteHistoryItem>> {
+  if (USE_SIMULATED) return { items: [], next_cursor: null, has_more: false };
+  const res = await client.get(`/incidents/${incidentId}/routes/history${buildPaginationQuery(params)}`);
+  return extractData<PaginatedResponse<RouteHistoryItem>>(res);
+}
+
+export async function fetchAuditHistory(
+  incidentId: string,
+  params?: PaginationParams
+): Promise<PaginatedResponse<AuditHistoryItem>> {
+  if (USE_SIMULATED) return { items: [], next_cursor: null, has_more: false };
+  const res = await client.get(`/incidents/${incidentId}/audit${buildPaginationQuery(params)}`);
+  return extractData<PaginatedResponse<AuditHistoryItem>>(res);
+}
+
+export async function fetchIncidentTimeline(
+  incidentId: string,
+  params?: PaginationParams
+): Promise<PaginatedResponse<TimelineEventItem>> {
+  if (USE_SIMULATED) {
+    const now = new Date();
+    return {
+      items: [
+        {
+          timestamp: new Date(now.getTime() - 5 * 60000).toISOString(),
+          event_type: 'DECISION_APPROVED',
+          entity_type: 'audit_event',
+          entity_id: 'aud-sim-1',
+          incident_id: incidentId,
+          summary: 'Response workflow approved (RESPONSE_WORKFLOW_APPROVED)',
+          details: { actor: 'OPERATOR-01', source: 'CommandCenter' },
+        },
+        {
+          timestamp: new Date(now.getTime() - 15 * 60000).toISOString(),
+          event_type: 'SIMULATION_COMPLETED',
+          entity_type: 'simulation',
+          entity_id: 'sim-sim-1',
+          incident_id: incidentId,
+          summary: 'Simulation completed — Scenario risk 84.0 (Delta: +10.0)',
+          details: { baseline_risk: 74.0, scenario_risk: 84.0, route_recommendation: 'Route B' },
+        },
+        {
+          timestamp: new Date(now.getTime() - 30 * 60000).toISOString(),
+          event_type: 'ALERT_CREATED',
+          entity_type: 'alert',
+          entity_id: 'alt-sim-1',
+          incident_id: incidentId,
+          summary: 'Alert created — Flash Flood Warning (CRITICAL)',
+          details: { title: 'Flash Flood Warning', severity: 'CRITICAL', status: 'OPEN' },
+        },
+        {
+          timestamp: new Date(now.getTime() - 45 * 60000).toISOString(),
+          event_type: 'ROUTE_UPDATED',
+          entity_type: 'evacuation_route',
+          entity_id: 'rt-sim-1',
+          incident_id: incidentId,
+          summary: 'Evacuation route calculated — Route Alpha (12.4 km, safety score 88)',
+          details: { route_name: 'Route Alpha', safety_score: 88, is_recommended: true },
+        },
+        {
+          timestamp: new Date(now.getTime() - 60 * 60000).toISOString(),
+          event_type: 'RISK_EVALUATED',
+          entity_type: 'risk_prediction',
+          entity_id: 'pred-sim-1',
+          incident_id: incidentId,
+          summary: 'Risk evaluated — Score 74.0 (HIGH) [NOW]',
+          details: { current_risk: 74.0, predicted_risk: 74.0, risk_category: 'HIGH', horizon: 0 },
+        },
+        {
+          timestamp: new Date(now.getTime() - 75 * 60000).toISOString(),
+          event_type: 'TELEMETRY_OBSERVED',
+          entity_type: 'telemetry_observation',
+          entity_id: 'obs-sim-1',
+          incident_id: incidentId,
+          summary: 'Telemetry observed — Rainfall 42.0 mm/h, Water level 3.85 m',
+          details: { rainfall_intensity: 42.0, water_level: 3.85, road_congestion: 0.65 },
+        },
+      ],
+      next_cursor: null,
+      has_more: false,
+    };
+  }
+  const res = await client.get(`/incidents/${incidentId}/timeline${buildPaginationQuery(params)}`);
+  return extractData<PaginatedResponse<TimelineEventItem>>(res);
+}
+
+export async function fetchRiskExplanationHistory(predictionId: string): Promise<SHAPHistoryResponse> {
+  if (USE_SIMULATED) {
+    return {
+      id: 'shap-sim-1',
+      risk_prediction_id: predictionId,
+      horizon: 0,
+      prediction: 74.0,
+      base_value: 30.0,
+      total_shap_delta: 44.0,
+      features: {
+        rainfall_intensity: 18.5,
+        water_level: 14.2,
+        road_congestion: 6.1,
+        population_exposure: 3.8,
+        infrastructure_vulnerability: 1.4,
+      },
+      decision_trace: [
+        { feature: 'rainfall_intensity', val: 42.0, shap: 18.5, desc: 'Heavy monsoon rainfall spike' },
+        { feature: 'water_level', val: 3.85, shap: 14.2, desc: 'River gauge above threshold' },
+        { feature: 'road_congestion', val: 0.65, shap: 6.1, desc: 'Moderate evacuation traffic delay' },
+        { feature: 'population_exposure', val: 12500, shap: 3.8, desc: 'Dense urban zone exposure' },
+        { feature: 'infrastructure_vulnerability', val: 0.72, shap: 1.4, desc: 'Low-lying drainage risk' },
+      ],
+      created_at: new Date().toISOString(),
+    };
+  }
+  const res = await client.get(`/risk/${predictionId}/explanation`);
+  return extractData<SHAPHistoryResponse>(res);
+}
