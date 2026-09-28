@@ -203,7 +203,7 @@ def test_provenance_labels_for_contextual_features(tmp_path):
         assert prov["road_congestion"] == "live:traffic_adapter"
         assert prov["population_exposure"] == "dataset:worldpop_100m_grid"
         assert prov["infrastructure_vulnerability"] == "dataset:osm_infrastructure"
-        assert prov["rainfall_intensity"] == "simulated"
+        assert prov["rainfall_intensity"] == "fallback:simulated"
 
 
 def test_strict_live_mode_and_fallback_disabled():

@@ -45,3 +45,33 @@ class IncidentRepository(BaseRepository[Incident]):
         stmt = select(Incident).order_by(Incident.started_at.desc()).limit(limit)
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
+
+    async def list_incidents_paginated(
+        self,
+        params: Optional[PaginationParams] = None,
+        status: Optional[str] = None,
+    ) -> PageResult:
+        """List incidents using keyset pagination and optional status filter."""
+        from app.db.pagination import apply_keyset_pagination, build_page_result, PaginationParams, PageResult
+
+        p = params or PaginationParams()
+        stmt = select(Incident)
+        if status:
+            stmt = stmt.where(Incident.status == status)
+
+        stmt = apply_keyset_pagination(
+            stmt=stmt,
+            timestamp_col=Incident.started_at,
+            id_col=Incident.id,
+            params=p,
+            id_is_uuid=False,
+        )
+        result = await self.session.execute(stmt)
+        items = list(result.scalars().all())
+
+        return build_page_result(
+            items=items,
+            limit=p.limit,
+            get_timestamp=lambda item: item.started_at,
+            get_id=lambda item: item.id,
+        )

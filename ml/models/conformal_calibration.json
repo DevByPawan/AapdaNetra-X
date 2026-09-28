@@ -1,0 +1,17 @@
+{
+  "uncertainty_method": "conformal_regression",
+  "uncertainty_version": "1.0.0",
+  "nominal_coverage": 0.9,
+  "calibration_dataset": "validation_split",
+  "calibration_rows": 150,
+  "calibration_quantile": 6.5575,
+  "empirical_val_mae": 3.2441,
+  "empirical_test_coverage": 0.9,
+  "avg_test_interval_width": 12.9935,
+  "target_bounds": [
+    0.0,
+    100.0
+  ],
+  "model_data_status": "synthetic",
+  "synthetic_disclaimer": "Prediction interval calibrated on synthetic validation data. Empirical coverage reflects synthetic data distribution."
+}

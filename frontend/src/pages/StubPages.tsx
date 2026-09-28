@@ -58,7 +58,25 @@ export function Simulation() {
     comingSoon={['Multi-hazard overlap simulation', 'Cascading infrastructure failure', 'Ensemble Monte Carlo runs', 'Scenario save & compare']} />;
 }
 
+import { UnifiedTimeline } from '../components/panels/UnifiedTimeline';
+import { getDynamicIncidentId } from '../data/simulatedData';
+
 export function Analytics() {
-  return <StubPage icon="▤" title="Analytics" description="Historical analytics, performance metrics, after-action review, and model accuracy reports."
-    comingSoon={['Historical incident browser', 'Response time analytics', 'Model accuracy tracking', 'After-action review generator']} />;
+  const incidentId = getDynamicIncidentId();
+  return (
+    <main className="px-[22px] py-[20px] pb-6 min-w-0 overflow-auto">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h1 className="text-[20px] font-bold text-ax-text">Incident Analytics & Historical Timeline</h1>
+          <p className="text-[12px] text-ax-muted mt-1">
+            Persisted historical state, keyset pagination, and unified domain event timeline for incident{' '}
+            <code className="text-ax-cyan font-mono">{incidentId}</code>
+          </p>
+        </div>
+      </div>
+      <div style={{ minHeight: 650 }}>
+        <UnifiedTimeline incidentId={incidentId} />
+      </div>
+    </main>
+  );
 }

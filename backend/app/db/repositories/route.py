@@ -60,3 +60,31 @@ class EvacuationRouteRepository(BaseRepository[EvacuationRoute]):
         )
         result = await self.session.execute(stmt)
         return result.scalars().first()
+
+    async def get_history_paginated(
+        self,
+        incident_id: str,
+        params: Optional[PaginationParams] = None,
+    ) -> PageResult:
+        """Fetch historical evacuation routes using keyset pagination."""
+        from app.db.pagination import apply_keyset_pagination, build_page_result, PaginationParams, PageResult
+
+        p = params or PaginationParams()
+        stmt = select(EvacuationRoute).where(EvacuationRoute.incident_id == incident_id)
+
+        stmt = apply_keyset_pagination(
+            stmt=stmt,
+            timestamp_col=EvacuationRoute.created_at,
+            id_col=EvacuationRoute.id,
+            params=p,
+            id_is_uuid=True,
+        )
+        result = await self.session.execute(stmt)
+        items = list(result.scalars().all())
+
+        return build_page_result(
+            items=items,
+            limit=p.limit,
+            get_timestamp=lambda item: item.created_at,
+            get_id=lambda item: item.id,
+        )

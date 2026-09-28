@@ -1,0 +1,30 @@
+{
+  "dataset_name": "WorldPop 100m Gridded Population Grid (Delhi Sector B)",
+  "dataset_year": "2023",
+  "spatial_resolution": "100m",
+  "geographic_coverage": "Yamuna River Bank - Sector B (Delhi)",
+  "bbox": [77.1900, 28.6100, 77.2600, 28.6700],
+  "vulnerable_population": 12430.0,
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [77.2167, 28.6448]},
+      "properties": {"population": 3500.0, "density_per_sqkm": 8500}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [77.2320, 28.6530]},
+      "properties": {"population": 4200.0, "density_per_sqkm": 9200}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [77.2450, 28.6310]},
+      "properties": {"population": 2800.0, "density_per_sqkm": 6100}
+    },
+    {
+      "type": "Feature",
+      "geometry": {"type": "Point", "coordinates": [77.2050, 28.6380]},
+      "properties": {"population": 1930.0, "density_per_sqkm": 4200}
+    }
+  ]
+}

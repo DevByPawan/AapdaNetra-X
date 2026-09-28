@@ -254,7 +254,7 @@ def test_hybrid_mode_telemetry():
         assert feats["road_congestion"] == 0.72  # Simulated
         assert feats["population_exposure"] == 12430.0  # Simulated
         assert data_adapter.provenance["rainfall_intensity"] == "live:weather"
-        assert data_adapter.provenance["road_congestion"] == "simulated"
+        assert data_adapter.provenance["road_congestion"] == "fallback:simulated"
 
 
 def test_strict_live_mode_without_fallback():

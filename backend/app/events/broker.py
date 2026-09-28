@@ -22,16 +22,31 @@ class EventBroker:
 
     def __init__(self) -> None:
         self._subscribers: Set[asyncio.Queue[EventEnvelope]] = set()
+        self._total_published: int = 0
+        self._total_dropped: int = 0
+        self._total_subscribed: int = 0
+        self._total_unsubscribed: int = 0
 
     @property
     def subscriber_count(self) -> int:
         """Number of currently active SSE subscriber connections."""
         return len(self._subscribers)
 
+    def get_stats(self) -> dict:
+        """Return operational metrics snapshot for monitoring."""
+        return {
+            "active_subscribers": len(self._subscribers),
+            "total_published": self._total_published,
+            "total_dropped": self._total_dropped,
+            "total_subscribed": self._total_subscribed,
+            "total_unsubscribed": self._total_unsubscribed,
+        }
+
     def subscribe(self) -> asyncio.Queue[EventEnvelope]:
         """Register a new client subscriber queue with bounded maxsize."""
         queue: asyncio.Queue[EventEnvelope] = asyncio.Queue(maxsize=QUEUE_MAX_SIZE)
         self._subscribers.add(queue)
+        self._total_subscribed += 1
         logger.debug(
             "New SSE client subscribed. Total active subscribers: %d",
             len(self._subscribers),
@@ -40,16 +55,20 @@ class EventBroker:
 
     def unsubscribe(self, queue: asyncio.Queue[EventEnvelope]) -> None:
         """Unregister a client subscriber queue on disconnect."""
-        self._subscribers.discard(queue)
-        logger.debug(
-            "SSE client unsubscribed. Total active subscribers: %d",
-            len(self._subscribers),
-        )
+        if queue in self._subscribers:
+            self._subscribers.discard(queue)
+            self._total_unsubscribed += 1
+            logger.debug(
+                "SSE client unsubscribed. Total active subscribers: %d",
+                len(self._subscribers),
+            )
 
     def publish(self, event: EventEnvelope) -> None:
         """Publish an event envelope to all active subscribers with isolation and queue overflow protection."""
         if not self._subscribers:
             return
+
+        self._total_published += 1
 
         # Snapshot subscribers to prevent mutation issues during iteration
         for queue in list(self._subscribers):
@@ -58,6 +77,7 @@ class EventBroker:
                     # Overflow Policy: drop the oldest event to prevent memory bloat and unblock pipeline
                     try:
                         dropped = queue.get_nowait()
+                        self._total_dropped += 1
                         logger.warning(
                             "Subscriber queue full (maxsize=%d). Dropped oldest event %s (%s)",
                             QUEUE_MAX_SIZE,

@@ -52,3 +52,33 @@ class TelemetryRepository(BaseRepository[TelemetryObservation]):
         )
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
+
+    async def get_history_paginated(
+        self,
+        incident_id: str,
+        params: Optional[PaginationParams] = None,
+    ) -> PageResult:
+        """Fetch time-ordered telemetry observations using keyset pagination."""
+        from app.db.pagination import apply_keyset_pagination, build_page_result, PaginationParams, PageResult
+
+        p = params or PaginationParams()
+        stmt = select(TelemetryObservation).where(
+            TelemetryObservation.incident_id == incident_id
+        )
+
+        stmt = apply_keyset_pagination(
+            stmt=stmt,
+            timestamp_col=TelemetryObservation.observed_at,
+            id_col=TelemetryObservation.id,
+            params=p,
+            id_is_uuid=True,
+        )
+        result = await self.session.execute(stmt)
+        items = list(result.scalars().all())
+
+        return build_page_result(
+            items=items,
+            limit=p.limit,
+            get_timestamp=lambda item: item.observed_at,
+            get_id=lambda item: item.id,
+        )
