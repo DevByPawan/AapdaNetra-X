@@ -250,6 +250,50 @@ class ScenarioCompareResponse(BaseModel):
     label: str = "SIMULATED SCENARIO COMPARISON OUTPUT"
 
 
+# ── Phase 6.17 Emergency Decision Support Schemas ────────────────────────
+class DecisionSupportResponse(BaseModel):
+    decision_id: str
+    incident_id: str
+    status: Literal["RECOMMENDED", "APPROVED", "REJECTED", "SUPERSEDED"]
+    label: str = "AI-assisted decision-support recommendation"
+    recommended_action: str
+    priority: Literal["LOW", "MODERATE", "HIGH", "CRITICAL"]
+    risk_score: float
+    risk_category: RiskLevel
+    uncertainty_interval: Dict[str, Any]
+    confidence: float
+    prediction_reliability: float
+    evidence: List[str]
+    contributing_factors: List[Dict[str, Any]]
+    spatial_context: Dict[str, Any]
+    route_recommendation: Dict[str, Any]
+    active_alerts_summary: List[Dict[str, Any]]
+    data_freshness: Dict[str, Any]
+    rationale: str
+    limitations: List[str]
+    generated_at: str
+    model_version: str = "v1.0.0"
+    source: str = "AapdaNetra-X Decision Engine"
+
+
+class DecisionActionRequest(BaseModel):
+    decision_id: str = Field(..., min_length=1, max_length=64, description="Target decision recommendation ID")
+    responder_id: str = Field(default="OPERATOR-01", min_length=1, max_length=64, description="Authorized emergency responder ID")
+    reason: str = Field(default="Operator decision evaluation", min_length=1, max_length=512, description="Rationale for approval or rejection")
+
+
+class DecisionActionResponse(BaseModel):
+    decision_id: str
+    status: Literal["RECOMMENDED", "APPROVED", "REJECTED", "SUPERSEDED"]
+    approved: bool
+    workflow_id: str
+    timestamp: str
+    audit_logged: bool
+    sse_published: bool
+    message: str
+
+
+
 
 # ── Response approval ─────────────────────────────────────────────────────
 class ApproveRequest(BaseModel):

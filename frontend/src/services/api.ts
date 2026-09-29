@@ -2,6 +2,7 @@ import axios from 'axios';
 import type {
   Incident, RiskState, Forecast, RoutesData,
   AlertsData, SimulationInput, SimulationResult, ApiResponse,
+  DecisionSupportData, DecisionActionRequest, DecisionActionResponse,
 } from '../types';
 import {
   simulatedIncident, simulatedRisk, simulatedForecast,
@@ -157,12 +158,97 @@ export async function runSimulation(input: SimulationInput): Promise<SimulationR
   return extractData<SimulationResult>(res);
 }
 
-// ── Approve response ──────────────────────────────────────────────────────
+// ── Approve response (Preserved Phase 6 legacy endpoint) ──────────────────
 export async function approveResponse(incidentId: string): Promise<{ approved: boolean; workflowId: string }> {
   if (USE_SIMULATED) return { approved: true, workflowId: 'WF-' + Date.now() };
   const res = await client.post('/response/approve', { incidentId, responderId: 'OPERATOR-01' });
   return extractData<{ approved: boolean; workflowId: string }>(res);
 }
+
+// ── Phase 6.17 Decision Support APIs ──────────────────────────────────────
+export async function fetchDecisionRecommendation(incidentId?: string): Promise<DecisionSupportData> {
+  if (USE_SIMULATED) {
+    return {
+      decision_id: 'dec-sim-' + Date.now(),
+      incident_id: incidentId || 'INC-2026-DEFAULT',
+      status: 'RECOMMENDED',
+      recommended_action: 'Initiate priority evacuation via Route A and dispatch mobile pump units.',
+      priority: 'HIGH',
+      risk_score: 74.0,
+      risk_interval: {
+        lower_bound: 67.4,
+        upper_bound: 80.6,
+        nominal_coverage: 0.90,
+        uncertainty_width: 13.2,
+      },
+      risk_category: 'HIGH',
+      evidence: [
+        { feature: 'rainfall_intensity', contribution_text: '+12.4 points' },
+        { feature: 'water_level', contribution_text: '+10.1 points' },
+      ],
+      contributing_factors: { rainfall_intensity: 12.4, water_level: 10.1 },
+      spatial_context: {
+        population_exposure: 450,
+        infrastructure_vulnerability: 0.65,
+        route_spatial_hazard: 0.08,
+        provenance: 'dem:copernicus_glo_30,exposure:ghsl_2025,hazard:provisional_river_proximity',
+      },
+      route_recommendation: 'Route A (Northern Bypass)',
+      route_safety: 0.88,
+      route_eta: 12,
+      active_alerts: [{ id: 'alt-1', title: 'High Water Level Warning', severity: 'HIGH' }],
+      data_freshness: {
+        telemetry_age_seconds: 45,
+        provenance: 'sensor:water_level_probe_01',
+        is_stale: false,
+      },
+      provenance: 'engine:decision_service_v1,model:gbr_v1,uncertainty:split_conformal,dem:copernicus_glo_30',
+      rationale: 'Elevated risk score (74.00) with 90% conformal interval [67.40, 80.60] warrants high-priority action.',
+      limitations: 'AI-assisted decision-support recommendation only. Mandatory human approval required.',
+      generated_at: new Date().toISOString(),
+      source: 'AapdaNetra-X Decision Support Engine',
+      version: '6.17.0',
+    };
+  }
+  const url = incidentId ? `/decision/recommend?incident_id=${encodeURIComponent(incidentId)}` : '/decision/recommend';
+  const res = await client.get(url);
+  return extractData<DecisionSupportData>(res);
+}
+
+export async function approveDecision(req: DecisionActionRequest): Promise<DecisionActionResponse> {
+  if (USE_SIMULATED) {
+    return {
+      decision_id: req.decision_id,
+      incident_id: 'INC-2026-DEFAULT',
+      status: 'APPROVED',
+      responder_id: req.responder_id || 'OPERATOR-01',
+      reason: req.reason || 'Approved by operator',
+      timestamp: new Date().toISOString(),
+      audit_id: 'audit-sim-' + Date.now(),
+      sse_published: true,
+    };
+  }
+  const res = await client.post('/decision/approve', req);
+  return extractData<DecisionActionResponse>(res);
+}
+
+export async function rejectDecision(req: DecisionActionRequest): Promise<DecisionActionResponse> {
+  if (USE_SIMULATED) {
+    return {
+      decision_id: req.decision_id,
+      incident_id: 'INC-2026-DEFAULT',
+      status: 'REJECTED',
+      responder_id: req.responder_id || 'OPERATOR-01',
+      reason: req.reason || 'Rejected by operator',
+      timestamp: new Date().toISOString(),
+      audit_id: 'audit-sim-' + Date.now(),
+      sse_published: false,
+    };
+  }
+  const res = await client.post('/decision/reject', req);
+  return extractData<DecisionActionResponse>(res);
+}
+
 
 // ── Phase 6.6 Historical & Timeline API Functions ─────────────────────────
 import type {
