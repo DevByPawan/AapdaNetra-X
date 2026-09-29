@@ -105,18 +105,109 @@ export interface AlertsData {
 
 // ── Simulation ───────────────────────────────────────────────────────────
 export interface SimulationInput {
+  evacuationPace?: number;
+  rainfallMultiplier?: number;
+  drainageEfficiency?: number;
+  routeBlockage?: boolean;
   rainfallIncrease: number;
   populationMovement: number;
   waterLevelIncrease: number;
 }
 
+export interface ShapAttributionShift {
+  feature: string;
+  baseline_value: number;
+  simulated_value: number;
+  baseline_shap: number;
+  scenario_shap: number;
+  shap_attribution_change: number;
+  direction: 'positive' | 'negative';
+  explanation: string;
+}
+
+export interface ScenarioOnlyAlert {
+  id: string;
+  title: string;
+  description: string;
+  severity: AlertSeverity;
+  alert_type: string;
+  impact_type: string;
+  simulation_only: boolean;
+  status: string;
+}
+
 export interface SimulationResult {
   newRisk: number;
+  baselineRisk?: number;
+  baseline_risk?: number;
+  scenarioRisk?: number;
+  scenario_risk?: number;
+  riskDelta?: number;
+  risk_delta?: number;
   riskCategory: RiskLevel;
+  predictionReliability?: number;
+  prediction_reliability?: number;
   routeRecommendation: string;
   flaggedAssets: string[];
   narrative: string;
   severity: 'MINOR' | 'MODERATE' | 'SEVERE';
+
+  // Phase 6.16 Advanced Scenario Analysis Extensions
+  scenario_id?: string;
+  fingerprint?: string;
+  label?: string;
+  baseline_features?: Record<string, number>;
+  scenario_features?: Record<string, number>;
+  feature_deltas?: Record<string, number>;
+  uncertainty?: {
+    baseline?: { lower_bound: number; upper_bound: number; nominal_coverage: number };
+    scenario?: { lower_bound: number; upper_bound: number; nominal_coverage: number };
+    nominal_coverage?: number;
+    status?: string;
+    disclaimer?: string;
+  };
+  shap?: {
+    canonical_features?: string[];
+    baseline_total_shap_delta?: number;
+    scenario_total_shap_delta?: number;
+    attribution_changes?: ShapAttributionShift[];
+    disclaimer?: string;
+  };
+  spatial?: {
+    baseline_route_spatial_exposure?: number;
+    scenario_route_spatial_exposure?: number;
+    spatial_exposure_delta?: number;
+    baseline_modeled_safety?: number;
+    scenario_modeled_safety?: number;
+    safety_score_delta?: number;
+    provenance?: string;
+    terminology_notice?: string;
+  };
+  routes?: {
+    baseline_route?: { id: string; name: string; eta: number; safety_score: number };
+    scenario_route?: { id: string; name: string; eta: number; safety_score: number };
+    eta_delta?: number;
+    safety_score_delta?: number;
+    route_changed?: boolean;
+    reason?: string;
+  };
+  alerts?: {
+    baseline_active_alerts_count?: number;
+    scenario_triggered_alerts?: ScenarioOnlyAlert[];
+    newly_triggered_count?: number;
+    severity_changes_count?: number;
+    resolved_alerts_count?: number;
+    notice?: string;
+  };
+  reproducibility?: {
+    timestamp?: string;
+    incident_id?: string;
+    fingerprint?: string;
+    model_version?: string;
+    model_data_status?: string;
+    deterministic?: boolean;
+  };
+  disclaimer?: string;
 }
 
 // ── API envelope ─────────────────────────────────────────────────────────

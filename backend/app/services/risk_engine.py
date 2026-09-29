@@ -14,7 +14,7 @@ if str(ROOT_DIR) not in sys.path:
 
 from ml.inference import predict_risk
 from ml.features.schema import categorize_risk
-from app.models.schemas import SimulationResponse, RiskResponse, HeatmapZone, RiskLevel
+from app.models.schemas import SimulationRequest, SimulationResponse, RiskResponse, HeatmapZone, RiskLevel
 
 # Baseline Real-Time Hydro-Meteorological Features (Yamuna Sector B)
 # Canonical values — used as fallback when data_mode='simulated' or provider returns None.
@@ -160,87 +160,22 @@ def run_simulation_engine(
     waterLevelIncrease: float = 0.0,
 ) -> SimulationResponse:
     """
-    Executes counterfactual simulation using the ML GBR model.
-    Modifies physical scenario inputs and returns baseline risk, scenario risk, risk delta,
-    prediction reliability, and category.
+    Executes counterfactual simulation using the Phase 6.16 Scenario Analysis Engine.
+    Modifies physical scenario inputs and returns structured baseline vs scenario response.
     """
-    base_features = _get_base_features()
-    baseline_ml = predict_risk(base_features)
-    baseline_risk = baseline_ml["risk_score"]
+    from app.services.scenario_service import execute_scenario_analysis
 
-    # Calculate scenario-modified feature vector
-    scenario_features = _get_base_features()
-
-    # 1. Modify rainfall intensity & trend
-    rf_mult = max(0.1, rainfallMultiplier)
-    scenario_features["rainfall_intensity"] = min(
-        300.0, base_features["rainfall_intensity"] * rf_mult + rainfallIncrease * 1.2
+    req = SimulationRequest(
+        evacuationPace=evacuationPace,
+        rainfallMultiplier=rainfallMultiplier,
+        drainageEfficiency=drainageEfficiency,
+        routeBlockage=routeBlockage,
+        rainfallIncrease=rainfallIncrease,
+        populationMovement=populationMovement,
+        waterLevelIncrease=waterLevelIncrease,
     )
-    scenario_features["rainfall_trend"] = min(
-        50.0, base_features["rainfall_trend"] * (1.0 + (rf_mult - 1.0) * 0.5)
-    )
+    return execute_scenario_analysis(req)
 
-    # 2. Modify water level & trend (mitigated by drainage efficiency)
-    drain_eff = max(0.1, drainageEfficiency)
-    water_add = waterLevelIncrease * 0.15 + (rf_mult - 1.0) * 1.8 / drain_eff
-    scenario_features["water_level"] = min(15.0, max(0.0, base_features["water_level"] + water_add))
-    
-    # Scale water level trend proportionally with rainfall & drainage factor
-    wl_trend_add = (rf_mult - 1.0) * 0.50 / drain_eff
-    scenario_features["water_level_trend"] = min(
-        5.0, max(-2.0, base_features["water_level_trend"] + wl_trend_add + (water_add * 0.15))
-    )
-
-    # 3. Modify population exposure & road congestion (impacted by evacuation pace, rainfall & route blockage)
-    pace = max(0.3, evacuationPace)
-    blockage_factor = 1.35 if routeBlockage else 1.0
-    rf_congestion_add = max(0.0, (rf_mult - 1.0) * 0.12)
-    scenario_features["road_congestion"] = min(
-        1.0, max(0.0, ((base_features["road_congestion"] + rf_congestion_add) * blockage_factor) / pace)
-    )
-    scenario_features["population_exposure"] = min(
-        100000.0, max(0.0, base_features["population_exposure"] + populationMovement)
-    )
-
-    # Execute ML inference on scenario features
-    scenario_ml = predict_risk(scenario_features)
-    scenario_risk = scenario_ml["risk_score"]
-    risk_category = scenario_ml["risk_category"]
-    reliability = scenario_ml["prediction_reliability"]
-    risk_delta = round(scenario_risk - baseline_risk, 1)
-
-    # Execute NetworkX route optimization for scenario
-    from ml.routing import optimize_routes
-    opt_result = optimize_routes(
-        predicted_risk_score=scenario_risk,
-        route_blockage=routeBlockage,
-        horizon_index=0
-    )
-
-    recommended_name = f"Route {opt_result.recommended.name}"
-    is_severe = scenario_risk >= 80.0 or routeBlockage or (rf_mult >= 1.4)
-
-    narrative = (
-        f"ML simulation predicts risk change of {risk_delta:+.1f} points (Scenario Risk: {scenario_risk:.1f}, {risk_category}). "
-        f"{opt_result.route_reason}"
-    )
-
-    return SimulationResponse(
-        newRisk=scenario_risk,
-        baselineRisk=baseline_risk,
-        baseline_risk=baseline_risk,
-        scenarioRisk=scenario_risk,
-        scenario_risk=scenario_risk,
-        riskDelta=risk_delta,
-        risk_delta=risk_delta,
-        riskCategory=risk_category,
-        predictionReliability=reliability,
-        prediction_reliability=reliability,
-        routeRecommendation=recommended_name,
-        flaggedAssets=["Bridge-04", "Pump-Station-7"] if is_severe else ["Bridge-04"],
-        narrative=narrative,
-        severity="SEVERE" if is_severe else ("MODERATE" if scenario_risk >= 50.0 else "MINOR"),
-    )
 
 
 async def compute_risk_state_async(horizon: int = 0) -> RiskResponse:
@@ -390,8 +325,10 @@ async def run_simulation_engine_async(
     populationMovement: int = 0,
     waterLevelIncrease: float = 0.0,
 ) -> SimulationResponse:
-    """Async wrapper executing run_simulation_engine and triggering simulation persistence."""
-    res = run_simulation_engine(
+    """Async wrapper executing scenario simulation and triggering persistence/SSE."""
+    from app.services.scenario_service import execute_scenario_analysis_async
+
+    req = SimulationRequest(
         evacuationPace=evacuationPace,
         rainfallMultiplier=rainfallMultiplier,
         drainageEfficiency=drainageEfficiency,
@@ -400,34 +337,4 @@ async def run_simulation_engine_async(
         populationMovement=populationMovement,
         waterLevelIncrease=waterLevelIncrease,
     )
-
-    from app.services.persistence_service import get_persistence_service
-
-    ps = get_persistence_service()
-    if ps.is_enabled and ps.db_available:
-        import uuid
-        from app.db.models import Simulation
-
-        sim = Simulation(
-            id=uuid.uuid4(),
-            incident_id="INC-2026-DEFAULT",
-            evacuation_pace=evacuationPace,
-            rainfall_multiplier=rainfallMultiplier,
-            drainage_efficiency=drainageEfficiency,
-            route_blockage=routeBlockage,
-            rainfall_increase=rainfallIncrease,
-            population_movement=populationMovement,
-            water_level_increase=waterLevelIncrease,
-            baseline_risk=res.baselineRisk,
-            scenario_risk=res.scenarioRisk,
-            risk_delta=res.riskDelta,
-            risk_category=res.riskCategory,
-            prediction_reliability=res.predictionReliability,
-            route_recommendation=res.routeRecommendation,
-            flagged_assets=res.flaggedAssets,
-            narrative=res.narrative,
-            severity=res.severity,
-        )
-        await ps.save_simulation(sim)
-
-    return res
+    return await execute_scenario_analysis_async(req)

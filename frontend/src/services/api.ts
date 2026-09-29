@@ -68,20 +68,89 @@ export async function resolveAlert(alertId: string): Promise<any> {
 }
 
 // ── Simulation ───────────────────────────────────────────────────────────
+// ── Simulation ───────────────────────────────────────────────────────────
 export async function runSimulation(input: SimulationInput): Promise<SimulationResult> {
   if (USE_SIMULATED) {
-    const { rainfallIncrease, populationMovement, waterLevelIncrease } = input;
-    const newRisk = Math.min(99, 74 + Math.round(rainfallIncrease * 0.45) + Math.round(populationMovement / 1000) * 3 + Math.round(waterLevelIncrease * 0.2));
-    const severe = rainfallIncrease >= 30 || populationMovement >= 3500 || waterLevelIncrease >= 40;
+    const { rainfallIncrease, populationMovement, waterLevelIncrease, routeBlockage = false } = input;
+    const baseRisk = 74.0;
+    const newRisk = Math.min(99, Math.max(10, baseRisk + Math.round(rainfallIncrease * 0.45) + Math.round(populationMovement / 1000) * 3 + Math.round(waterLevelIncrease * 0.2)));
+    const delta = Math.round((newRisk - baseRisk) * 10) / 10;
+    const severe = newRisk >= 80 || routeBlockage || rainfallIncrease >= 30;
     return {
       newRisk,
+      baselineRisk: baseRisk,
+      baseline_risk: baseRisk,
+      scenarioRisk: newRisk,
+      scenario_risk: newRisk,
+      riskDelta: delta,
+      risk_delta: delta,
       riskCategory: newRisk >= 90 ? 'CRITICAL' : newRisk >= 75 ? 'HIGH' : 'MODERATE',
-      routeRecommendation: 'Route B',
+      predictionReliability: 0.95,
+      prediction_reliability: 0.95,
+      routeRecommendation: routeBlockage ? 'Route B' : (newRisk >= 80 ? 'Route B' : 'Route A'),
       flaggedAssets: severe ? ['Bridge-04', 'Pump-Station-7'] : ['Bridge-04'],
-      narrative: severe
-        ? 'The simulation predicts severe escalation. Route A becomes unreliable; the engine switches the recommendation to Route B and flags Bridge-04 for immediate review.'
-        : 'The system detects moderate additional exposure. Route B remains the preferred evacuation path, with continuous monitoring recommended.',
+      narrative: `SIMULATED SCENARIO OUTPUT: ML model predicts risk change of ${delta >= 0 ? '+' : ''}${delta} points (Baseline: ${baseRisk} → Scenario: ${newRisk}).`,
       severity: severe ? 'SEVERE' : newRisk > 80 ? 'MODERATE' : 'MINOR',
+      scenario_id: 'sim-' + Date.now(),
+      fingerprint: 'fp-sim-' + Date.now(),
+      label: 'SIMULATED SCENARIO OUTPUT',
+      uncertainty: {
+        baseline: { lower_bound: baseRisk - 6.6, upper_bound: baseRisk + 6.6, nominal_coverage: 0.90 },
+        scenario: { lower_bound: newRisk - 6.6, upper_bound: newRisk + 6.6, nominal_coverage: 0.90 },
+        nominal_coverage: 0.90,
+        status: 'calibrated',
+      },
+      shap: {
+        canonical_features: ['rainfall_intensity', 'water_level', 'road_congestion'],
+        attribution_changes: [
+          { feature: 'rainfall_intensity', baseline_value: 45, simulated_value: 45 + rainfallIncrease, baseline_shap: 12.4, scenario_shap: 18.2, shap_attribution_change: 5.8, direction: 'positive', explanation: 'Model attribution changed by +5.800 points for rainfall_intensity' },
+          { feature: 'water_level', baseline_value: 4.2, simulated_value: 4.2 + (waterLevelIncrease * 0.01), baseline_shap: 10.1, scenario_shap: 14.3, shap_attribution_change: 4.2, direction: 'positive', explanation: 'Model attribution changed by +4.200 points for water_level' }
+        ],
+      },
+      spatial: {
+        baseline_route_spatial_exposure: 0.08,
+        scenario_route_spatial_exposure: 0.24,
+        spatial_exposure_delta: 0.16,
+        baseline_modeled_safety: 0.88,
+        scenario_modeled_safety: 0.72,
+        safety_score_delta: -0.16,
+        provenance: 'hazard:provisional_river_proximity',
+        terminology_notice: 'PROVISIONAL / DEMONSTRATION — Decision support layer only.',
+      },
+      routes: {
+        baseline_route: { id: 'rt-a', name: 'Route A', eta: 12, safety_score: 0.88 },
+        scenario_route: { id: routeBlockage ? 'rt-b' : 'rt-a', name: routeBlockage ? 'Route B' : 'Route A', eta: routeBlockage ? 16 : 14, safety_score: 0.72 },
+        eta_delta: routeBlockage ? 4 : 2,
+        safety_score_delta: -0.16,
+        route_changed: routeBlockage,
+        reason: routeBlockage ? 'Route A blocked; recommended Route B' : 'Route A optimal under scenario',
+      },
+      alerts: {
+        baseline_active_alerts_count: 1,
+        scenario_triggered_alerts: severe ? [{
+          id: 'sim-alt-1',
+          title: '[SIMULATION] High Water Level Warning',
+          description: 'Water level threshold exceeded in simulated scenario',
+          severity: 'HIGH',
+          alert_type: 'TELEMETRY_WATER',
+          impact_type: 'NEWLY_TRIGGERED',
+          simulation_only: true,
+          status: 'SCENARIO_ONLY'
+        }] : [],
+        newly_triggered_count: severe ? 1 : 0,
+        severity_changes_count: 0,
+        resolved_alerts_count: 0,
+        notice: 'SIMULATION ONLY — Scenario alerts are hypothetical.',
+      },
+      reproducibility: {
+        timestamp: new Date().toISOString(),
+        incident_id: 'INC-2026-DEFAULT',
+        fingerprint: 'fp-sim-' + Date.now(),
+        model_version: 'v1.0.0',
+        model_data_status: 'synthetic',
+        deterministic: true,
+      },
+      disclaimer: 'SIMULATED SCENARIO OUTPUT — Decision support simulation only, not an official flood forecast or real-world disaster prediction.',
     };
   }
   const res = await client.post('/simulation', input);
