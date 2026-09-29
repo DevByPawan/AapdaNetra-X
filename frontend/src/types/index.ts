@@ -422,3 +422,63 @@ export interface SpatialSummaryResponse {
   exposure: ExposureSummaryResponse;
   limitation_notice: string;
 }
+
+// ── Phase 6.17 Decision Support Types ────────────────────────────────────
+export interface DecisionSupportData {
+  decision_id: string;
+  incident_id: string;
+  status: 'RECOMMENDED' | 'APPROVED' | 'REJECTED' | 'SUPERSEDED';
+  recommended_action: string;
+  priority: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  risk_score: number;
+  risk_interval: {
+    lower_bound: number;
+    upper_bound: number;
+    nominal_coverage: number;
+    uncertainty_width: number;
+  };
+  risk_category: string;
+  evidence: Array<{ feature: string; contribution_text: string }>;
+  contributing_factors: Record<string, number>;
+  spatial_context: {
+    population_exposure?: number | null;
+    infrastructure_vulnerability?: number | null;
+    route_spatial_hazard?: number | null;
+    provenance: string;
+  };
+  route_recommendation: string;
+  route_safety: number;
+  route_eta: number;
+  active_alerts: Array<{ id: string; title: string; severity: string }>;
+  data_freshness: {
+    telemetry_age_seconds: number;
+    provenance: string;
+    is_stale: boolean;
+  };
+  provenance: string;
+  rationale: string;
+  limitations: string;
+  generated_at: string;
+  source: string;
+  version: string;
+  responder_id?: string;
+  decision_reason?: string;
+  decision_timestamp?: string;
+}
+
+export interface DecisionActionRequest {
+  decision_id: string;
+  responder_id?: string;
+  reason?: string;
+}
+
+export interface DecisionActionResponse {
+  decision_id: string;
+  incident_id: string;
+  status: 'APPROVED' | 'REJECTED';
+  responder_id: string;
+  reason: string;
+  timestamp: string;
+  audit_id: string;
+  sse_published: boolean;
+}
