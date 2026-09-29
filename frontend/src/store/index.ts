@@ -20,11 +20,19 @@ export const useMapStore = create<MapStore>((set) => ({
 import type { SimulationResult } from '../types';
 
 interface SimulationStore {
+  evacuationPace: number;
+  rainfallMultiplier: number;
+  drainageEfficiency: number;
+  routeBlockage: boolean;
   rainfallIncrease: number;
   populationMovement: number;
   waterLevelIncrease: number;
   result: SimulationResult | null;
   running: boolean;
+  setEvacuationPace: (v: number) => void;
+  setRainfallMultiplier: (v: number) => void;
+  setDrainageEfficiency: (v: number) => void;
+  setRouteBlockage: (v: boolean) => void;
   setRainfall: (v: number) => void;
   setPopulation: (v: number) => void;
   setWaterLevel: (v: number) => void;
@@ -34,11 +42,19 @@ interface SimulationStore {
 }
 
 export const useSimulationStore = create<SimulationStore>((set) => ({
+  evacuationPace: 1.0,
+  rainfallMultiplier: 1.0,
+  drainageEfficiency: 1.0,
+  routeBlockage: false,
   rainfallIncrease: 20,
   populationMovement: 2000,
   waterLevelIncrease: 10,
   result: null,
   running: false,
+  setEvacuationPace: (v) => set({ evacuationPace: v }),
+  setRainfallMultiplier: (v) => set({ rainfallMultiplier: v }),
+  setDrainageEfficiency: (v) => set({ drainageEfficiency: v }),
+  setRouteBlockage: (v) => set({ routeBlockage: v }),
   setRainfall:    (v) => set({ rainfallIncrease: v }),
   setPopulation:  (v) => set({ populationMovement: v }),
   setWaterLevel:  (v) => set({ waterLevelIncrease: v }),

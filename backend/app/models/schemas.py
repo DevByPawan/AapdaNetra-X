@@ -219,6 +219,37 @@ class SimulationResponse(BaseModel):
     narrative: str
     severity: Literal["MINOR", "MODERATE", "SEVERE"]
 
+    # Phase 6.16 Advanced What-If Scenario Analysis Extensions
+    scenario_id: Optional[str] = None
+    fingerprint: Optional[str] = None
+    label: str = "SIMULATED SCENARIO OUTPUT"
+    baseline_features: Optional[Dict[str, float]] = None
+    scenario_features: Optional[Dict[str, float]] = None
+    feature_deltas: Optional[Dict[str, float]] = None
+    uncertainty: Optional[Dict[str, Any]] = None
+    shap: Optional[Dict[str, Any]] = None
+    spatial: Optional[Dict[str, Any]] = None
+    routes: Optional[Dict[str, Any]] = None
+    alerts: Optional[Dict[str, Any]] = None
+    reproducibility: Optional[Dict[str, Any]] = None
+    disclaimer: str = "SIMULATED SCENARIO OUTPUT — Decision support simulation only, not an official flood forecast or real-world disaster prediction."
+
+
+class ScenarioCompareRequest(BaseModel):
+    scenario_a: SimulationRequest
+    scenario_b: SimulationRequest
+    incident_id: str = Field(default="INC-2026-DEFAULT", description="Target incident ID")
+
+
+class ScenarioCompareResponse(BaseModel):
+    scenario_a: SimulationResponse
+    scenario_b: SimulationResponse
+    risk_delta_between_scenarios: float
+    route_change_between_scenarios: bool
+    summary_comparison: str
+    label: str = "SIMULATED SCENARIO COMPARISON OUTPUT"
+
+
 
 # ── Response approval ─────────────────────────────────────────────────────
 class ApproveRequest(BaseModel):
