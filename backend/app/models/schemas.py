@@ -366,3 +366,37 @@ class EvacuationRecomputeRequest(BaseModel):
     horizon: int = Field(default=0, ge=0, le=4)
     route_blockage_override: Optional[bool] = None
     publish_sse: bool = Field(default=True)
+
+
+# ── Phase 6.19 Real-Time Telemetry Pipeline Schemas ─────────────────────
+class TelemetryIngestionRequest(BaseModel):
+    incident_id: str = Field(default="INC-2026-DEFAULT", min_length=1, max_length=64, description="Target incident ID")
+    sensor_id: str = Field(default="SENSOR-01", min_length=1, max_length=64, description="Sensor station ID")
+    observed_at: Optional[str] = Field(default=None, description="ISO 8601 UTC observation timestamp")
+    features: Dict[str, Any] = Field(..., description="Partial or full dictionary of sensor features")
+    source: Optional[str] = Field(default="live_sensor_feed", description="Source provider tag")
+    client_event_id: Optional[str] = Field(default=None, description="Optional unique client event identifier")
+
+
+class TelemetryIngestionResponse(BaseModel):
+    status: Literal["accepted", "duplicate_ignored", "out_of_order", "rejected_validation"]
+    observation_id: str
+    incident_id: str
+    sensor_id: str
+    observation_hash: str
+    observed_at: str
+    ingested_at: str
+    features: Dict[str, float]
+    trends: Dict[str, float]
+    provenance: Dict[str, str]
+    persistence_status: str
+    cascade_triggered: bool
+    message: str
+
+
+class TelemetryHealthResponse(BaseModel):
+    active_overlay: Dict[str, float]
+    data_mode: str
+    freshness: Dict[str, Any]
+    provenance: Dict[str, str]
+    metrics: Dict[str, Any]

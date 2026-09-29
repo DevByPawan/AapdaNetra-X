@@ -542,3 +542,29 @@ export interface EvacuationIntelligenceData {
   generated_at: string;
   label: string;
 }
+
+// ── Phase 6.19 Real-Time Telemetry Types ──────────────────────────────────
+export interface TelemetryIngestionRequestData {
+  incident_id?: string;
+  sensor_id?: string;
+  observed_at?: string;
+  features: Record<string, number>;
+  source?: string;
+  client_event_id?: string;
+}
+
+export interface TelemetryIngestionResponseData {
+  status: 'accepted' | 'duplicate_ignored' | 'out_of_order' | 'rejected_validation';
+  observation_id: string;
+  incident_id: string;
+  sensor_id: string;
+  observation_hash: string;
+  observed_at: string;
+  ingested_at: string;
+  features: Record<string, number>;
+  trends: Record<string, number>;
+  provenance: Record<string, string>;
+  persistence_status: string;
+  cascade_triggered: boolean;
+  message: string;
+}

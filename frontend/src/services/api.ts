@@ -3,7 +3,7 @@ import type {
   Incident, RiskState, Forecast, RoutesData,
   AlertsData, SimulationInput, SimulationResult, ApiResponse,
   DecisionSupportData, DecisionActionRequest, DecisionActionResponse,
-  EvacuationIntelligenceData,
+  EvacuationIntelligenceData, TelemetryIngestionRequestData, TelemetryIngestionResponseData,
 } from '../types';
 import {
   simulatedIncident, simulatedRisk, simulatedForecast,
@@ -353,6 +353,43 @@ export async function recomputeEvacuationRoutes(incidentId?: string, horizon: nu
   });
   return extractData<EvacuationIntelligenceData>(res);
 }
+
+// ── Phase 6.19 Real-Time Telemetry APIs ───────────────────────────────────
+export async function sendTelemetryObservation(req: TelemetryIngestionRequestData): Promise<TelemetryIngestionResponseData> {
+  if (USE_SIMULATED) {
+    const hash = 'sim-hash-' + Date.now();
+    return {
+      status: 'accepted',
+      observation_id: 'obs-' + hash.slice(-8),
+      incident_id: req.incident_id || 'INC-2026-DEFAULT',
+      sensor_id: req.sensor_id || 'SENSOR-01',
+      observation_hash: hash,
+      observed_at: req.observed_at || new Date().toISOString(),
+      ingested_at: new Date().toISOString(),
+      features: req.features,
+      trends: {},
+      provenance: { rainfall_intensity: 'live_ingest' },
+      persistence_status: 'simulated',
+      cascade_triggered: true,
+      message: 'Telemetry observation ingested successfully (simulated).',
+    };
+  }
+  const res = await client.post('/telemetry/observe', req);
+  return extractData<TelemetryIngestionResponseData>(res);
+}
+
+export async function fetchLiveTelemetry(): Promise<any> {
+  if (USE_SIMULATED) {
+    return {
+      active_features: { rainfall_intensity: 95.0, water_level: 6.8 },
+      provenance: { rainfall_intensity: 'simulated' },
+      fallback_used: false,
+    };
+  }
+  const res = await client.get('/telemetry/live');
+  return extractData<any>(res);
+}
+
 
 
 

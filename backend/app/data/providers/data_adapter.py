@@ -9,6 +9,7 @@ Design & Mode Semantics:
   - 'live': Attempts configured real providers for all 7 features. If ENABLE_FALLBACK=false and data is missing, marks fallback_used=True and missing status rather than pretending features are live.
 """
 import logging
+import threading
 from typing import Dict, Optional, Any
 
 from app.data.providers.base import DataProviderStatus
@@ -66,14 +67,58 @@ class DataAdapter:
         self._provenance: Dict[str, str] = {}
         self.fallback_used: bool = False
 
+        # Thread-safe in-memory live observation overlay
+        self._lock = threading.Lock()
+        self._live_overlay: Dict[str, float] = {}
+        self._live_provenance: Dict[str, str] = {}
+        self._last_live_timestamp: Optional[str] = None
+
+    def update_live_features(
+        self,
+        features: Dict[str, float],
+        provenance_map: Optional[Dict[str, str]] = None,
+        observed_at: Optional[str] = None,
+    ) -> None:
+        """
+        Thread-safely updates active live observation overlay.
+        """
+        with self._lock:
+            for k, v in features.items():
+                if k in BASE_SENSOR_FEATURES and v is not None:
+                    self._live_overlay[k] = float(v)
+                    tag = provenance_map.get(k) if provenance_map else f"live_ingest:{k}"
+                    self._live_provenance[k] = tag or "live_ingest"
+            if observed_at:
+                self._last_live_timestamp = observed_at
+
+    def clear_live_features(self) -> None:
+        """Thread-safely clears active live overlay."""
+        with self._lock:
+            self._live_overlay.clear()
+            self._live_provenance.clear()
+            self._last_live_timestamp = None
+
+    def get_live_overlay(self) -> Dict[str, Any]:
+        """Returns thread-safe snapshot of current live overlay."""
+        with self._lock:
+            return {
+                "features": dict(self._live_overlay),
+                "provenance": dict(self._live_provenance),
+                "observed_at": self._last_live_timestamp,
+            }
+
     def get_base_features(self) -> Dict[str, float]:
         """
         Returns the 7-key base feature dict.
 
-        In 'simulated' mode: returns BASE_SENSOR_FEATURES unchanged.
-        In 'hybrid' / 'live' mode: queries providers and merges with defaults according to policy.
+        In 'simulated' mode: returns BASE_SENSOR_FEATURES overlaid by any active live telemetry ingestion.
+        In 'hybrid' / 'live' mode: queries providers and merges with live overlay & defaults according to policy.
         """
-        if self.data_mode == "simulated":
+        with self._lock:
+            live_snapshot = dict(self._live_overlay)
+            live_prov_snapshot = dict(self._live_provenance)
+
+        if self.data_mode == "simulated" and not live_snapshot:
             self._provenance = {k: "simulated" for k in BASE_SENSOR_FEATURES}
             self.fallback_used = False
             return dict(BASE_SENSOR_FEATURES)
@@ -165,8 +210,11 @@ class DataAdapter:
             except Exception as e:
                 logger.warning(f"[DataAdapter] Infrastructure adapter error: {e}")
                 self._record_fallback("infrastructure_vulnerability")
-        else:
-            self._record_fallback("infrastructure_vulnerability")
+        # 6. Active live observation overlay (if any ingested)
+        for k, v in live_snapshot.items():
+            merged[k] = float(v)
+            if k in live_prov_snapshot:
+                self._provenance[k] = live_prov_snapshot[k]
 
         logger.info(f"[DataAdapter] Feature provenance ({self.data_mode}): {self._provenance}")
         return merged
