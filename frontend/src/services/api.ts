@@ -3,6 +3,7 @@ import type {
   Incident, RiskState, Forecast, RoutesData,
   AlertsData, SimulationInput, SimulationResult, ApiResponse,
   DecisionSupportData, DecisionActionRequest, DecisionActionResponse,
+  EvacuationIntelligenceData,
 } from '../types';
 import {
   simulatedIncident, simulatedRisk, simulatedForecast,
@@ -248,6 +249,111 @@ export async function rejectDecision(req: DecisionActionRequest): Promise<Decisi
   const res = await client.post('/decision/reject', req);
   return extractData<DecisionActionResponse>(res);
 }
+
+// ── Phase 6.18 Dynamic Evacuation Intelligence APIs ──────────────────────
+export async function fetchEvacuationRecommendation(incidentId?: string, horizon: number = 0): Promise<EvacuationIntelligenceData> {
+  if (USE_SIMULATED) {
+    return {
+      incident_id: incidentId || 'INC-2026-DEFAULT',
+      horizon,
+      recommended_route: {
+        id: 'route-rec',
+        name: 'Sector B → Northern Bypass → SHELTER-04',
+        eta: 12,
+        distance_km: 4.2,
+        safety_score: 0.88,
+        failure_probability: 0.12,
+        risk_score: 18.0,
+        status: 'SAFE',
+        is_blocked: false,
+        score_details: {
+          safety_score: 0.88,
+          spatial_hazard_penalty: 3.0,
+          congestion_penalty: 2.4,
+          eta_penalty: 3.0,
+          blockage_penalty: 0.0,
+          composite_score: 79.6,
+        },
+        spatial_hazard_exposure: 0.08,
+        waypoints: [
+          { id: 'wp-B', lat: 28.6448, lng: 77.2167, label: 'Sector B (Origin)' },
+          { id: 'wp-[#1]', lat: 28.6530, lng: 77.2280, label: 'Northern Bypass' },
+          { id: 'wp-H', lat: 28.6310, lng: 77.2450, label: 'SHELTER-04 (Safe Zone)' },
+        ],
+        nodes: ['Sector_B', 'Checkpoint_D', 'Shelter_H'],
+        selection_reason: 'Route offers optimal safety (88%) and minimal spatial hazard exposure.',
+      },
+      alternative_routes: [
+        {
+          id: 'route-alt-1',
+          name: 'Sector B → Southern Link → SHELTER-04',
+          eta: 16,
+          distance_km: 5.1,
+          safety_score: 0.64,
+          failure_probability: 0.36,
+          risk_score: 42.0,
+          status: 'CAUTION',
+          is_blocked: false,
+          score_details: {
+            safety_score: 0.64,
+            spatial_hazard_penalty: 6.0,
+            congestion_penalty: 7.2,
+            eta_penalty: 9.0,
+            blockage_penalty: 0.0,
+            composite_score: 41.8,
+          },
+          spatial_hazard_exposure: 0.20,
+          waypoints: [
+            { id: 'wp-B', lat: 28.6448, lng: 77.2167, label: 'Sector B (Origin)' },
+            { id: 'wp-[#2]', lat: 28.6320, lng: 77.2150, label: 'Southern Link' },
+            { id: 'wp-H', lat: 28.6310, lng: 77.2450, label: 'SHELTER-04 (Safe Zone)' },
+          ],
+          nodes: ['Sector_B', 'Checkpoint_F', 'Shelter_H'],
+          selection_reason: 'Route is viable but requires caution due to moderate spatial hazard exposure.',
+        },
+      ],
+      route_change: {
+        route_changed: false,
+        previous_route_id: null,
+        new_route_id: 'route-rec',
+        change_reason: null,
+      },
+      overall_status_warning: null,
+      all_routes_unsafe: false,
+      active_risk_score: 74.0,
+      active_risk_category: 'HIGH',
+      data_freshness: {
+        provider: 'default',
+        fallback_used: false,
+        observed_at: new Date().toISOString(),
+      },
+      decision_trace: [
+        { factor: 'Recommended Route', value: 'Sector B → Northern Bypass → SHELTER-04', impact: 'Status: SAFE' },
+        { factor: 'Composite Route Score', value: '79.6 / 100', impact: 'Highest ranked candidate' },
+      ],
+      provenance: 'routing:networkx_dijkstra,dem:copernicus_glo_30,hazard:provisional_river_proximity,telemetry:default',
+      generated_at: new Date().toISOString(),
+      label: 'AI-assisted dynamic evacuation decision-support intelligence',
+    };
+  }
+  const url = `/evacuation/recommendation?incident_id=${encodeURIComponent(incidentId || 'INC-2026-DEFAULT')}&horizon=${horizon}`;
+  const res = await client.get(url);
+  return extractData<EvacuationIntelligenceData>(res);
+}
+
+export async function recomputeEvacuationRoutes(incidentId?: string, horizon: number = 0, routeBlockageOverride?: boolean): Promise<EvacuationIntelligenceData> {
+  if (USE_SIMULATED) {
+    return fetchEvacuationRecommendation(incidentId, horizon);
+  }
+  const res = await client.post('/evacuation/recompute', {
+    incident_id: incidentId || 'INC-2026-DEFAULT',
+    horizon,
+    route_blockage_override: routeBlockageOverride,
+    publish_sse: true,
+  });
+  return extractData<EvacuationIntelligenceData>(res);
+}
+
 
 
 // ── Phase 6.6 Historical & Timeline API Functions ─────────────────────────

@@ -305,3 +305,64 @@ class ApproveResponse(BaseModel):
     approved: bool
     workflowId: str
     timestamp: str
+
+
+# ── Phase 6.18 Dynamic Evacuation Intelligence Schemas ───────────────────
+RouteStatusEnum = Literal["SAFE", "CAUTION", "HIGH_RISK", "BLOCKED"]
+
+
+class RouteScoreDetails(BaseModel):
+    safety_score: float
+    spatial_hazard_penalty: float
+    congestion_penalty: float
+    eta_penalty: float
+    blockage_penalty: float
+    composite_score: float
+
+
+class RouteChangeNotice(BaseModel):
+    route_changed: bool
+    previous_route_id: Optional[str] = None
+    new_route_id: Optional[str] = None
+    change_reason: Optional[str] = None
+
+
+class EvacuationRouteDetail(BaseModel):
+    id: str
+    name: str
+    eta: int
+    distance_km: float
+    safety_score: float
+    failure_probability: float
+    risk_score: float
+    status: RouteStatusEnum
+    is_blocked: bool
+    score_details: RouteScoreDetails
+    spatial_hazard_exposure: float
+    waypoints: List[RouteWaypoint]
+    nodes: List[str]
+    selection_reason: str
+
+
+class EvacuationIntelligenceResponse(BaseModel):
+    incident_id: str
+    horizon: int = 0
+    recommended_route: EvacuationRouteDetail
+    alternative_routes: List[EvacuationRouteDetail]
+    route_change: RouteChangeNotice
+    overall_status_warning: Optional[str] = None
+    all_routes_unsafe: bool = False
+    active_risk_score: float
+    active_risk_category: RiskLevel
+    data_freshness: Dict[str, Any]
+    decision_trace: List[Dict[str, Any]]
+    provenance: str
+    generated_at: str
+    label: str = "AI-assisted dynamic evacuation decision-support intelligence"
+
+
+class EvacuationRecomputeRequest(BaseModel):
+    incident_id: str = Field(default="INC-2026-DEFAULT")
+    horizon: int = Field(default=0, ge=0, le=4)
+    route_blockage_override: Optional[bool] = None
+    publish_sse: bool = Field(default=True)
