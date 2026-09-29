@@ -268,3 +268,63 @@ export interface SHAPHistoryResponse {
   decision_trace: DecisionTraceItem[];
   created_at: string;
 }
+
+// ── Phase 6.14 Spatial Intelligence Types ───────────────────────────────
+export interface ElevationResponse {
+  elevation_m: number | null;
+  slope_deg: number | null;
+  source: string;
+  provenance: string;
+  is_available: boolean;
+  reason?: string;
+  observed_at?: string | null;
+}
+
+export interface HazardLayerFeature {
+  type: string;
+  geometry: {
+    type: string;
+    coordinates: any;
+  };
+  properties: Record<string, any>;
+}
+
+export interface HazardLayersResponse {
+  is_available: boolean;
+  provenance: string;
+  layer_count: number;
+  hazard_features: HazardLayerFeature[];
+  observed_at: string | null;
+}
+
+export interface ExposureSummaryResponse {
+  population_exposure: number | null;
+  population_provenance: string;
+  infrastructure_vulnerability: number | null;
+  infrastructure_provenance: string;
+  hazard_layers_available: boolean;
+  hazard_provenance: string;
+  spatial_crs: string;
+  projected_crs: string;
+}
+
+export interface RouteSpatialSafetyResponse {
+  route_id: string;
+  spatial_hazard_exposure: number;
+  hazard_penalty: number;
+  modeled_safety_score: number;
+  water_proximity_km: number;
+  elevation_min_m: number | null;
+  provenance: string;
+  terminology_notice: string;
+}
+
+export interface SpatialSummaryResponse {
+  spatial_crs: string;
+  projected_crs: string;
+  dem_enabled: boolean;
+  dem_source: string;
+  hazard_layers: HazardLayersResponse;
+  exposure: ExposureSummaryResponse;
+  limitation_notice: string;
+}

@@ -138,8 +138,6 @@ class RouteOptimizer:
                 if G.has_edge(u_node, v_node):
                     path_edges.append(G[u_node][v_node])
 
-            metrics = calculate_route_metrics(path_edges)
-
             # Build waypoints (support both 8-node NODE_METADATA and dynamic OSM nodes)
             waypoints: List[Waypoint] = []
             for n in path_nodes:
@@ -154,6 +152,17 @@ class RouteOptimizer:
                         label=str(nd.get("label", f"Junction {n}"))
                     )
                     waypoints.append(wp)
+
+            # Query spatial hazard exposure from SpatialService
+            spatial_exp = None
+            try:
+                from app.services.spatial_service import get_spatial_service
+                wp_dicts = [{"lat": wp.lat, "lng": wp.lng} for wp in waypoints]
+                spatial_exp = get_spatial_service().calculate_route_spatial_hazard(wp_dicts)
+            except Exception as exp_err:
+                logger.debug(f"[RouteOptimizer] Spatial hazard evaluation fallback: {exp_err}")
+
+            metrics = calculate_route_metrics(path_edges, spatial_exposure=spatial_exp)
 
             # Format path name
             if all(n in NODE_METADATA for n in path_nodes):

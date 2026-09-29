@@ -39,6 +39,20 @@ class Settings(BaseSettings):
     infrastructure_dataset_path: str = ""
     infrastructure_cache_ttl: int = 86400
 
+    # ── Phase 6.14: Advanced GIS / Spatial Risk Intelligence ──────────
+    dem_enabled: bool = False
+    dem_source: str = "unavailable"
+    dem_data_path: str = ""
+    dem_cache_ttl: int = 86400
+
+    hazard_layer_enabled: bool = False
+    hazard_dataset_path: str = ""
+    hazard_cache_ttl: int = 86400
+
+    spatial_hazard_weight: float = 0.35
+    spatial_crs: str = "EPSG:4326"
+    projected_crs: str = "EPSG:3857"
+
     # ── Phase 6.2: OSM Routing Configuration ───────────────────────────
     # routing_mode: "simulated" (Phase 5D default) | "osm" | "auto"
     routing_mode: str = "simulated"

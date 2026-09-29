@@ -124,6 +124,8 @@ async def log_requests(request: Request, call_next):
     return response_obj
 
 # ── Routers ───────────────────────────────────────────────────────────────
+from app.routers import spatial
+
 prefix = "/api"
 app.include_router(incident.router,       prefix=prefix, tags=["Incident"])
 app.include_router(risk.router,           prefix=prefix, tags=["Risk"])
@@ -136,6 +138,7 @@ app.include_router(explainability.router, prefix=prefix, tags=["Explainability"]
 app.include_router(events.router,         prefix=prefix, tags=["Events"])
 app.include_router(history.router,        prefix=prefix, tags=["History"])
 app.include_router(analytics.router,      prefix=prefix, tags=["Analytics"])
+app.include_router(spatial.router,        prefix=prefix, tags=["Spatial Intelligence"])
 
 
 # ── Health ────────────────────────────────────────────────────────────────

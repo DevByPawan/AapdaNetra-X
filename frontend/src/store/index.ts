@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type LayerKey = 'risk' | 'route' | 'assets';
+type LayerKey = 'risk' | 'route' | 'assets' | 'hazards' | 'elevation';
 
 interface MapStore {
   activeLayer: LayerKey;

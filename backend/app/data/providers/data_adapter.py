@@ -17,6 +17,8 @@ from app.data.providers.water_level_adapter import WaterLevelAdapter
 from app.data.providers.traffic_adapter import TrafficAdapter
 from app.data.providers.population_adapter import PopulationAdapter
 from app.data.providers.infrastructure_adapter import InfrastructureAdapter
+from app.data.providers.elevation_adapter import ElevationAdapter
+from app.data.providers.hazard_adapter import HazardLayerAdapter
 
 logger = logging.getLogger("aapdanetra.data_adapter")
 
@@ -47,6 +49,8 @@ class DataAdapter:
         traffic_adapter: Optional[TrafficAdapter] = None,
         population_adapter: Optional[PopulationAdapter] = None,
         infrastructure_adapter: Optional[InfrastructureAdapter] = None,
+        elevation_adapter: Optional[ElevationAdapter] = None,
+        hazard_adapter: Optional[HazardLayerAdapter] = None,
     ):
         self.data_mode = data_mode
         self.enable_fallback = enable_fallback
@@ -55,6 +59,8 @@ class DataAdapter:
         self.traffic_adapter = traffic_adapter
         self.population_adapter = population_adapter
         self.infrastructure_adapter = infrastructure_adapter
+        self.elevation_adapter = elevation_adapter
+        self.hazard_adapter = hazard_adapter
 
         # Per-feature provenance tracking
         self._provenance: Dict[str, str] = {}
@@ -326,6 +332,19 @@ def _create_adapter_from_settings() -> DataAdapter:
             cache_ttl=getattr(settings, "infrastructure_cache_ttl", 86400),
         )
 
+    elevation = ElevationAdapter(
+        enabled=getattr(settings, "dem_enabled", False),
+        source_name=getattr(settings, "dem_source", "unavailable"),
+        dem_data_path=getattr(settings, "dem_data_path", ""),
+        cache_ttl=getattr(settings, "dem_cache_ttl", 86400),
+    )
+
+    hazard = HazardLayerAdapter(
+        enabled=getattr(settings, "hazard_layer_enabled", False),
+        dataset_path=getattr(settings, "hazard_dataset_path", ""),
+        cache_ttl=getattr(settings, "hazard_cache_ttl", 86400),
+    )
+
     return DataAdapter(
         data_mode=data_mode,
         enable_fallback=enable_fallback,
@@ -334,6 +353,8 @@ def _create_adapter_from_settings() -> DataAdapter:
         traffic_adapter=traffic,
         population_adapter=population,
         infrastructure_adapter=infrastructure,
+        elevation_adapter=elevation,
+        hazard_adapter=hazard,
     )
 
 
