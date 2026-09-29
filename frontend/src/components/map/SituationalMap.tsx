@@ -164,38 +164,61 @@ export function SituationalMap({ riskState, routes }: SituationalMapProps) {
     const layer = routeLayerRef.current;
     layer.clearLayers();
 
-    const rec = routes.recommended;
-    const latlngs = rec.waypoints.map(w => [w.lat, w.lng] as L.LatLngTuple);
+    // 1. Render alternative routes first (translucent background polylines)
+    if (routes.alternatives && routes.alternatives.length > 0) {
+      routes.alternatives.forEach((alt, idx) => {
+        if (!alt.waypoints || alt.waypoints.length === 0) return;
+        const altLatLngs = alt.waypoints.map(w => [w.lat, w.lng] as L.LatLngTuple);
+        const isBlocked = alt.isBlocked;
+        const altColor = isBlocked ? '#ff5d6c' : '#ffc277';
 
-    L.polyline(latlngs, {
-      color: '#35c7d9',
-      weight: 5,
-      opacity: 0.95,
-      dashArray: '10 7',
-    }).addTo(layer);
-
-    // Waypoint dots
-    rec.waypoints.forEach((wp, i) => {
-      const isLast = i === rec.waypoints.length - 1;
-      const color = isLast ? '#4bd39b' : '#d9eef5';
-      L.circleMarker([wp.lat, wp.lng], {
-        radius: isLast ? 9 : 6,
-        color: '#08121f',
-        fillColor: color,
-        fillOpacity: 1,
-        weight: 2,
-      }).addTo(layer).bindTooltip(wp.label, { direction: 'top', className: 'map-tooltip' });
-    });
-
-    // Route label
-    if (latlngs.length >= 2) {
-      const midIdx = Math.floor(latlngs.length / 2);
-      const midPt = latlngs[midIdx];
-      const labelIcon = L.divIcon({
-        html: `<span style="font-size:9px;color:#8fe6ef;font-weight:800;letter-spacing:0.8px;text-shadow:0 1px 4px #000;white-space:nowrap">RECOMMENDED EVACUATION ROUTE</span>`,
-        className: '', iconAnchor: [80, 18],
+        L.polyline(altLatLngs, {
+          color: altColor,
+          weight: 3,
+          opacity: 0.55,
+          dashArray: '5 5',
+        }).addTo(layer).bindTooltip(
+          `ALT ROUTE: ${alt.name} | ETA: ${alt.eta}m | Safety: ${Math.round(alt.safetyScore * 100)}% ${isBlocked ? '(BLOCKED)' : ''}`,
+          { direction: 'top', className: 'map-tooltip' }
+        );
       });
-      L.marker(midPt as L.LatLngTuple, { icon: labelIcon, interactive: false }).addTo(layer);
+    }
+
+    // 2. Render recommended route (bold primary polyline)
+    const rec = routes.recommended;
+    if (rec && rec.waypoints && rec.waypoints.length > 0) {
+      const latlngs = rec.waypoints.map(w => [w.lat, w.lng] as L.LatLngTuple);
+
+      L.polyline(latlngs, {
+        color: '#35c7d9',
+        weight: 5,
+        opacity: 0.95,
+        dashArray: '10 7',
+      }).addTo(layer);
+
+      // Waypoint dots
+      rec.waypoints.forEach((wp, i) => {
+        const isLast = i === rec.waypoints.length - 1;
+        const color = isLast ? '#4bd39b' : '#d9eef5';
+        L.circleMarker([wp.lat, wp.lng], {
+          radius: isLast ? 9 : 6,
+          color: '#08121f',
+          fillColor: color,
+          fillOpacity: 1,
+          weight: 2,
+        }).addTo(layer).bindTooltip(wp.label, { direction: 'top', className: 'map-tooltip' });
+      });
+
+      // Route label
+      if (latlngs.length >= 2) {
+        const midIdx = Math.floor(latlngs.length / 2);
+        const midPt = latlngs[midIdx];
+        const labelIcon = L.divIcon({
+          html: `<span style="font-size:9px;color:#8fe6ef;font-weight:800;letter-spacing:0.8px;text-shadow:0 1px 4px #000;white-space:nowrap">RECOMMENDED EVACUATION ROUTE</span>`,
+          className: '', iconAnchor: [80, 18],
+        });
+        L.marker(midPt as L.LatLngTuple, { icon: labelIcon, interactive: false }).addTo(layer);
+      }
     }
   }, [routes]);
 

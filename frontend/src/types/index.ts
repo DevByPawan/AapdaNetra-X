@@ -66,6 +66,9 @@ export interface EvacRoute {
   failureProbability: number;
   safetyScore: number;
   waypoints: RouteWaypoint[];
+  isBlocked?: boolean;
+  is_blocked?: boolean;
+  status?: string;
 }
 
 export interface DecisionFactor {
@@ -481,4 +484,61 @@ export interface DecisionActionResponse {
   timestamp: string;
   audit_id: string;
   sse_published: boolean;
+}
+
+// ── Phase 6.18 Dynamic Evacuation Intelligence Types ─────────────────────
+export type RouteStatusType = 'SAFE' | 'CAUTION' | 'HIGH_RISK' | 'BLOCKED';
+
+export interface RouteScoreDetailsData {
+  safety_score: number;
+  spatial_hazard_penalty: number;
+  congestion_penalty: number;
+  eta_penalty: number;
+  blockage_penalty: number;
+  composite_score: number;
+}
+
+export interface RouteChangeNoticeData {
+  route_changed: boolean;
+  previous_route_id?: string | null;
+  new_route_id?: string | null;
+  change_reason?: string | null;
+}
+
+export interface EvacuationRouteDetailData {
+  id: string;
+  name: string;
+  eta: number;
+  distance_km: number;
+  safety_score: number;
+  failure_probability: number;
+  risk_score: number;
+  status: RouteStatusType;
+  is_blocked: boolean;
+  score_details: RouteScoreDetailsData;
+  spatial_hazard_exposure: number;
+  waypoints: Array<{ id: string; lat: number; lng: number; label: string }>;
+  nodes: string[];
+  selection_reason: string;
+}
+
+export interface EvacuationIntelligenceData {
+  incident_id: string;
+  horizon: number;
+  recommended_route: EvacuationRouteDetailData;
+  alternative_routes: EvacuationRouteDetailData[];
+  route_change: RouteChangeNoticeData;
+  overall_status_warning?: string | null;
+  all_routes_unsafe: boolean;
+  active_risk_score: number;
+  active_risk_category: RiskLevel;
+  data_freshness: {
+    provider: string;
+    fallback_used: boolean;
+    observed_at?: string | null;
+  };
+  decision_trace: Array<{ factor: string; value: string; impact: string }>;
+  provenance: string;
+  generated_at: string;
+  label: string;
 }
