@@ -53,6 +53,18 @@ class Settings(BaseSettings):
     spatial_crs: str = "EPSG:4326"
     projected_crs: str = "EPSG:3857"
 
+    # ── Phase 6.15: Intelligent Alert System Configuration ─────────────
+    # Note: Thresholds are configurable demonstration thresholds for decision support.
+    alert_risk_high_threshold: float = 70.0
+    alert_risk_critical_threshold: float = 85.0
+    alert_risk_escalation_rate: float = 10.0  # % increase rate
+    alert_rainfall_intensity_threshold: float = 75.0  # mm/h
+    alert_water_level_threshold: float = 5.0  # meters
+    alert_water_level_trend_threshold: float = 0.3  # m/h
+    alert_spatial_hazard_exposure_threshold: float = 0.25
+    alert_route_safety_drop_threshold: float = 0.20
+    alert_stale_telemetry_seconds: int = 600
+
     # ── Phase 6.2: OSM Routing Configuration ───────────────────────────
     # routing_mode: "simulated" (Phase 5D default) | "osm" | "auto"
     routing_mode: str = "simulated"

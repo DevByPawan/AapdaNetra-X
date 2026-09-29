@@ -167,6 +167,70 @@ class PersistenceService:
                 raise RuntimeError(f"Database write failed in required mode: {exc}") from exc
             return False
 
+    async def persist_alert(self, alert: Alert) -> bool:
+        """Persists an Alert record within an independent transaction and logs audit event."""
+        if not self.is_enabled:
+            return False
+
+        if not self.db_available:
+            if self.mode == "required":
+                raise RuntimeError("Persistence mode: required — database is unavailable for alert persistence")
+            logger.warning("Persistence mode: optional — database unavailable, skipping alert persistence")
+            return False
+
+        try:
+            db_mgr = get_db_manager()
+            async with db_mgr.get_session() as session:
+                async with session.begin():
+                    repo = AlertRepository(session)
+                    await repo.save_alert(alert)
+                    audit_repo = AuditEventRepository(session)
+                    await audit_repo.log_event(
+                        event_type="ALERT_CREATED",
+                        severity=alert.severity,
+                        source="persistence_service",
+                        description=f"Alert created: {alert.title}",
+                        actor="system",
+                        event_data={"alert_id": str(alert.id)},
+                        incident_id=alert.incident_id,
+                    )
+            logger.info("Alert record saved successfully (id=%s)", alert.id)
+            return True
+        except Exception as exc:
+            logger.error("Failed to save alert: %s", exc)
+            if self.mode == "required":
+                raise RuntimeError(f"Database write failed in required mode: {exc}") from exc
+            return False
+
+    async def update_alert_status_in_db(self, alert_id: uuid.UUID, new_status: str, actor: str = "system") -> bool:
+        """Updates status of an Alert record in DB and logs audit event."""
+        if not self.is_enabled or not self.db_available:
+            return False
+
+        try:
+            db_mgr = get_db_manager()
+            async with db_mgr.get_session() as session:
+                async with session.begin():
+                    repo = AlertRepository(session)
+                    alert = await repo.update_status(alert_id, new_status)
+                    if alert:
+                        audit_repo = AuditEventRepository(session)
+                        await audit_repo.log_event(
+                            event_type=f"ALERT_{new_status}",
+                            severity=alert.severity,
+                            source="persistence_service",
+                            description=f"Alert {alert.id} status changed to {new_status}",
+                            actor=actor,
+                            event_data={"alert_id": str(alert.id), "new_status": new_status},
+                            incident_id=alert.incident_id,
+                        )
+            return True
+        except Exception as exc:
+            logger.error("Failed to update alert status in DB: %s", exc)
+            if self.mode == "required":
+                raise RuntimeError(f"Database update failed in required mode: {exc}") from exc
+            return False
+
     async def log_audit_event(
         self,
         event_type: str,
