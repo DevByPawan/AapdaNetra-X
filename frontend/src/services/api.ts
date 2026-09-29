@@ -55,6 +55,18 @@ export async function fetchAlerts(): Promise<AlertsData> {
   return extractData<AlertsData>(res);
 }
 
+export async function acknowledgeAlert(alertId: string): Promise<any> {
+  if (USE_SIMULATED) return { success: true };
+  const res = await client.post(`/alerts/${alertId}/acknowledge`);
+  return extractData<any>(res);
+}
+
+export async function resolveAlert(alertId: string): Promise<any> {
+  if (USE_SIMULATED) return { success: true };
+  const res = await client.post(`/alerts/${alertId}/resolve`);
+  return extractData<any>(res);
+}
+
 // ── Simulation ───────────────────────────────────────────────────────────
 export async function runSimulation(input: SimulationInput): Promise<SimulationResult> {
   if (USE_SIMULATED) {

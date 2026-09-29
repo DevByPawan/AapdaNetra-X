@@ -93,6 +93,9 @@ export interface Alert {
   title: string;
   description: string;
   timestamp: string;
+  status?: string;
+  source?: string;
+  metadata?: Record<string, any>;
 }
 
 export interface AlertsData {

@@ -358,6 +358,26 @@ async def compute_risk_state_async(horizon: int = 0) -> RiskResponse:
             status="disabled",
         )
 
+    # ── Phase 6.15: Intelligent Alert Evaluation ────────────────────────
+    try:
+        from app.services.alert_engine import get_alert_engine
+        from app.services.spatial_service import get_spatial_service
+        sp_exp = get_spatial_service().calculate_route_spatial_hazard(
+            [{"lat": wp.lat, "lng": wp.lng} for wp in opt.recommended.waypoints]
+        )
+        alert_engine = get_alert_engine()
+        alert_engine.evaluate_all_rules(
+            incident_id="INC-2026-DEFAULT",
+            predicted_risk=response.predictedRisk,
+            current_risk=response.currentRisk,
+            uncertainty=horizon_ml.get("uncertainty", {}),
+            telemetry_features=now_features,
+            spatial_exposure=sp_exp,
+            route_blockage=False,
+        )
+    except Exception as err:
+        pass
+
     return response
 
 
