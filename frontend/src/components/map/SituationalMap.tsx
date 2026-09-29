@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
-import type { HeatmapZone, EvacRoute, RiskState } from '../../types';
+import type { HeatmapZone, EvacRoute, RiskState, SpatialSummaryResponse } from '../../types';
 import { useMapStore } from '../../store';
 import { RISK_COLORS } from '../../utils/riskColors';
+import { fetchSpatialSummary } from '../../services/api';
 
 const TIME_LABELS = ['CURRENT', 'PREDICTED +10M', 'PREDICTED +20M', 'PREDICTED +30M'];
 
@@ -17,8 +18,18 @@ export function SituationalMap({ riskState, routes }: SituationalMapProps) {
   const riskLayerRef = useRef<L.LayerGroup>(L.layerGroup());
   const routeLayerRef = useRef<L.LayerGroup>(L.layerGroup());
   const assetLayerRef = useRef<L.LayerGroup>(L.layerGroup());
+  const hazardLayerRef = useRef<L.LayerGroup>(L.layerGroup());
+  const elevationLayerRef = useRef<L.LayerGroup>(L.layerGroup());
 
   const { activeLayer, timeHorizon } = useMapStore();
+  const [spatialInfo, setSpatialInfo] = useState<SpatialSummaryResponse | null>(null);
+
+  // ── Fetch Spatial Summary ───────────────────────────────────────────────
+  useEffect(() => {
+    fetchSpatialSummary()
+      .then((data) => setSpatialInfo(data))
+      .catch((err) => console.warn('[SituationalMap] Spatial summary fetch failed:', err));
+  }, []);
 
   // ── Init map ────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -38,6 +49,8 @@ export function SituationalMap({ riskState, routes }: SituationalMapProps) {
     riskLayerRef.current.addTo(map);
     routeLayerRef.current.addTo(map);
     assetLayerRef.current.addTo(map);
+    hazardLayerRef.current.addTo(map);
+    elevationLayerRef.current.addTo(map);
 
     // Static assets
     const assetLayer = assetLayerRef.current;
@@ -70,6 +83,65 @@ export function SituationalMap({ riskState, routes }: SituationalMapProps) {
 
     mapRef.current = map;
   }, []);
+
+  // ── Update Spatial Hazard & Elevation Overlays dynamically based on provenance ─
+  useEffect(() => {
+    const hazardLayer = hazardLayerRef.current;
+    const elevLayer = elevationLayerRef.current;
+    hazardLayer.clearLayers();
+    elevLayer.clearLayers();
+
+    // 1. Hazard Layer Rendering Policy:
+    // If an authoritative dataset is loaded, render its features.
+    // Otherwise render provisional river corridor geometry explicitly labeled PROVISIONAL.
+    if (spatialInfo?.hazard_layers?.is_available && spatialInfo.hazard_layers.hazard_features.length > 0) {
+      spatialInfo.hazard_layers.hazard_features.forEach((feat) => {
+        if (feat.geometry?.type === 'Polygon' && feat.geometry.coordinates?.[0]) {
+          const coords = feat.geometry.coordinates[0].map(([lng, lat]: [number, number]) => [lat, lng] as L.LatLngTuple);
+          L.polygon(coords, {
+            color: '#e63946',
+            fillColor: '#e63946',
+            fillOpacity: 0.3,
+            weight: 2,
+          }).addTo(hazardLayer).bindTooltip(`[AUTHORITATIVE] ${feat.properties?.name || 'Hazard Zone'}`, { direction: 'top' });
+        }
+      });
+    } else {
+      // PROVISIONAL RIVER PROXIMITY DEMONSTRATION GEOMETRY
+      const yamunaCorridor: L.LatLngTuple[] = [
+        [28.6650, 77.2280],
+        [28.6550, 77.2320],
+        [28.6400, 77.2360],
+        [28.6250, 77.2420],
+        [28.6250, 77.2500],
+        [28.6420, 77.2440],
+        [28.6580, 77.2390],
+        [28.6660, 77.2340],
+      ];
+      L.polygon(yamunaCorridor, {
+        color: '#ff9800',
+        fillColor: '#ff9800',
+        fillOpacity: 0.2,
+        weight: 2,
+        dashArray: '6 6',
+      }).addTo(hazardLayer).bindTooltip(
+        '[PROVISIONAL DEMONSTRATION] Yamuna River Proximity Corridor — NOT an official flood forecast or authoritative inundation map',
+        { direction: 'top' }
+      );
+    }
+
+    // 2. DEM Elevation Layer Rendering Policy:
+    // Only render elevation markers if a real DEM dataset is enabled and available.
+    // Never render fabricated elevation values when DEM is unavailable.
+    if (spatialInfo?.dem_enabled) {
+      const elevIcon = (text: string) => L.divIcon({
+        html: `<div style="background:rgba(15,28,44,0.9);border:1px solid #35c7d9;border-radius:4px;padding:2px 5px;font-size:9px;color:#8fe6ef;font-weight:700;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,0.5)">▲ ${text}</div>`,
+        className: '', iconAnchor: [30, 10],
+      });
+      L.marker([28.6448, 77.2167], { icon: elevIcon('Connaught Place: DEM Measured'), interactive: false }).addTo(elevLayer);
+      L.marker([28.6530, 77.2320], { icon: elevIcon('Yamuna Bank: DEM Measured'), interactive: false }).addTo(elevLayer);
+    }
+  }, [spatialInfo]);
 
   // ── Update risk zones when horizon changes ──────────────────────────────
   useEffect(() => {
@@ -138,10 +210,19 @@ export function SituationalMap({ riskState, routes }: SituationalMapProps) {
     assetLayerRef.current.eachLayer(l => {
       if ((l as any).setOpacity) (l as any).setOpacity(activeLayer === 'assets' ? 1 : 0.45);
     });
+    hazardLayerRef.current.eachLayer(l => {
+      (l as any).setStyle?.({ fillOpacity: activeLayer === 'hazards' ? 0.35 : 0.05, opacity: activeLayer === 'hazards' ? 0.9 : 0.2 });
+    });
+    elevationLayerRef.current.eachLayer(l => {
+      if ((l as any).setOpacity) (l as any).setOpacity(activeLayer === 'elevation' ? 1 : 0.0);
+    });
   }, [activeLayer]);
 
   const timeLabel = TIME_LABELS[timeHorizon] ?? 'CURRENT';
   const nowStr = new Date().toLocaleTimeString('en-GB', { hour12: false }).slice(0, 5);
+
+  const isDemUnavailable = !spatialInfo?.dem_enabled;
+  const isHazardProvisional = !spatialInfo?.hazard_layers?.is_available;
 
   return (
     <div className="relative w-full h-full">
@@ -166,6 +247,32 @@ export function SituationalMap({ riskState, routes }: SituationalMapProps) {
         </div>
       </div>
 
+      {/* Elevation layer status notice overlay when active */}
+      {activeLayer === 'elevation' && isDemUnavailable && (
+        <div
+          className="absolute top-[70px] right-[14px] z-[400] rounded-[9px] px-3 py-[10px] text-[10px]"
+          style={{ background: 'rgba(25,18,10,0.92)', border: '1px solid #d97706', color: '#fef3c7' }}
+        >
+          <div className="font-bold uppercase text-[#f59e0b] mb-1">DEM ELEVATION: UNAVAILABLE</div>
+          <div className="text-[9px] text-[#fde68a] max-w-[220px]">
+            No real DEM dataset configured. No fabricated elevation measurements displayed. (provenance: elevation:unavailable)
+          </div>
+        </div>
+      )}
+
+      {/* Hazard layer status notice overlay when active */}
+      {activeLayer === 'hazards' && isHazardProvisional && (
+        <div
+          className="absolute top-[70px] right-[14px] z-[400] rounded-[9px] px-3 py-[10px] text-[10px]"
+          style={{ background: 'rgba(25,18,10,0.92)', border: '1px solid #d97706', color: '#fef3c7' }}
+        >
+          <div className="font-bold uppercase text-[#f59e0b] mb-1">PROVISIONAL RIVER PROXIMITY CONTEXT</div>
+          <div className="text-[9px] text-[#fde68a] max-w-[240px]">
+            Yamuna river-distance demonstration geometry. NOT an official flood forecast or authoritative flood zone. (provenance: hazard:provisional_river_proximity)
+          </div>
+        </div>
+      )}
+
       {/* Legend */}
       <div
         className="absolute bottom-[14px] left-[14px] z-[400] rounded-[9px] px-3 py-[10px] text-[9px] text-ax-muted"
@@ -186,9 +293,11 @@ export function SituationalMap({ riskState, routes }: SituationalMapProps) {
 function MapToolbar() {
   const { activeLayer, setLayer } = useMapStore();
   const layers = [
-    { key: 'risk' as const,   label: 'Risk' },
-    { key: 'route' as const,  label: 'Routes' },
-    { key: 'assets' as const, label: 'Assets' },
+    { key: 'risk' as const,      label: 'Risk' },
+    { key: 'route' as const,     label: 'Routes' },
+    { key: 'assets' as const,    label: 'Assets' },
+    { key: 'hazards' as const,   label: 'Hazards' },
+    { key: 'elevation' as const, label: 'Elevation' },
   ];
 
   return (

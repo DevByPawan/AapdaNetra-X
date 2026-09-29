@@ -44,11 +44,12 @@ def calculate_edge_cost(
 
 
 def calculate_route_metrics(
-    edge_list: List[Dict[str, Any]]
+    edge_list: List[Dict[str, Any]],
+    spatial_exposure: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
     Calculates aggregated metrics (distance, ETA, risk score, safety score, failure probability)
-    for a completed path composed of road edges.
+    for a completed path composed of road edges. Option for spatial hazard exposure adjustment.
     """
     if not edge_list:
         return {
@@ -58,6 +59,7 @@ def calculate_route_metrics(
             "safety_score": 0.5,
             "failure_probability": 0.5,
             "has_blocked_segment": False,
+            "spatial_exposure_ratio": 0.0,
         }
 
     total_dist = sum(float(e.get("distance_km", 1.0)) for e in edge_list)
@@ -73,10 +75,20 @@ def calculate_route_metrics(
     if has_blocked:
         safety_score = 0.05
         failure_prob = 0.95
+        spatial_exp_ratio = 1.0
     else:
         # Safety score normalized between 0.05 and 0.95
         norm_risk = avg_risk / 100.0
         raw_safety = 1.0 - (norm_risk * 0.65 + avg_congestion * 0.35)
+
+        # Incorporate spatial hazard penalty if spatial exposure provided
+        spatial_penalty = 0.0
+        spatial_exp_ratio = 0.0
+        if spatial_exposure and isinstance(spatial_exposure, dict):
+            spatial_penalty = float(spatial_exposure.get("hazard_penalty", 0.0))
+            spatial_exp_ratio = float(spatial_exposure.get("spatial_exposure_ratio", 0.0))
+
+        raw_safety = raw_safety - spatial_penalty
         safety_score = round(float(max(0.05, min(0.95, raw_safety))), 2)
         failure_prob = round(float(1.0 - safety_score), 2)
 
@@ -87,4 +99,5 @@ def calculate_route_metrics(
         "safety_score": safety_score,
         "failure_probability": failure_prob,
         "has_blocked_segment": has_blocked,
+        "spatial_exposure_ratio": spatial_exp_ratio,
     }

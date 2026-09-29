@@ -299,3 +299,103 @@ export async function fetchRiskExplanationHistory(predictionId: string): Promise
   const res = await client.get(`/risk/${predictionId}/explanation`);
   return extractData<SHAPHistoryResponse>(res);
 }
+
+// ── Phase 6.14 Spatial Intelligence API Functions ────────────────────────
+import type {
+  SpatialSummaryResponse, ElevationResponse, HazardLayersResponse,
+  ExposureSummaryResponse, RouteSpatialSafetyResponse,
+} from '../types';
+
+export async function fetchSpatialSummary(): Promise<SpatialSummaryResponse> {
+  if (USE_SIMULATED) {
+    return {
+      spatial_crs: 'EPSG:4326',
+      projected_crs: 'EPSG:3857',
+      dem_enabled: false,
+      dem_source: 'unavailable',
+      hazard_layers: {
+        is_available: false,
+        provenance: 'hazard:unavailable',
+        layer_count: 0,
+        hazard_features: [],
+        observed_at: null,
+      },
+      exposure: {
+        population_exposure: 12430,
+        population_provenance: 'simulated',
+        infrastructure_vulnerability: 0.78,
+        infrastructure_provenance: 'simulated',
+        hazard_layers_available: false,
+        hazard_provenance: 'hazard:unavailable',
+        spatial_crs: 'EPSG:4326',
+        projected_crs: 'EPSG:3857',
+      },
+      limitation_notice: 'Provisional spatial risk layers explicitly labeled.',
+    };
+  }
+  const res = await client.get('/spatial/summary');
+  return extractData<SpatialSummaryResponse>(res);
+}
+
+export async function fetchElevation(lat: number, lng: number): Promise<ElevationResponse> {
+  if (USE_SIMULATED) {
+    return {
+      elevation_m: null,
+      slope_deg: null,
+      source: 'unavailable',
+      provenance: 'elevation:unavailable',
+      is_available: false,
+      reason: 'No real DEM dataset configured',
+    };
+  }
+  const res = await client.get(`/spatial/elevation?lat=${lat}&lng=${lng}`);
+  return extractData<ElevationResponse>(res);
+}
+
+export async function fetchHazards(): Promise<HazardLayersResponse> {
+  if (USE_SIMULATED) {
+    return {
+      is_available: false,
+      provenance: 'hazard:unavailable',
+      layer_count: 0,
+      hazard_features: [],
+      observed_at: null,
+    };
+  }
+  const res = await client.get('/spatial/hazards');
+  return extractData<HazardLayersResponse>(res);
+}
+
+export async function fetchExposure(): Promise<ExposureSummaryResponse> {
+  if (USE_SIMULATED) {
+    return {
+      population_exposure: 12430,
+      population_provenance: 'simulated',
+      infrastructure_vulnerability: 0.78,
+      infrastructure_provenance: 'simulated',
+      hazard_layers_available: false,
+      hazard_provenance: 'hazard:unavailable',
+      spatial_crs: 'EPSG:4326',
+      projected_crs: 'EPSG:3857',
+    };
+  }
+  const res = await client.get('/spatial/exposure');
+  return extractData<ExposureSummaryResponse>(res);
+}
+
+export async function fetchRouteSpatialSafety(routeId: string): Promise<RouteSpatialSafetyResponse> {
+  if (USE_SIMULATED) {
+    return {
+      route_id: routeId,
+      spatial_hazard_exposure: 0.12,
+      hazard_penalty: 0.04,
+      modeled_safety_score: 0.88,
+      water_proximity_km: 1.45,
+      elevation_min_m: null,
+      provenance: 'hazard:provisional_river_proximity',
+      terminology_notice: 'Higher modeled route safety score indicates lower estimated spatial exposure.',
+    };
+  }
+  const res = await client.get(`/spatial/routes/${routeId}`);
+  return extractData<RouteSpatialSafetyResponse>(res);
+}
