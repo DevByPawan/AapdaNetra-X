@@ -28,11 +28,14 @@ from app.events.schemas import EventEnvelope, EventType
 from app.models.schemas import (
     EvacuationIntelligenceResponse,
     EvacuationRouteDetail,
+    EvacuationUnavailableResponse,
     RouteChangeNotice,
     RouteScoreDetails,
     RouteStatusEnum,
     RouteWaypoint,
 )
+from app.hazards.registry import get_hazard_registry
+from app.hazards.types import HazardType
 
 logger = logging.getLogger("aapdanetra.evacuation_service")
 
@@ -122,10 +125,33 @@ class EvacuationService:
         horizon: int = 0,
         route_blockage_override: Optional[bool] = None,
         publish_sse: bool = False,
-    ) -> EvacuationIntelligenceResponse:
+        hazard_type: str = "flood",
+    ) -> EvacuationIntelligenceResponse | EvacuationUnavailableResponse:
         """
-        Evaluates dynamic evacuation route intelligence for the specified incident and horizon.
+        Evaluates dynamic evacuation route intelligence for the specified incident, horizon, and hazard_type.
         """
+        try:
+            h_enum = HazardType(hazard_type.lower())
+        except ValueError as exc:
+            raise ValueError(f"Unknown or unsupported hazard type: '{hazard_type}'") from exc
+
+        h_val = h_enum.value
+        registry = get_hazard_registry()
+        h_defn = registry.get_definition(h_enum)
+
+        now_iso = datetime.now(timezone.utc).isoformat()
+
+        # Check hazard routing capability
+        if not h_defn.routing_available:
+            return EvacuationUnavailableResponse(
+                hazard_type=h_val,
+                routing_available=False,
+                status="UNAVAILABLE",
+                reason=f"Operational evacuation routing is not supported for '{h_defn.display_name}'.",
+                incident_id=incident_id,
+                generated_at=now_iso,
+            )
+
         from app.services.risk_engine import compute_risk_state
         from app.services.spatial_service import get_spatial_service
         from ml.routing import optimize_routes
@@ -273,8 +299,6 @@ class EvacuationService:
             f"telemetry:{adapter_meta.get('provider_name', 'default')}"
         )
 
-        now_iso = datetime.now(timezone.utc).isoformat()
-
         # Decision trace items
         decision_trace = [
             {"factor": "Recommended Route", "value": recommended.name, "impact": f"Status: {recommended.status}"},
@@ -302,6 +326,7 @@ class EvacuationService:
             decision_trace=decision_trace,
             provenance=provenance_str,
             generated_at=now_iso,
+            hazard_type=h_val,
         )
 
         # 7. Persistence handling if enabled
@@ -323,6 +348,7 @@ class EvacuationService:
                             "change_reason": change_reason,
                             "recommended_name": recommended.name,
                             "composite_score": recommended.score_details.composite_score,
+                            "hazard_type": h_val,
                         },
                         incident_id=incident_id,
                     )
@@ -345,6 +371,7 @@ class EvacuationService:
                             "eta": recommended.eta,
                             "route_changed": route_changed,
                             "change_reason": change_reason,
+                            "hazard_type": h_val,
                             "timestamp": now_iso,
                         },
                         persistence_status="persisted",
@@ -354,6 +381,7 @@ class EvacuationService:
                 logger.warning(f"[EvacuationService] SSE publishing error: {sse_err}")
 
         return response
+
 
 
 # Global singleton instance

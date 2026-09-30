@@ -43,6 +43,9 @@ class EvacuationRoute(Base):
     route_name: Mapped[str] = mapped_column(String(128), nullable=False)
     route_type: Mapped[str] = mapped_column(String(32), nullable=False, default="primary")
     is_recommended: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    hazard_type: Mapped[str] = mapped_column(
+        String(32), nullable=False, server_default="flood", default="flood"
+    )
 
     # ── Origin & Destination Details ────────────────────────────────
     origin_name: Mapped[str] = mapped_column(String(255), nullable=False)

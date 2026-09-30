@@ -25,6 +25,19 @@ class TelemetryRepository(BaseRepository[TelemetryObservation]):
         self, observation: TelemetryObservation
     ) -> TelemetryObservation:
         """Persist a new telemetry snapshot with all 7 ML features and flush."""
+        from app.hazards.types import HazardType
+
+        if not observation.hazard_type:
+            observation.hazard_type = "flood"
+        else:
+            if isinstance(observation.hazard_type, HazardType):
+                observation.hazard_type = observation.hazard_type.value
+            elif isinstance(observation.hazard_type, str):
+                try:
+                    observation.hazard_type = HazardType(observation.hazard_type.lower()).value
+                except ValueError as exc:
+                    raise ValueError(f"Unknown or unsupported hazard type: '{observation.hazard_type}'") from exc
+
         self.session.add(observation)
         await self.session.flush()
         return observation
@@ -57,6 +70,7 @@ class TelemetryRepository(BaseRepository[TelemetryObservation]):
         self,
         incident_id: str,
         params: Optional[PaginationParams] = None,
+        hazard_type: Optional[str] = None,
     ) -> PageResult:
         """Fetch time-ordered telemetry observations using keyset pagination."""
         from app.db.pagination import apply_keyset_pagination, build_page_result, PaginationParams, PageResult
@@ -65,6 +79,8 @@ class TelemetryRepository(BaseRepository[TelemetryObservation]):
         stmt = select(TelemetryObservation).where(
             TelemetryObservation.incident_id == incident_id
         )
+        if hazard_type:
+            stmt = stmt.where(TelemetryObservation.hazard_type == hazard_type)
 
         stmt = apply_keyset_pagination(
             stmt=stmt,

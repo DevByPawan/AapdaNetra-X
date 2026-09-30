@@ -39,6 +39,9 @@ class AuditEvent(Base):
     source: Mapped[str] = mapped_column(String(64), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
     actor: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    hazard_type: Mapped[str] = mapped_column(
+        String(32), nullable=False, server_default="flood", default="flood"
+    )
 
     # ── Structured Data ──────────────────────────────────────────────
     event_data = mapped_column(JSONB, nullable=True)

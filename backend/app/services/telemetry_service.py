@@ -30,6 +30,7 @@ from fastapi import HTTPException
 from app.config import settings
 from app.events.broker import get_event_broker
 from app.events.schemas import EventEnvelope, EventType
+from app.hazards.types import HazardType
 from app.models.schemas import (
     TelemetryHealthResponse,
     TelemetryIngestionRequest,
@@ -151,6 +152,19 @@ class TelemetryIngestionService:
                 detail=f"Telemetry validation failure: {val_err}"
             ) from val_err
 
+        # Validate optional hazard_type against HazardType canonical registry
+        hazard_type_val = HazardType.FLOOD.value
+        if request.hazard_type is not None and str(request.hazard_type).strip() != "":
+            try:
+                hazard_type_val = HazardType(str(request.hazard_type).strip().lower()).value
+            except ValueError as val_err:
+                _METRICS["rejected"] += 1
+                logger.warning(f"[TelemetryService] Unknown hazard_type rejected: {request.hazard_type}")
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Unknown or invalid hazard_type: '{request.hazard_type}'. Must be one of {[h.value for h in HazardType]}"
+                ) from val_err
+
         sensor_key = f"{request.incident_id}:{request.sensor_id}"
 
         # 2. Idempotency & Deduplication
@@ -180,6 +194,7 @@ class TelemetryIngestionService:
                 persistence_status="skipped",
                 cascade_triggered=False,
                 message="Duplicate observation ignored.",
+                hazard_type=hazard_type_val,
             )
 
         # 3. Ordering & Out-of-Order Check
@@ -206,6 +221,7 @@ class TelemetryIngestionService:
                     from app.db.models import TelemetryObservation
                     obs_model = TelemetryObservation(
                         incident_id=request.incident_id,
+                        hazard_type=hazard_type_val,
                         data_mode=settings.data_mode,
                         fallback_used=False,
                         rainfall_intensity=cleaned_features["rainfall_intensity"],
@@ -395,6 +411,7 @@ class TelemetryIngestionService:
             persistence_status=persistence_status,
             cascade_triggered=cascade_triggered,
             message=msg,
+            hazard_type=hazard_type_val,
         )
 
     def get_health_status(self) -> TelemetryHealthResponse:

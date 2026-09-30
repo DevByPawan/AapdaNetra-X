@@ -85,6 +85,7 @@ class TimelineService:
         self,
         incident_id: str,
         params: Optional[PaginationParams] = None,
+        hazard_type: Optional[str] = None,
     ) -> PageResult:
         """Fetch, aggregate, normalize, and paginate timeline events for an incident."""
         p = params or PaginationParams()
@@ -106,7 +107,7 @@ class TimelineService:
 
         # 1. TelemetryObservation (rank 6)
         t_stmt = self._build_source_stmt(
-            TelemetryObservation, TelemetryObservation.observed_at, incident_id, 6, limit, p, cur_rank, cur_ts, cur_entity_id
+            TelemetryObservation, TelemetryObservation.observed_at, incident_id, 6, limit, p, cur_rank, cur_ts, cur_entity_id, hazard_type
         )
         t_res = await self.session.execute(t_stmt)
         for obs in t_res.scalars().all():
@@ -114,7 +115,7 @@ class TimelineService:
 
         # 2. RiskPrediction (rank 5)
         r_stmt = self._build_source_stmt(
-            RiskPrediction, RiskPrediction.created_at, incident_id, 5, limit, p, cur_rank, cur_ts, cur_entity_id
+            RiskPrediction, RiskPrediction.created_at, incident_id, 5, limit, p, cur_rank, cur_ts, cur_entity_id, hazard_type
         )
         r_res = await self.session.execute(r_stmt)
         for pred in r_res.scalars().all():
@@ -122,7 +123,7 @@ class TimelineService:
 
         # 3. EvacuationRoute (rank 4)
         rt_stmt = self._build_source_stmt(
-            EvacuationRoute, EvacuationRoute.created_at, incident_id, 4, limit, p, cur_rank, cur_ts, cur_entity_id
+            EvacuationRoute, EvacuationRoute.created_at, incident_id, 4, limit, p, cur_rank, cur_ts, cur_entity_id, hazard_type
         )
         rt_res = await self.session.execute(rt_stmt)
         for route in rt_res.scalars().all():
@@ -130,7 +131,7 @@ class TimelineService:
 
         # 4. Alert (rank 3)
         a_stmt = self._build_source_stmt(
-            Alert, Alert.created_at, incident_id, 3, limit, p, cur_rank, cur_ts, cur_entity_id
+            Alert, Alert.created_at, incident_id, 3, limit, p, cur_rank, cur_ts, cur_entity_id, hazard_type
         )
         a_res = await self.session.execute(a_stmt)
         for alert in a_res.scalars().all():
@@ -138,7 +139,7 @@ class TimelineService:
 
         # 5. Simulation (rank 2)
         s_stmt = self._build_source_stmt(
-            Simulation, Simulation.created_at, incident_id, 2, limit, p, cur_rank, cur_ts, cur_entity_id
+            Simulation, Simulation.created_at, incident_id, 2, limit, p, cur_rank, cur_ts, cur_entity_id, hazard_type
         )
         s_res = await self.session.execute(s_stmt)
         for sim in s_res.scalars().all():
@@ -146,7 +147,7 @@ class TimelineService:
 
         # 6. AuditEvent (rank 1)
         au_stmt = self._build_source_stmt(
-            AuditEvent, AuditEvent.created_at, incident_id, 1, limit, p, cur_rank, cur_ts, cur_entity_id
+            AuditEvent, AuditEvent.created_at, incident_id, 1, limit, p, cur_rank, cur_ts, cur_entity_id, hazard_type
         )
         au_res = await self.session.execute(au_stmt)
         for audit in au_res.scalars().all():
@@ -207,8 +208,16 @@ class TimelineService:
         cur_rank: Optional[int],
         cur_ts: Optional[datetime],
         cur_entity_id: Optional[str],
+        hazard_type: Optional[str] = None,
     ) -> Any:
         stmt = select(model_cls).where(model_cls.incident_id == incident_id)
+
+        if hazard_type:
+            if hasattr(model_cls, "hazard_type"):
+                stmt = stmt.where(model_cls.hazard_type == hazard_type)
+            elif model_cls == Simulation:
+                if hazard_type != "flood":
+                    stmt = stmt.where(Simulation.id == None)
 
         if p.from_time:
             stmt = stmt.where(timestamp_col >= p.from_time)
@@ -247,6 +256,7 @@ class TimelineService:
             entity_type="telemetry_observation",
             entity_id=str(obs.id),
             incident_id=obs.incident_id or "INC-2026-DEFAULT",
+            hazard_type=getattr(obs, "hazard_type", "flood") or "flood",
             summary=(
                 f"Telemetry observed — Rainfall {obs.rainfall_intensity:.1f} mm/h, "
                 f"Water level {obs.water_level:.2f} m"
@@ -267,6 +277,7 @@ class TimelineService:
             entity_type="risk_prediction",
             entity_id=str(pred.id),
             incident_id=pred.incident_id,
+            hazard_type=getattr(pred, "hazard_type", "flood") or "flood",
             summary=(
                 f"Risk evaluated — Score {pred.predicted_risk:.1f} "
                 f"({pred.risk_category}) [{pred.horizon_label}]"
@@ -287,6 +298,7 @@ class TimelineService:
             entity_type="evacuation_route",
             entity_id=str(route.id),
             incident_id=route.incident_id,
+            hazard_type=getattr(route, "hazard_type", "flood") or "flood",
             summary=(
                 f"Evacuation route calculated — {route.route_name} "
                 f"({route.distance_km:.1f} km, safety score {route.safety_score:.0f})"
@@ -308,6 +320,7 @@ class TimelineService:
             entity_type="alert",
             entity_id=str(alert.id),
             incident_id=alert.incident_id,
+            hazard_type=getattr(alert, "hazard_type", "flood") or "flood",
             summary=f"Alert created — {alert.title} ({alert.severity})",
             details={
                 "title": alert.title,
@@ -325,6 +338,7 @@ class TimelineService:
             entity_type="simulation",
             entity_id=str(sim.id),
             incident_id=sim.incident_id,
+            hazard_type="flood",
             summary=(
                 f"Simulation completed — Scenario risk {sim.scenario_risk:.1f} "
                 f"(Delta: {sim.risk_delta:+.1f})"
@@ -351,6 +365,7 @@ class TimelineService:
             entity_type="audit_event",
             entity_id=str(audit.id),
             incident_id=audit.incident_id or "INC-2026-DEFAULT",
+            hazard_type=getattr(audit, "hazard_type", "flood") or "flood",
             summary=f"{audit.description} ({audit.event_type})",
             details={
                 "event_type": audit.event_type,

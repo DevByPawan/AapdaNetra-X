@@ -29,8 +29,24 @@ class AuditEventRepository(BaseRepository[AuditEvent]):
         actor: Optional[str] = None,
         event_data: Optional[Dict[str, Any]] = None,
         incident_id: Optional[str] = None,
+        hazard_type: Optional[str] = None,
     ) -> AuditEvent:
         """Append a new audit event record and flush."""
+        from app.hazards.types import HazardType
+
+        if hazard_type is not None:
+            if isinstance(hazard_type, HazardType):
+                h_val = hazard_type.value
+            elif isinstance(hazard_type, str):
+                try:
+                    h_val = HazardType(hazard_type.lower()).value
+                except ValueError as exc:
+                    raise ValueError(f"Unknown or unsupported hazard type: '{hazard_type}'") from exc
+            else:
+                raise ValueError(f"Unknown or unsupported hazard type: '{hazard_type}'")
+        else:
+            h_val = "flood"
+
         event = AuditEvent(
             id=uuid.uuid4(),
             incident_id=incident_id,
@@ -40,6 +56,7 @@ class AuditEventRepository(BaseRepository[AuditEvent]):
             description=description,
             actor=actor,
             event_data=event_data,
+            hazard_type=h_val,
         )
         self.session.add(event)
         await self.session.flush()
@@ -68,6 +85,7 @@ class AuditEventRepository(BaseRepository[AuditEvent]):
         self,
         incident_id: Optional[str] = None,
         params: Optional[PaginationParams] = None,
+        hazard_type: Optional[str] = None,
     ) -> PageResult:
         """Fetch audit events using keyset pagination."""
         from app.db.pagination import apply_keyset_pagination, build_page_result, PaginationParams, PageResult
@@ -76,6 +94,9 @@ class AuditEventRepository(BaseRepository[AuditEvent]):
         stmt = select(AuditEvent)
         if incident_id:
             stmt = stmt.where(AuditEvent.incident_id == incident_id)
+
+        if hazard_type:
+            stmt = stmt.where(AuditEvent.hazard_type == hazard_type)
 
         stmt = apply_keyset_pagination(
             stmt=stmt,

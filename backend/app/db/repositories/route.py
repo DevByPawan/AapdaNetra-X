@@ -22,12 +22,39 @@ class EvacuationRouteRepository(BaseRepository[EvacuationRoute]):
 
     async def save_route(self, route: EvacuationRoute) -> EvacuationRoute:
         """Save a single evacuation route record and flush."""
+        from app.hazards.types import HazardType
+
+        if not route.hazard_type:
+            route.hazard_type = "flood"
+        else:
+            if isinstance(route.hazard_type, HazardType):
+                route.hazard_type = route.hazard_type.value
+            elif isinstance(route.hazard_type, str):
+                try:
+                    route.hazard_type = HazardType(route.hazard_type.lower()).value
+                except ValueError as exc:
+                    raise ValueError(f"Unknown or unsupported hazard type: '{route.hazard_type}'") from exc
+
         self.session.add(route)
         await self.session.flush()
         return route
 
     async def save_routes(self, routes: List[EvacuationRoute]) -> List[EvacuationRoute]:
         """Save multiple evacuation routes atomically and flush."""
+        from app.hazards.types import HazardType
+
+        for r in routes:
+            if not r.hazard_type:
+                r.hazard_type = "flood"
+            else:
+                if isinstance(r.hazard_type, HazardType):
+                    r.hazard_type = r.hazard_type.value
+                elif isinstance(r.hazard_type, str):
+                    try:
+                        r.hazard_type = HazardType(r.hazard_type.lower()).value
+                    except ValueError as exc:
+                        raise ValueError(f"Unknown or unsupported hazard type: '{r.hazard_type}'") from exc
+
         self.session.add_all(routes)
         await self.session.flush()
         return routes
@@ -65,12 +92,16 @@ class EvacuationRouteRepository(BaseRepository[EvacuationRoute]):
         self,
         incident_id: str,
         params: Optional[PaginationParams] = None,
+        hazard_type: Optional[str] = None,
     ) -> PageResult:
         """Fetch historical evacuation routes using keyset pagination."""
         from app.db.pagination import apply_keyset_pagination, build_page_result, PaginationParams, PageResult
 
         p = params or PaginationParams()
         stmt = select(EvacuationRoute).where(EvacuationRoute.incident_id == incident_id)
+
+        if hazard_type:
+            stmt = stmt.where(EvacuationRoute.hazard_type == hazard_type)
 
         stmt = apply_keyset_pagination(
             stmt=stmt,

@@ -49,6 +49,7 @@ class TelemetryHistoryItem(BaseModel):
 
     id: str
     incident_id: Optional[str] = None
+    hazard_type: Optional[str] = "flood"
     data_mode: str
     fallback_used: bool
     rainfall_intensity: float
@@ -69,6 +70,7 @@ class RiskHistoryItem(BaseModel):
 
     id: str
     incident_id: str
+    hazard_type: Optional[str] = "flood"
     telemetry_id: Optional[str] = None
     horizon: int
     horizon_label: str
@@ -93,6 +95,7 @@ class RouteHistoryItem(BaseModel):
 
     id: str
     incident_id: str
+    hazard_type: Optional[str] = "flood"
     risk_prediction_id: Optional[str] = None
     route_name: str
     route_type: str
@@ -111,12 +114,12 @@ class RouteHistoryItem(BaseModel):
     created_at: str
 
 
-
 class AuditHistoryItem(BaseModel):
     """DTO for historical AuditEvent records."""
 
     id: str
     incident_id: Optional[str] = None
+    hazard_type: Optional[str] = "flood"
     event_type: str
     severity: str
     source: str
@@ -131,6 +134,7 @@ class SHAPHistoryResponse(BaseModel):
 
     id: str
     risk_prediction_id: str
+    hazard_type: Optional[str] = "flood"
     horizon: int
     prediction: float
     base_value: float
@@ -148,6 +152,7 @@ class TimelineEventItem(BaseModel):
     entity_type: str = Field(..., description="Source ORM entity type name")
     entity_id: str = Field(..., description="Unique entity primary key ID")
     incident_id: str = Field(..., description="Associated disaster incident ID")
+    hazard_type: Optional[str] = Field(default="flood", description="Hazard type classification")
     summary: str = Field(..., description="Human-readable event summary line")
     details: Dict[str, Any] = Field(
         default_factory=dict, description="Lightweight sanitized metadata payload"
