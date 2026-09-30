@@ -43,6 +43,9 @@ class TelemetryObservation(Base):
     fallback_used: Mapped[bool] = mapped_column(
         Boolean, nullable=False, default=False
     )
+    hazard_type: Mapped[str] = mapped_column(
+        String(32), nullable=False, server_default="flood", default="flood"
+    )
 
     # ── 7-Feature ML Contract (frozen) ───────────────────────────────
     rainfall_intensity: Mapped[float] = mapped_column(Float, nullable=False)

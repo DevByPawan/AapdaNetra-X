@@ -7,7 +7,7 @@ Provides structured AI-assisted decision recommendations and state machine trans
 """
 
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, Union
 from fastapi import APIRouter, HTTPException, Query
 
 from app.events.broker import get_event_broker
@@ -16,6 +16,7 @@ from app.models.schemas import (
     DecisionActionRequest,
     DecisionActionResponse,
     DecisionSupportResponse,
+    DecisionSupportUnavailableResponse,
 )
 from app.services.decision_service import (
     STATE_APPROVED,
@@ -25,22 +26,35 @@ from app.services.decision_service import (
     transition_decision,
 )
 from app.services.persistence_service import get_persistence_service
+from app.routers.history import validate_optional_hazard_type
 
 router = APIRouter()
 
 
-@router.get("/decision/recommend", response_model=DecisionSupportResponse)
+@router.get(
+    "/decision/recommend",
+    response_model=Union[DecisionSupportResponse, DecisionSupportUnavailableResponse],
+)
 async def get_decision_recommendation(
     incident_id: str = Query(default="INC-2026-DEFAULT"),
     horizon: int = Query(default=0, ge=0, le=4),
+    hazard_type: Optional[str] = Query(default=None, description="Optional hazard type filter"),
 ):
     """
     Computes an explainable, deterministic emergency decision recommendation synthesizing
     risk prediction, conformal uncertainty, SHAP attributions, spatial hazard exposure,
     route safety, and data freshness.
+    Returns UNAVAILABLE response for hazards without operational decision support models.
     """
-    res = compute_emergency_decision(incident_id=incident_id, horizon=horizon)
-    return DecisionSupportResponse(**res)
+    h_val = validate_optional_hazard_type(hazard_type) or "flood"
+    try:
+        res = compute_emergency_decision(incident_id=incident_id, horizon=horizon, hazard_type=h_val)
+        if not res.get("decision_support_available", True):
+            return DecisionSupportUnavailableResponse(**res)
+        return DecisionSupportResponse(**res)
+    except ValueError as val_err:
+        raise HTTPException(status_code=400, detail=str(val_err)) from val_err
+
 
 
 @router.post("/decision/approve", response_model=DecisionActionResponse)

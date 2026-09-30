@@ -22,6 +22,19 @@ class RiskPredictionRepository(BaseRepository[RiskPrediction]):
 
     async def save_prediction(self, prediction: RiskPrediction) -> RiskPrediction:
         """Save a new risk prediction record and flush."""
+        from app.hazards.types import HazardType
+
+        if not prediction.hazard_type:
+            prediction.hazard_type = "flood"
+        else:
+            if isinstance(prediction.hazard_type, HazardType):
+                prediction.hazard_type = prediction.hazard_type.value
+            elif isinstance(prediction.hazard_type, str):
+                try:
+                    prediction.hazard_type = HazardType(prediction.hazard_type.lower()).value
+                except ValueError as exc:
+                    raise ValueError(f"Unknown or unsupported hazard type: '{prediction.hazard_type}'") from exc
+
         self.session.add(prediction)
         await self.session.flush()
         return prediction
@@ -60,6 +73,7 @@ class RiskPredictionRepository(BaseRepository[RiskPrediction]):
         incident_id: str,
         horizon: Optional[int] = None,
         params: Optional[PaginationParams] = None,
+        hazard_type: Optional[str] = None,
     ) -> PageResult:
         """Fetch historical risk predictions using keyset pagination."""
         from app.db.pagination import apply_keyset_pagination, build_page_result, PaginationParams, PageResult
@@ -69,6 +83,9 @@ class RiskPredictionRepository(BaseRepository[RiskPrediction]):
 
         if horizon is not None:
             stmt = stmt.where(RiskPrediction.horizon == horizon)
+
+        if hazard_type:
+            stmt = stmt.where(RiskPrediction.hazard_type == hazard_type)
 
         stmt = apply_keyset_pagination(
             stmt=stmt,

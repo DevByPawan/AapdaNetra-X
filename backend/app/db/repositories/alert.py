@@ -22,6 +22,19 @@ class AlertRepository(BaseRepository[Alert]):
 
     async def save_alert(self, alert: Alert) -> Alert:
         """Save a new alert record and flush."""
+        from app.hazards.types import HazardType
+
+        if not alert.hazard_type:
+            alert.hazard_type = "flood"
+        else:
+            if isinstance(alert.hazard_type, HazardType):
+                alert.hazard_type = alert.hazard_type.value
+            elif isinstance(alert.hazard_type, str):
+                try:
+                    alert.hazard_type = HazardType(alert.hazard_type.lower()).value
+                except ValueError as exc:
+                    raise ValueError(f"Unknown or unsupported hazard type: '{alert.hazard_type}'") from exc
+
         self.session.add(alert)
         await self.session.flush()
         return alert

@@ -45,6 +45,9 @@ class Alert(TimestampMixin, Base):
     status: Mapped[str] = mapped_column(
         String(32), nullable=False, default="OPEN"
     )
+    hazard_type: Mapped[str] = mapped_column(
+        String(32), nullable=False, server_default="flood", default="flood"
+    )
 
     # ── Spatial Boundary ─────────────────────────────────────────────
     boundary_geom = mapped_column(

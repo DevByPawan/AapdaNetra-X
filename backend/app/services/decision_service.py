@@ -47,12 +47,43 @@ _DECISION_REGISTRY: Dict[str, Dict[str, Any]] = {}
 def compute_emergency_decision(
     incident_id: str = "INC-2026-DEFAULT",
     horizon: int = 0,
+    hazard_type: str = "flood",
 ) -> Dict[str, Any]:
     """
     Computes a deterministic, explainable decision-support recommendation combining
     current risk, conformal uncertainty, SHAP attributions, spatial hazard exposure,
-    route safety, active alerts, and data freshness signals.
+    route safety, active alerts, and data freshness signals for a given hazard_type.
     """
+    from app.hazards.types import HazardType
+    from app.hazards.registry import get_hazard_registry
+
+    try:
+        h_enum = HazardType(hazard_type.lower())
+    except ValueError as exc:
+        raise ValueError(f"Unknown or unsupported hazard type: '{hazard_type}'") from exc
+
+    h_val = h_enum.value
+    registry = get_hazard_registry()
+    h_defn = registry.get_definition(h_enum)
+
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    # Capability check: only hazards with decision_support_available=True produce operational decisions
+    if not h_defn.decision_support_available:
+        decision_id = f"dec-unavail-{h_val}"
+        unavail_payload = {
+            "decision_id": decision_id,
+            "hazard_type": h_val,
+            "decision_support_available": False,
+            "status": "UNAVAILABLE",
+            "reason": f"Operational decision support is not supported for '{h_defn.display_name}'.",
+            "incident_id": incident_id,
+            "generated_at": now_iso,
+        }
+        _DECISION_REGISTRY[decision_id] = unavail_payload
+        return unavail_payload
+
+
     from app.services.risk_engine import _get_base_features, compute_risk_state
     from app.services.alert_engine import IntelligentAlertEngine
     from app.services.spatial_service import get_spatial_service
@@ -119,6 +150,7 @@ def compute_emergency_decision(
         telemetry_features=telemetry_features,
         spatial_exposure=spatial_hazard,
         route_blockage=False,
+        hazard_type=h_val,
     )
     alert_summary = [
         {
@@ -126,6 +158,7 @@ def compute_emergency_decision(
             "title": a.title,
             "severity": a.severity,
             "alert_type": a.alert_type,
+            "hazard_type": a.hazard_type,
         }
         for a in active_alert_records
     ]
@@ -166,7 +199,6 @@ def compute_emergency_decision(
     ]
 
     decision_id = f"dec-{uuid.uuid4().hex[:8]}"
-    now_iso = datetime.now(timezone.utc).isoformat()
 
     decision_data = {
         "decision_id": decision_id,
@@ -216,6 +248,7 @@ def compute_emergency_decision(
         "generated_at": now_iso,
         "model_version": "v1.0.0",
         "source": "AapdaNetra-X Decision Engine",
+        "hazard_type": h_val,
     }
 
     # Register decision in memory
@@ -250,8 +283,12 @@ def transition_decision(
             "recommended_action": "Emergency Evacuation Plan",
             "priority": "HIGH",
             "generated_at": datetime.now(timezone.utc).isoformat(),
+            "hazard_type": "flood",
         }
         _DECISION_REGISTRY[decision_id] = decision
+
+    if decision.get("status") == "UNAVAILABLE" or decision.get("decision_support_available") is False:
+        return False, f"Cannot transition decision for hazard without operational decision support: '{decision.get('hazard_type')}'", decision
 
     current_status = decision["status"]
     allowed = VALID_TRANSITIONS.get(current_status, set())

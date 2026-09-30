@@ -41,6 +41,9 @@ class RiskPrediction(Base):
     # ── Horizon ──────────────────────────────────────────────────────
     horizon: Mapped[int] = mapped_column(Integer, nullable=False)
     horizon_label: Mapped[str] = mapped_column(String(32), nullable=False)
+    hazard_type: Mapped[str] = mapped_column(
+        String(32), nullable=False, server_default="flood", default="flood"
+    )
 
     # ── Prediction Results ───────────────────────────────────────────
     current_risk: Mapped[float] = mapped_column(Float, nullable=False)

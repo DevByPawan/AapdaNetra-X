@@ -86,6 +86,26 @@ def get_pagination_params(
         raise HTTPException(status_code=422, detail=str(exc))
 
 
+from app.hazards.types import HazardType
+
+
+def validate_optional_hazard_type(hazard_type: Optional[str]) -> Optional[str]:
+    """
+    Validates optional hazard_type against HazardType canonical enum.
+    Raises HTTP 400 if hazard_type is invalid or unknown.
+    """
+    if hazard_type is None or str(hazard_type).strip() == "":
+        return None
+    cleaned = str(hazard_type).strip().lower()
+    try:
+        return HazardType(cleaned).value
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown or unsupported hazard_type: '{hazard_type}'"
+        ) from exc
+
+
 # ── 1. Incidents Historical Endpoints ────────────────────────────────────
 
 @router.get("/incidents", response_model=PaginatedResponse[IncidentHistoryItem])
@@ -164,21 +184,26 @@ async def get_incident(incident_id: str):
 )
 async def get_telemetry_history(
     incident_id: str,
+    hazard_type: Optional[str] = Query(None, description="Optional hazard_type filter"),
     params: PaginationParams = Depends(get_pagination_params),
 ):
     """Retrieve time-series telemetry observation history for an incident."""
+    ht_filter = validate_optional_hazard_type(hazard_type)
     async with get_history_session() as session:
         if session is None:
             return PaginatedResponse(items=[], next_cursor=None, has_more=False)
 
         try:
             repo = TelemetryRepository(session)
-            page_res = await repo.get_history_paginated(incident_id=incident_id, params=params)
+            page_res = await repo.get_history_paginated(
+                incident_id=incident_id, hazard_type=ht_filter, params=params
+            )
 
             items = [
                 TelemetryHistoryItem(
                     id=str(item.id),
                     incident_id=item.incident_id,
+                    hazard_type=item.hazard_type or "flood",
                     data_mode=item.data_mode,
                     fallback_used=item.fallback_used,
                     rainfall_intensity=item.rainfall_intensity,
@@ -197,6 +222,8 @@ async def get_telemetry_history(
             ]
             next_c = CursorInfo(**page_res.next_cursor) if page_res.next_cursor else None
             return PaginatedResponse(items=items, next_cursor=next_c, has_more=page_res.has_more)
+        except HTTPException:
+            raise
         except Exception as exc:
             raise HTTPException(status_code=500, detail="Failed to retrieve telemetry history") from exc
 
@@ -210,9 +237,11 @@ async def get_telemetry_history(
 async def get_risk_history(
     incident_id: str,
     horizon: Optional[int] = Query(None, ge=0, le=3, description="Filter by horizon index (0..3)"),
+    hazard_type: Optional[str] = Query(None, description="Optional hazard_type filter"),
     params: PaginationParams = Depends(get_pagination_params),
 ):
     """Retrieve historical ML risk predictions for an incident."""
+    ht_filter = validate_optional_hazard_type(hazard_type)
     async with get_history_session() as session:
         if session is None:
             return PaginatedResponse(items=[], next_cursor=None, has_more=False)
@@ -220,13 +249,14 @@ async def get_risk_history(
         try:
             repo = RiskPredictionRepository(session)
             page_res = await repo.get_history_paginated(
-                incident_id=incident_id, horizon=horizon, params=params
+                incident_id=incident_id, horizon=horizon, hazard_type=ht_filter, params=params
             )
 
             items = [
                 RiskHistoryItem(
                     id=str(item.id),
                     incident_id=item.incident_id,
+                    hazard_type=item.hazard_type or "flood",
                     telemetry_id=str(item.telemetry_id) if item.telemetry_id else None,
                     horizon=item.horizon,
                     horizon_label=item.horizon_label,
@@ -249,6 +279,8 @@ async def get_risk_history(
             ]
             next_c = CursorInfo(**page_res.next_cursor) if page_res.next_cursor else None
             return PaginatedResponse(items=items, next_cursor=next_c, has_more=page_res.has_more)
+        except HTTPException:
+            raise
         except Exception as exc:
             raise HTTPException(status_code=500, detail="Failed to retrieve risk history") from exc
 
@@ -261,21 +293,26 @@ async def get_risk_history(
 )
 async def get_route_history(
     incident_id: str,
+    hazard_type: Optional[str] = Query(None, description="Optional hazard_type filter"),
     params: PaginationParams = Depends(get_pagination_params),
 ):
     """Retrieve historical evacuation route calculations for an incident."""
+    ht_filter = validate_optional_hazard_type(hazard_type)
     async with get_history_session() as session:
         if session is None:
             return PaginatedResponse(items=[], next_cursor=None, has_more=False)
 
         try:
             repo = EvacuationRouteRepository(session)
-            page_res = await repo.get_history_paginated(incident_id=incident_id, params=params)
+            page_res = await repo.get_history_paginated(
+                incident_id=incident_id, hazard_type=ht_filter, params=params
+            )
 
             items = [
                 RouteHistoryItem(
                     id=str(item.id),
                     incident_id=item.incident_id,
+                    hazard_type=item.hazard_type or "flood",
                     risk_prediction_id=str(item.risk_prediction_id) if item.risk_prediction_id else None,
                     route_name=item.route_name,
                     route_type=item.route_type,
@@ -292,12 +329,13 @@ async def get_route_history(
                     safety_score=item.safety_score,
                     congestion_index=item.congestion_index if item.congestion_index is not None else 0.0,
                     created_at=item.created_at.isoformat(),
-
                 )
                 for item in page_res.items
             ]
             next_c = CursorInfo(**page_res.next_cursor) if page_res.next_cursor else None
             return PaginatedResponse(items=items, next_cursor=next_c, has_more=page_res.has_more)
+        except HTTPException:
+            raise
         except Exception as exc:
             raise HTTPException(status_code=500, detail="Failed to retrieve route history") from exc
 
@@ -310,21 +348,26 @@ async def get_route_history(
 )
 async def get_audit_history(
     incident_id: str,
+    hazard_type: Optional[str] = Query(None, description="Optional hazard_type filter"),
     params: PaginationParams = Depends(get_pagination_params),
 ):
     """Retrieve historical audit event logs associated with an incident."""
+    ht_filter = validate_optional_hazard_type(hazard_type)
     async with get_history_session() as session:
         if session is None:
             return PaginatedResponse(items=[], next_cursor=None, has_more=False)
 
         try:
             repo = AuditEventRepository(session)
-            page_res = await repo.get_history_paginated(incident_id=incident_id, params=params)
+            page_res = await repo.get_history_paginated(
+                incident_id=incident_id, hazard_type=ht_filter, params=params
+            )
 
             items = [
                 AuditHistoryItem(
                     id=str(item.id),
                     incident_id=item.incident_id,
+                    hazard_type=item.hazard_type or "flood",
                     event_type=item.event_type,
                     severity=item.severity,
                     source=item.source,
@@ -337,6 +380,8 @@ async def get_audit_history(
             ]
             next_c = CursorInfo(**page_res.next_cursor) if page_res.next_cursor else None
             return PaginatedResponse(items=items, next_cursor=next_c, has_more=page_res.has_more)
+        except HTTPException:
+            raise
         except Exception as exc:
             raise HTTPException(status_code=500, detail="Failed to retrieve audit history") from exc
 
@@ -368,9 +413,15 @@ async def get_risk_explanation_history(prediction_id: str):
                     status_code=404, detail=f"Prediction '{prediction_id}' explanation not found"
                 )
 
+            ht_val = "flood"
+            pred_rel = getattr(rec, "risk_prediction", None)
+            if pred_rel and getattr(pred_rel, "hazard_type", None):
+                ht_val = pred_rel.hazard_type
+
             return SHAPHistoryResponse(
                 id=str(rec.id),
                 risk_prediction_id=str(rec.risk_prediction_id),
+                hazard_type=ht_val,
                 horizon=rec.horizon,
                 prediction=rec.prediction,
                 base_value=rec.base_value,
@@ -393,9 +444,11 @@ async def get_risk_explanation_history(prediction_id: str):
 )
 async def get_incident_timeline(
     incident_id: str,
+    hazard_type: Optional[str] = Query(None, description="Optional hazard_type filter"),
     params: PaginationParams = Depends(get_pagination_params),
 ):
     """Retrieve unified chronological event timeline for an incident across 6 domain entities."""
+    ht_filter = validate_optional_hazard_type(hazard_type)
     async with get_history_session() as session:
         if session is None:
             return PaginatedResponse(items=[], next_cursor=None, has_more=False)
@@ -408,7 +461,9 @@ async def get_incident_timeline(
                 raise HTTPException(status_code=404, detail=f"Incident '{incident_id}' not found")
 
             service = TimelineService(session)
-            page_res = await service.get_incident_timeline(incident_id=incident_id, params=params)
+            page_res = await service.get_incident_timeline(
+                incident_id=incident_id, hazard_type=ht_filter, params=params
+            )
 
             next_c = CursorInfo(**page_res.next_cursor) if page_res.next_cursor else None
             return PaginatedResponse(

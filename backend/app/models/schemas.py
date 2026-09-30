@@ -75,6 +75,15 @@ class RiskResponse(BaseModel):
     heatmapZones: List[HeatmapZone]
     predictionInterval: Optional[PredictionInterval] = None
     prediction_interval: Optional[Dict[str, Any]] = None
+    hazard_type: Optional[str] = "flood"
+    capability_status: Optional[str] = "SUPPORTED"
+    supported: Optional[bool] = True
+    model_available: Optional[bool] = True
+    spatial_available: Optional[bool] = True
+    telemetry_available: Optional[bool] = True
+    alerts_available: Optional[bool] = True
+    routing_available: Optional[bool] = True
+    decision_support_available: Optional[bool] = True
 
 
 # ── Forecast ─────────────────────────────────────────────────────────────
@@ -175,6 +184,7 @@ class AlertItem(BaseModel):
     title: str
     description: str
     timestamp: str
+    hazard_type: Optional[str] = "flood"
 
 
 class AlertsResponse(BaseModel):
@@ -274,6 +284,17 @@ class DecisionSupportResponse(BaseModel):
     generated_at: str
     model_version: str = "v1.0.0"
     source: str = "AapdaNetra-X Decision Engine"
+    hazard_type: Optional[str] = "flood"
+
+
+class DecisionSupportUnavailableResponse(BaseModel):
+    hazard_type: str
+    decision_support_available: bool = False
+    status: Literal["UNAVAILABLE"] = "UNAVAILABLE"
+    reason: str
+    incident_id: str
+    generated_at: str
+
 
 
 class DecisionActionRequest(BaseModel):
@@ -359,6 +380,16 @@ class EvacuationIntelligenceResponse(BaseModel):
     provenance: str
     generated_at: str
     label: str = "AI-assisted dynamic evacuation decision-support intelligence"
+    hazard_type: Optional[str] = "flood"
+
+
+class EvacuationUnavailableResponse(BaseModel):
+    hazard_type: str
+    routing_available: bool = False
+    status: Literal["UNAVAILABLE"] = "UNAVAILABLE"
+    reason: str
+    incident_id: str
+    generated_at: str
 
 
 class EvacuationRecomputeRequest(BaseModel):
@@ -366,6 +397,8 @@ class EvacuationRecomputeRequest(BaseModel):
     horizon: int = Field(default=0, ge=0, le=4)
     route_blockage_override: Optional[bool] = None
     publish_sse: bool = Field(default=True)
+    hazard_type: Optional[str] = Field(default=None, description="Optional hazard type identifier")
+
 
 
 # ── Phase 6.19 Real-Time Telemetry Pipeline Schemas ─────────────────────
@@ -376,6 +409,7 @@ class TelemetryIngestionRequest(BaseModel):
     features: Dict[str, Any] = Field(..., description="Partial or full dictionary of sensor features")
     source: Optional[str] = Field(default="live_sensor_feed", description="Source provider tag")
     client_event_id: Optional[str] = Field(default=None, description="Optional unique client event identifier")
+    hazard_type: Optional[str] = Field(default=None, description="Optional hazard type identifier")
 
 
 class TelemetryIngestionResponse(BaseModel):
@@ -392,6 +426,7 @@ class TelemetryIngestionResponse(BaseModel):
     persistence_status: str
     cascade_triggered: bool
     message: str
+    hazard_type: Optional[str] = Field(default="flood", description="Hazard type identifier")
 
 
 class TelemetryHealthResponse(BaseModel):
