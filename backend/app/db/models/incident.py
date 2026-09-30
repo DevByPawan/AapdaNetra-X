@@ -58,6 +58,9 @@ class Incident(TimestampMixin, Base):
     audit_events = relationship(
         "AuditEvent", back_populates="incident"
     )
+    decisions = relationship(
+        "Decision", back_populates="incident", cascade="all, delete-orphan"
+    )
 
     def __repr__(self) -> str:
         return f"<Incident id={self.id!r} type={self.incident_type!r} status={self.status!r}>"

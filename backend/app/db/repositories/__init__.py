@@ -8,6 +8,7 @@ from app.db.repositories.base import BaseRepository
 from app.db.repositories.alert import AlertRepository
 from app.db.repositories.asset import CriticalAssetRepository
 from app.db.repositories.audit import AuditEventRepository
+from app.db.repositories.decision import DecisionRepository
 from app.db.repositories.incident import IncidentRepository
 from app.db.repositories.risk import RiskPredictionRepository
 from app.db.repositories.route import EvacuationRouteRepository
@@ -27,4 +28,5 @@ __all__ = [
     "SimulationRepository",
     "AlertRepository",
     "AuditEventRepository",
+    "DecisionRepository",
 ]

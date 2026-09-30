@@ -31,7 +31,7 @@ async def test_01_verify_alembic_head_migration_003(test_db_session: AsyncSessio
     """Verify Alembic version on aapdanetra_test database is migration 003."""
     res = await test_db_session.execute(text("SELECT version_num FROM alembic_version;"))
     version_num = res.scalar()
-    assert version_num == "003_add_hazard_type_persistence", f"Alembic version is '{version_num}'!"
+    assert version_num in ("003_add_hazard_type_persistence", "004_distributed_state_foundation"), f"Alembic version is '{version_num}'!"
 
 
 @pytest.mark.anyio

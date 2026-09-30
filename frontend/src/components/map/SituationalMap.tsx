@@ -167,10 +167,13 @@ export function SituationalMap({ riskState, routes }: SituationalMapProps) {
     // 1. Render alternative routes first (translucent background polylines)
     if (routes.alternatives && routes.alternatives.length > 0) {
       routes.alternatives.forEach((alt, idx) => {
-        if (!alt.waypoints || alt.waypoints.length === 0) return;
+        if (!alt || !alt.waypoints || alt.waypoints.length === 0) return;
         const altLatLngs = alt.waypoints.map(w => [w.lat, w.lng] as L.LatLngTuple);
-        const isBlocked = alt.isBlocked;
+        const isBlocked = alt.isBlocked ?? alt.is_blocked ?? false;
         const altColor = isBlocked ? '#ff5d6c' : '#ffc277';
+        const altName = typeof alt.name === 'string' ? alt.name : `ALT Route ${idx + 1}`;
+        const altEta = alt.eta ?? alt.eta_minutes ?? 0;
+        const altSafetyScore = alt.safetyScore ?? alt.safety_score ?? (alt.failureProbability != null ? 1 - alt.failureProbability : alt.failure_probability != null ? 1 - alt.failure_probability : 0.8);
 
         L.polyline(altLatLngs, {
           color: altColor,
@@ -178,7 +181,7 @@ export function SituationalMap({ riskState, routes }: SituationalMapProps) {
           opacity: 0.55,
           dashArray: '5 5',
         }).addTo(layer).bindTooltip(
-          `ALT ROUTE: ${alt.name} | ETA: ${alt.eta}m | Safety: ${Math.round(alt.safetyScore * 100)}% ${isBlocked ? '(BLOCKED)' : ''}`,
+          `ALT ROUTE: ${altName} | ETA: ${altEta}m | Safety: ${Math.round(altSafetyScore * 100)}% ${isBlocked ? '(BLOCKED)' : ''}`,
           { direction: 'top', className: 'map-tooltip' }
         );
       });

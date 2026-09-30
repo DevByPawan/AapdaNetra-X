@@ -73,18 +73,19 @@ class EvacuationRouteRepository(BaseRepository[EvacuationRoute]):
         return list(result.scalars().all())
 
     async def get_recommended_route(
-        self, incident_id: str
+        self, incident_id: str, hazard_type: Optional[str] = None
     ) -> Optional[EvacuationRoute]:
-        """Fetch the latest recommended evacuation route for an incident."""
+        """Fetch the latest recommended evacuation route for an incident and optional hazard_type."""
         stmt = (
             select(EvacuationRoute)
             .where(
                 EvacuationRoute.incident_id == incident_id,
                 EvacuationRoute.is_recommended == True,  # noqa: E712
             )
-            .order_by(EvacuationRoute.created_at.desc())
-            .limit(1)
         )
+        if hazard_type:
+            stmt = stmt.where(EvacuationRoute.hazard_type == hazard_type)
+        stmt = stmt.order_by(EvacuationRoute.created_at.desc()).limit(1)
         result = await self.session.execute(stmt)
         return result.scalars().first()
 

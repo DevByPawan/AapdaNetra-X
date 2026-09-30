@@ -177,9 +177,13 @@ class TelemetryIngestionService:
             client_event_id=request.client_event_id,
         )
 
+        from app.services.persistence_service import get_persistence_service
+        ps = get_persistence_service()
+
+        # Deduplication check: in-memory cache first, then PostgreSQL DB check
         if obs_hash in _DEDUPLICATION_CACHE:
             _METRICS["duplicate"] += 1
-            logger.info(f"[TelemetryService] Duplicate observation ignored (hash={obs_hash[:8]})")
+            logger.info(f"[TelemetryService] Duplicate observation ignored via memory cache (hash={obs_hash[:8]})")
             return TelemetryIngestionResponse(
                 status="duplicate_ignored",
                 observation_id=f"obs-{obs_hash[:8]}",
@@ -197,44 +201,75 @@ class TelemetryIngestionService:
                 hazard_type=hazard_type_val,
             )
 
-        # 3. Ordering & Out-of-Order Check
-        last_dt = _LATEST_OBSERVED_AT.get(sensor_key)
+        cleaned_features = validate_and_clean_features(request.features)
+        provenance_map = {k: f"live_sensor:{request.source or 'ingest'}" for k in request.features if k in FEATURE_SPECS}
+
+        # 3. Ordering & Out-of-Order Check against PostgreSQL / Memory
+        last_dt = None
+        if ps.is_enabled and ps.db_available:
+            try:
+                latest_obs_db = ps.get_latest_telemetry_observation_sync(request.incident_id, hazard_type=hazard_type_val)
+                if latest_obs_db and latest_obs_db.get("observed_at"):
+                    last_dt = parse_and_validate_timestamp(latest_obs_db["observed_at"])
+            except Exception as d_err:
+                logger.debug(f"[TelemetryService] DB latest telemetry recovery note: {d_err}")
+
+        if last_dt is None:
+            last_dt = _LATEST_OBSERVED_AT.get(sensor_key)
+
         is_out_of_order = (last_dt is not None) and (observed_dt < last_dt)
 
         if is_out_of_order:
             _METRICS["out_of_order"] += 1
-            logger.warning(f"[TelemetryService] Out-of-order telemetry for {sensor_key} (observed={observed_at_iso} < latest={last_dt.isoformat()})")
+            logger.warning(f"[TelemetryService] Out-of-order telemetry for {sensor_key} (observed={observed_at_iso} < latest={last_dt.isoformat() if last_dt else 'none'})")
 
-        # Clean features using canonical schema bounds
-        cleaned_features = validate_and_clean_features(request.features)
-        provenance_map = {k: f"live_sensor:{request.source or 'ingest'}" for k in request.features if k in FEATURE_SPECS}
-
-        # 4. Persistence Mode Compliance (MUST execute BEFORE in-memory state or overlay mutations)
+        # 4. Persistence Mode Compliance & DB Idempotency (MUST execute BEFORE in-memory state or overlay mutations)
         mode = settings.persistence_mode.lower()
         persistence_status = "disabled"
 
         if mode != "disabled":
+            obs_payload = {
+                "incident_id": request.incident_id,
+                "hazard_type": hazard_type_val,
+                "data_mode": settings.data_mode,
+                "fallback_used": False,
+                "rainfall_intensity": cleaned_features["rainfall_intensity"],
+                "rainfall_trend": cleaned_features["rainfall_trend"],
+                "water_level": cleaned_features["water_level"],
+                "water_level_trend": cleaned_features["water_level_trend"],
+                "road_congestion": cleaned_features["road_congestion"],
+                "population_exposure": cleaned_features["population_exposure"],
+                "infrastructure_vulnerability": cleaned_features["infrastructure_vulnerability"],
+                "provenance": provenance_map,
+                "provider_metadata": {"sensor_id": request.sensor_id, "source": request.source},
+                "fingerprint": obs_hash,
+                "observed_at": observed_dt,
+            }
+
             try:
-                from app.services.persistence_service import get_persistence_service
-                ps = get_persistence_service()
                 if ps.is_enabled and ps.db_available:
-                    from app.db.models import TelemetryObservation
-                    obs_model = TelemetryObservation(
-                        incident_id=request.incident_id,
-                        hazard_type=hazard_type_val,
-                        data_mode=settings.data_mode,
-                        fallback_used=False,
-                        rainfall_intensity=cleaned_features["rainfall_intensity"],
-                        rainfall_trend=cleaned_features["rainfall_trend"],
-                        water_level=cleaned_features["water_level"],
-                        water_level_trend=cleaned_features["water_level_trend"],
-                        road_congestion=cleaned_features["road_congestion"],
-                        population_exposure=cleaned_features["population_exposure"],
-                        infrastructure_vulnerability=cleaned_features["infrastructure_vulnerability"],
-                        provenance=provenance_map,
-                        provider_metadata={"sensor_id": request.sensor_id, "source": request.source},
-                        observed_at=observed_dt,
-                    )
+                    status_db, saved_obs = ps.save_telemetry_observation_sync(obs_payload)
+                    if status_db == "duplicate_ignored":
+                        _METRICS["duplicate"] += 1
+                        _DEDUPLICATION_CACHE[obs_hash] = time.time()
+                        logger.info(f"[TelemetryService] Duplicate observation ignored via DB uniqueness (hash={obs_hash[:8]})")
+                        return TelemetryIngestionResponse(
+                            status="duplicate_ignored",
+                            observation_id=f"obs-{obs_hash[:8]}",
+                            incident_id=request.incident_id,
+                            sensor_id=request.sensor_id,
+                            observation_hash=obs_hash,
+                            observed_at=observed_at_iso,
+                            ingested_at=ingested_at_iso,
+                            features={},
+                            trends={},
+                            provenance={},
+                            persistence_status="skipped",
+                            cascade_triggered=False,
+                            message="Duplicate observation ignored.",
+                            hazard_type=hazard_type_val,
+                        )
+
                     ps.log_audit_event_sync(
                         event_type="TELEMETRY_OBSERVATION_INGESTED",
                         severity="INFO",
@@ -263,9 +298,27 @@ class TelemetryIngestionService:
         # Update in-memory state, trend trackers, deduplication cache, and active overlay
         computed_trends: Dict[str, float] = {}
         if not is_out_of_order:
-            prev_data = _PREVIOUS_OBSERVATION.get(sensor_key)
-            if prev_data is not None:
-                prev_dt, prev_feats = prev_data
+            prev_dt = None
+            prev_feats = None
+
+            if ps.is_enabled and ps.db_available:
+                try:
+                    prev_obs_db = ps.get_latest_telemetry_observation_sync(request.incident_id, hazard_type=hazard_type_val, before_dt=observed_dt)
+                    if prev_obs_db and prev_obs_db.get("observed_at"):
+                        prev_dt = parse_and_validate_timestamp(prev_obs_db["observed_at"])
+                        prev_feats = {
+                            "rainfall_intensity": float(prev_obs_db.get("rainfall_intensity", 0.0)),
+                            "water_level": float(prev_obs_db.get("water_level", 0.0)),
+                        }
+                except Exception as tr_err:
+                    logger.debug(f"[TelemetryService] DB trend recovery note: {tr_err}")
+
+            if prev_dt is None and _PREVIOUS_OBSERVATION.get(sensor_key) is not None:
+                p_dt, p_f = _PREVIOUS_OBSERVATION[sensor_key]
+                prev_dt = p_dt
+                prev_feats = p_f
+
+            if prev_dt is not None and prev_feats is not None:
                 delta_t_sec = (observed_dt - prev_dt).total_seconds()
                 delta_t_hours = delta_t_sec / 3600.0
 
@@ -327,10 +380,21 @@ class TelemetryIngestionService:
                     )
                 )
 
-                # Step B: Risk Recomputation with Change Gating
+                # Step B: Risk Recomputation with Change Gating using PostgreSQL Durable State
                 from app.services.risk_engine import compute_risk_state
                 risk_state = compute_risk_state(horizon=0)
-                prev_emitted_risk = _LAST_EMITTED_RISK.get(request.incident_id)
+
+                prev_emitted_risk = None
+                if ps.is_enabled and ps.db_available:
+                    try:
+                        latest_risk_dict = ps.get_latest_risk_prediction_sync(request.incident_id, hazard_type=hazard_type_val)
+                        if latest_risk_dict and latest_risk_dict.get("predicted_risk") is not None:
+                            prev_emitted_risk = float(latest_risk_dict["predicted_risk"])
+                    except Exception as r_err:
+                        logger.debug(f"[TelemetryService] DB latest risk prediction recovery note: {r_err}")
+
+                if prev_emitted_risk is None:
+                    prev_emitted_risk = _LAST_EMITTED_RISK.get(request.incident_id)
 
                 # Gating: emit risk.updated only if risk score changes materially (>= 0.1) or first evaluation
                 if prev_emitted_risk is None or abs(risk_state.predictedRisk - prev_emitted_risk) >= 0.1:

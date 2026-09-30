@@ -253,11 +253,42 @@ def compute_emergency_decision(
 
     # Register decision in memory
     _DECISION_REGISTRY[decision_id] = decision_data
+
+    # Also mark previous RECOMMENDED decisions for same incident & hazard as SUPERSEDED in memory
+    for d_id, d_data in list(_DECISION_REGISTRY.items()):
+        if (
+            d_id != decision_id
+            and d_data.get("incident_id") == incident_id
+            and d_data.get("hazard_type") == h_val
+            and d_data.get("status") == STATE_RECOMMENDED
+        ):
+            d_data["status"] = STATE_SUPERSEDED
+
+    from app.services.persistence_service import get_persistence_service
+    ps = get_persistence_service()
+    if ps.is_enabled and ps.db_available:
+        try:
+            ps.save_decision_sync(decision_data)
+        except Exception as p_err:
+            logger.warning(f"Failed to persist decision {decision_id} to DB: {p_err}")
+            if ps.mode == "required":
+                raise RuntimeError(f"Database decision write failed in required mode: {p_err}") from p_err
+
     return decision_data
 
 
 def get_registered_decision(decision_id: str) -> Optional[Dict[str, Any]]:
-    """Retrieves registered decision payload by decision_id."""
+    """Retrieves registered decision payload by decision_id from DB or memory cache."""
+    from app.services.persistence_service import get_persistence_service
+    ps = get_persistence_service()
+    if ps.is_enabled and ps.db_available:
+        try:
+            db_payload = ps.get_decision_sync(decision_id)
+            if db_payload:
+                return db_payload
+        except Exception as err:
+            logger.warning(f"Failed to fetch decision {decision_id} from DB: {err}")
+
     return _DECISION_REGISTRY.get(decision_id)
 
 
@@ -272,9 +303,9 @@ def transition_decision(
     Valid transitions: RECOMMENDED -> APPROVED | REJECTED | SUPERSEDED.
     Rejects invalid state transitions.
     """
-    decision = _DECISION_REGISTRY.get(decision_id)
+    decision = get_registered_decision(decision_id)
 
-    # If decision_id not in memory registry, create fallback placeholder to maintain deterministic transition testability
+    # If decision_id not in memory registry or DB, create fallback placeholder to maintain deterministic transition testability
     if not decision:
         decision = {
             "decision_id": decision_id,
@@ -290,7 +321,7 @@ def transition_decision(
     if decision.get("status") == "UNAVAILABLE" or decision.get("decision_support_available") is False:
         return False, f"Cannot transition decision for hazard without operational decision support: '{decision.get('hazard_type')}'", decision
 
-    current_status = decision["status"]
+    current_status = decision.get("status", STATE_RECOMMENDED)
     allowed = VALID_TRANSITIONS.get(current_status, set())
 
     if new_status not in allowed:
@@ -301,14 +332,36 @@ def transition_decision(
         logger.warning(err_msg)
         return False, err_msg, decision
 
-    # Execute state transition
     now_iso = datetime.now(timezone.utc).isoformat()
+    workflow_id = f"WF-{uuid.uuid4().hex[:8].upper()}"
+
+    from app.services.persistence_service import get_persistence_service
+    ps = get_persistence_service()
+    if ps.is_enabled and ps.db_available:
+        success_db, updated_dict = ps.transition_decision_status_sync(
+            decision_id=decision_id,
+            expected_status=current_status,
+            new_status=new_status,
+            responder_id=responder_id,
+            reason=reason,
+            workflow_id=workflow_id,
+        )
+        if not success_db:
+            err_msg = (
+                f"Invalid state transition: Cannot transition decision '{decision_id}' "
+                f"from '{current_status}' to '{new_status}' (atomic DB expected status mismatch)."
+            )
+            logger.warning(err_msg)
+            return False, err_msg, decision
+        if updated_dict:
+            decision = updated_dict
+
+    # Execute in-memory state transition for memory cache consistency
     decision["status"] = new_status
     decision["updated_at"] = now_iso
     decision["action_by"] = responder_id
     decision["action_reason"] = reason
-
-    workflow_id = f"WF-{uuid.uuid4().hex[:8].upper()}"
     decision["workflow_id"] = workflow_id
+    _DECISION_REGISTRY[decision_id] = decision
 
     return True, f"Decision '{decision_id}' transitioned to {new_status} by {responder_id}", decision

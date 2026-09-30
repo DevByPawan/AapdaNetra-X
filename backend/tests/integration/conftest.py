@@ -36,6 +36,22 @@ async def test_engine():
     await engine.dispose()
 
 
+@pytest.fixture(scope="session", autouse=True)
+async def init_db_manager(test_engine):
+    from app.config import settings
+    from app.db.session import get_db_manager
+    orig_mode = settings.persistence_mode
+    orig_url = settings.database_url
+    settings.persistence_mode = "required"
+    settings.database_url = TEST_DB_URL
+    db_mgr = get_db_manager()
+    await db_mgr.initialize(TEST_DB_URL)
+    yield db_mgr
+    await db_mgr.dispose()
+    settings.persistence_mode = orig_mode
+    settings.database_url = orig_url
+
+
 @pytest.fixture
 async def test_db_session(test_engine):
     """Function-scoped AsyncSession with clean table truncation post-test."""
@@ -49,8 +65,8 @@ async def test_db_session(test_engine):
     async with test_engine.begin() as conn:
         await conn.execute(
             text(
-                "TRUNCATE TABLE audit_events, alerts, simulations, evacuation_routes, "
-                "shap_records, risk_predictions, telemetry_observations, critical_assets, "
-                "incidents CASCADE;"
+                "TRUNCATE TABLE decisions, audit_events, alerts, simulations, evacuation_routes, "
+"shap_records, risk_predictions, telemetry_observations, critical_assets, "
+"incidents CASCADE;"
             )
         )

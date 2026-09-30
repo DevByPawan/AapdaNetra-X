@@ -168,8 +168,14 @@ export function WhatIfSimulation() {
               <div className="my-2 p-1.5 rounded bg-[#040a12] border border-[#1b2b3a] text-[8px]">
                 <div className="font-bold text-[#35c7d9] mb-1">Route & Safety Evaluation</div>
                 <div className="flex justify-between text-ax-muted">
-                  <span>Baseline: {result.routes.baseline_route?.name} ({result.routes.baseline_route?.eta} min)</span>
-                  <span>Scenario: {result.routes.scenario_route?.name} ({result.routes.scenario_route?.eta} min)</span>
+                  <span>
+                    Baseline: {typeof result.routes.baseline_route === 'string' ? result.routes.baseline_route : (result.routes.baseline_route?.name || 'Primary Route')}
+                    {typeof result.routes.baseline_route === 'object' && result.routes.baseline_route?.eta ? ` (${result.routes.baseline_route.eta} min)` : ''}
+                  </span>
+                  <span>
+                    Scenario: {typeof result.routes.scenario_route === 'string' ? result.routes.scenario_route : (result.routes.scenario_route?.name || 'Scenario Route')}
+                    {typeof result.routes.scenario_route === 'object' && result.routes.scenario_route?.eta ? ` (${result.routes.scenario_route.eta} min)` : ''}
+                  </span>
                 </div>
                 {result.routes.route_changed && (
                   <div className="text-[#ffc277] mt-1 font-bold">⚠ Route changed: {result.routes.reason}</div>

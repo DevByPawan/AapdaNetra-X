@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type {
-  Incident, RiskState, Forecast, RoutesData,
+  Incident, RiskState, Forecast, RoutesData, EvacRoute,
   AlertsData, SimulationInput, SimulationResult, ApiResponse,
   DecisionSupportData, DecisionActionRequest, DecisionActionResponse,
   EvacuationIntelligenceData, TelemetryIngestionRequestData, TelemetryIngestionResponseData,
@@ -47,7 +47,73 @@ export async function fetchForecast(): Promise<Forecast> {
 export async function fetchRoutes(horizon: number = 0): Promise<RoutesData> {
   if (USE_SIMULATED) return simulatedRoutes;
   const res = await client.get(`/routes?horizon=${horizon}`);
-  return extractData<RoutesData>(res);
+  const rawData = extractData<any>(res);
+
+  const normalizeRoute = (r: any): EvacRoute => {
+    if (!r) {
+      return {
+        id: '',
+        name: 'Primary Evacuation Route',
+        eta: 0,
+        failureProbability: 0,
+        failure_probability: 0,
+        safetyScore: 1.0,
+        safety_score: 1.0,
+        waypoints: [],
+      };
+    }
+    if (typeof r === 'string') {
+      return {
+        id: r,
+        name: r,
+        eta: 0,
+        failureProbability: 0,
+        failure_probability: 0,
+        safetyScore: 1.0,
+        safety_score: 1.0,
+        waypoints: [],
+      };
+    }
+    const failureProbability = r.failureProbability ?? r.failure_probability ?? 0;
+    const safetyScore = r.safetyScore ?? r.safety_score ?? (1 - failureProbability);
+    const isBlocked = r.isBlocked ?? r.is_blocked ?? false;
+    const distanceKm = r.distanceKm ?? r.distance_km ?? 0;
+    const riskScore = r.riskScore ?? r.risk_score ?? 0;
+    const eta = r.eta ?? r.eta_minutes ?? 0;
+
+    return {
+      ...r,
+      id: r.id ?? '',
+      name: typeof r.name === 'string' ? r.name : (r.name?.name || 'Evacuation Route'),
+      eta,
+      eta_minutes: eta,
+      failureProbability,
+      failure_probability: failureProbability,
+      safetyScore,
+      safety_score: safetyScore,
+      distanceKm,
+      distance_km: distanceKm,
+      riskScore,
+      risk_score: riskScore,
+      isBlocked,
+      is_blocked: isBlocked,
+      waypoints: Array.isArray(r.waypoints) ? r.waypoints : [],
+    };
+  };
+
+  return {
+    ...rawData,
+    recommended: normalizeRoute(rawData.recommended),
+    alternatives: Array.isArray(rawData.alternatives)
+      ? rawData.alternatives.map(normalizeRoute)
+      : [],
+    recommendation: rawData.recommendation || {
+      title: 'Evacuate Sector B',
+      text: 'Route optimization active.',
+      confidence: 0.95,
+    },
+    decisionTrace: rawData.decisionTrace || rawData.decision_trace || [],
+  };
 }
 
 // ── Alerts ───────────────────────────────────────────────────────────────

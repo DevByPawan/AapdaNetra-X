@@ -16,6 +16,11 @@ import logging
 from typing import Optional, List, Dict, Any, Tuple
 import uuid
 
+import asyncio
+import concurrent.futures
+
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+
 from app.config import settings
 from app.db.session import get_db_manager
 from app.db.repositories import (
@@ -28,6 +33,7 @@ from app.db.repositories import (
     SimulationRepository,
     AlertRepository,
     AuditEventRepository,
+    DecisionRepository,
 )
 from app.db.models import (
     Incident,
@@ -39,9 +45,37 @@ from app.db.models import (
     Simulation,
     Alert,
     AuditEvent,
+    Decision,
 )
 
 logger = logging.getLogger("aapdanetra.persistence")
+
+
+def run_async_in_sync(async_func: Any, *args: Any, **kwargs: Any) -> Any:
+    """Safely executes an async session-based function synchronously by creating an isolated event loop, engine, and session."""
+    def worker():
+        async def runner():
+            url = settings.effective_database_url
+            engine = create_async_engine(url, pool_pre_ping=True)
+            try:
+                session_factory = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+                async with session_factory() as session:
+                    return await async_func(session, *args, **kwargs)
+            finally:
+                await engine.dispose()
+
+        return asyncio.run(runner())
+
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+
+    if loop and loop.is_running():
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            return executor.submit(worker).result()
+    else:
+        return worker()
 
 
 class PersistenceService:
@@ -231,6 +265,31 @@ class PersistenceService:
                 raise RuntimeError(f"Database update failed in required mode: {exc}") from exc
             return False
 
+    async def _log_audit_event_impl(
+        self,
+        session: AsyncSession,
+        event_type: str,
+        severity: str,
+        source: str,
+        description: str,
+        actor: Optional[str] = None,
+        event_data: Optional[Dict[str, Any]] = None,
+        incident_id: Optional[str] = None,
+    ) -> bool:
+        repo = AuditEventRepository(session)
+        await repo.log_event(
+            event_type=event_type,
+            severity=severity,
+            source=source,
+            description=description,
+            actor=actor,
+            event_data=event_data,
+            incident_id=incident_id,
+        )
+        await session.commit()
+        self._publish_audit_event_as_sse(event_type, severity, description, actor, event_data, incident_id, status="persisted")
+        return True
+
     async def log_audit_event(
         self,
         event_type: str,
@@ -256,20 +315,9 @@ class PersistenceService:
         try:
             db_mgr = get_db_manager()
             async with db_mgr.get_session() as session:
-                async with session.begin():
-                    repo = AuditEventRepository(session)
-                    await repo.log_event(
-                        event_type=event_type,
-                        severity=severity,
-                        source=source,
-                        description=description,
-                        actor=actor,
-                        event_data=event_data,
-                        incident_id=incident_id,
-                    )
-            logger.info("Audit log event recorded: %s (%s)", event_type, severity)
-            self._publish_audit_event_as_sse(event_type, severity, description, actor, event_data, incident_id, status="persisted")
-            return True
+                return await self._log_audit_event_impl(
+                    session, event_type, severity, source, description, actor, event_data, incident_id
+                )
         except Exception as exc:
             logger.error("Failed to log audit event: %s", exc)
             if self.mode == "required":
@@ -403,6 +451,580 @@ class PersistenceService:
                     persistence_status=status,
                 )
             )
+
+    def log_audit_event_sync(
+        self,
+        event_type: str,
+        severity: str,
+        source: str,
+        description: str,
+        actor: Optional[str] = None,
+        event_data: Optional[Dict[str, Any]] = None,
+        incident_id: Optional[str] = None,
+    ) -> bool:
+        if not self.is_enabled or not self.db_available:
+            return False
+        try:
+            return run_async_in_sync(
+                self._log_audit_event_impl,
+                event_type,
+                severity,
+                source,
+                description,
+                actor,
+                event_data,
+                incident_id,
+            )
+        except Exception as exc:
+            logger.error("Failed to log audit event (sync): %s", exc)
+            if self.mode == "required":
+                raise RuntimeError(f"Database audit write failed in required mode: {exc}") from exc
+            return False
+
+    # ── Telemetry & Risk Durable State Implementation Helpers ────────────────
+    def _telemetry_to_dict(self, obs: TelemetryObservation) -> Dict[str, Any]:
+        return {
+            "id": str(obs.id),
+            "incident_id": obs.incident_id,
+            "hazard_type": obs.hazard_type,
+            "data_mode": obs.data_mode,
+            "fallback_used": obs.fallback_used,
+            "rainfall_intensity": obs.rainfall_intensity,
+            "rainfall_trend": obs.rainfall_trend,
+            "water_level": obs.water_level,
+            "water_level_trend": obs.water_level_trend,
+            "road_congestion": obs.road_congestion,
+            "population_exposure": obs.population_exposure,
+            "infrastructure_vulnerability": obs.infrastructure_vulnerability,
+            "provenance": obs.provenance if isinstance(obs.provenance, dict) else {},
+            "provider_metadata": obs.provider_metadata if isinstance(obs.provider_metadata, dict) else {},
+            "fingerprint": obs.fingerprint,
+            "observed_at": obs.observed_at.isoformat() if obs.observed_at else None,
+            "created_at": obs.created_at.isoformat() if obs.created_at else None,
+        }
+
+    def _prediction_to_dict(self, pred: RiskPrediction) -> Dict[str, Any]:
+        return {
+            "id": str(pred.id),
+            "incident_id": pred.incident_id,
+            "hazard_type": pred.hazard_type,
+            "horizon": pred.horizon,
+            "current_risk": pred.current_risk,
+            "predicted_risk": pred.predicted_risk,
+            "risk_category": pred.risk_category,
+            "confidence": pred.confidence,
+            "prediction_reliability": pred.prediction_reliability,
+            "created_at": pred.created_at.isoformat() if pred.created_at else None,
+        }
+
+    async def _save_telemetry_observation_impl(
+        self, session: AsyncSession, obs_data: Dict[str, Any]
+    ) -> Tuple[str, Optional[Dict[str, Any]]]:
+        from sqlalchemy.exc import IntegrityError
+        repo = TelemetryRepository(session)
+        fp = obs_data.get("fingerprint")
+
+        if fp:
+            existing = await repo.get_by_fingerprint(fp)
+            if existing:
+                return "duplicate_ignored", self._telemetry_to_dict(existing)
+
+        obs_orm = TelemetryObservation(
+            id=uuid.uuid4(),
+            incident_id=obs_data.get("incident_id"),
+            hazard_type=obs_data.get("hazard_type", "flood"),
+            data_mode=obs_data.get("data_mode", settings.data_mode),
+            fallback_used=obs_data.get("fallback_used", False),
+            rainfall_intensity=obs_data.get("rainfall_intensity", 0.0),
+            rainfall_trend=obs_data.get("rainfall_trend", 0.0),
+            water_level=obs_data.get("water_level", 0.0),
+            water_level_trend=obs_data.get("water_level_trend", 0.0),
+            road_congestion=obs_data.get("road_congestion", 0.0),
+            population_exposure=obs_data.get("population_exposure", 0.0),
+            infrastructure_vulnerability=obs_data.get("infrastructure_vulnerability", 0.0),
+            provenance=obs_data.get("provenance", {}),
+            provider_metadata=obs_data.get("provider_metadata", {}),
+            fingerprint=fp,
+            observed_at=obs_data.get("observed_at"),
+        )
+        try:
+            await repo.create_observation(obs_orm)
+            await session.commit()
+            return "persisted", self._telemetry_to_dict(obs_orm)
+        except IntegrityError:
+            await session.rollback()
+            if fp:
+                existing = await repo.get_by_fingerprint(fp)
+                if existing:
+                    return "duplicate_ignored", self._telemetry_to_dict(existing)
+            raise
+
+    async def _get_latest_telemetry_observation_impl(
+        self,
+        session: AsyncSession,
+        incident_id: str,
+        hazard_type: Optional[str] = None,
+        before_dt: Optional[datetime] = None,
+    ) -> Optional[Dict[str, Any]]:
+        repo = TelemetryRepository(session)
+        obs = await repo.get_latest_observation(incident_id, hazard_type, before_dt=before_dt)
+        return self._telemetry_to_dict(obs) if obs else None
+
+    async def _get_latest_risk_prediction_impl(
+        self, session: AsyncSession, incident_id: str, hazard_type: Optional[str] = None
+    ) -> Optional[Dict[str, Any]]:
+        repo = RiskPredictionRepository(session)
+        pred = await repo.get_latest_by_horizon(incident_id, horizon=0)
+        if pred and (hazard_type is None or pred.hazard_type == hazard_type):
+            return self._prediction_to_dict(pred)
+        return None
+
+    # ── Telemetry & Risk Durable State Public API ────────────────────────────
+    async def save_telemetry_observation(
+        self, obs_data: Dict[str, Any]
+    ) -> Tuple[str, Optional[Dict[str, Any]]]:
+        if not self.is_enabled or not self.db_available:
+            return "disabled", None
+        try:
+            db_mgr = get_db_manager()
+            async with db_mgr.get_session() as session:
+                return await self._save_telemetry_observation_impl(session, obs_data)
+        except Exception as exc:
+            logger.error("Failed to save telemetry observation to DB: %s", exc)
+            if self.mode == "required":
+                raise RuntimeError(f"Database telemetry write failed in required mode: {exc}") from exc
+            return "failed", None
+
+    def save_telemetry_observation_sync(
+        self, obs_data: Dict[str, Any]
+    ) -> Tuple[str, Optional[Dict[str, Any]]]:
+        if not self.is_enabled or not self.db_available:
+            return "disabled", None
+        try:
+            return run_async_in_sync(self._save_telemetry_observation_impl, obs_data)
+        except Exception as exc:
+            logger.error("Failed to save telemetry observation to DB (sync): %s", exc)
+            if self.mode == "required":
+                raise RuntimeError(f"Database telemetry write failed in required mode: {exc}") from exc
+            return "failed", None
+
+    async def get_latest_telemetry_observation(
+        self,
+        incident_id: str,
+        hazard_type: Optional[str] = None,
+        before_dt: Optional[datetime] = None,
+    ) -> Optional[Dict[str, Any]]:
+        if not self.is_enabled or not self.db_available:
+            return None
+        try:
+            db_mgr = get_db_manager()
+            async with db_mgr.get_session() as session:
+                return await self._get_latest_telemetry_observation_impl(
+                    session, incident_id, hazard_type, before_dt=before_dt
+                )
+        except Exception as exc:
+            logger.error("Failed to fetch latest telemetry observation from DB: %s", exc)
+            return None
+
+    def get_latest_telemetry_observation_sync(
+        self,
+        incident_id: str,
+        hazard_type: Optional[str] = None,
+        before_dt: Optional[datetime] = None,
+    ) -> Optional[Dict[str, Any]]:
+        if not self.is_enabled or not self.db_available:
+            return None
+        try:
+            return run_async_in_sync(
+                self._get_latest_telemetry_observation_impl,
+                incident_id,
+                hazard_type,
+                before_dt,
+            )
+        except Exception as exc:
+            logger.error("Failed to fetch latest telemetry observation from DB (sync): %s", exc)
+            return None
+
+    async def get_latest_risk_prediction(
+        self, incident_id: str, hazard_type: Optional[str] = None
+    ) -> Optional[Dict[str, Any]]:
+        if not self.is_enabled or not self.db_available:
+            return None
+        try:
+            db_mgr = get_db_manager()
+            async with db_mgr.get_session() as session:
+                return await self._get_latest_risk_prediction_impl(session, incident_id, hazard_type)
+        except Exception as exc:
+            logger.error("Failed to fetch latest risk prediction from DB: %s", exc)
+            return None
+
+    def get_latest_risk_prediction_sync(
+        self, incident_id: str, hazard_type: Optional[str] = None
+    ) -> Optional[Dict[str, Any]]:
+        if not self.is_enabled or not self.db_available:
+            return None
+        try:
+            return run_async_in_sync(self._get_latest_risk_prediction_impl, incident_id, hazard_type)
+        except Exception as exc:
+            logger.error("Failed to fetch latest risk prediction from DB (sync): %s", exc)
+            return None
+
+    # ── Decision Support Implementation Helpers ───────────────────────────────
+    async def _save_decision_impl(self, session: AsyncSession, decision_data: Dict[str, Any]) -> bool:
+        repo = DecisionRepository(session)
+        await repo.supersede_previous_recommendations(
+            incident_id=decision_data.get("incident_id", "INC-2026-DEFAULT"),
+            hazard_type=decision_data.get("hazard_type", "flood"),
+            exclude_decision_id=decision_data.get("decision_id"),
+        )
+        dec_orm = Decision(
+            id=decision_data["decision_id"],
+            incident_id=decision_data.get("incident_id", "INC-2026-DEFAULT"),
+            hazard_type=decision_data.get("hazard_type", "flood"),
+            status=decision_data.get("status", "RECOMMENDED"),
+            priority=decision_data.get("priority", "LOW"),
+            risk_score=decision_data.get("risk_score"),
+            payload=decision_data,
+        )
+        await repo.save_decision(dec_orm)
+        await session.commit()
+        return True
+
+    async def _get_decision_impl(self, session: AsyncSession, decision_id: str) -> Optional[Dict[str, Any]]:
+        repo = DecisionRepository(session)
+        dec = await repo.get_by_id(decision_id)
+        if dec:
+            payload = dict(dec.payload) if isinstance(dec.payload, dict) else {}
+            payload["status"] = dec.status
+            return payload
+        return None
+
+    async def _get_latest_active_decision_impl(
+        self, session: AsyncSession, incident_id: str, hazard_type: Optional[str] = None
+    ) -> Optional[Dict[str, Any]]:
+        repo = DecisionRepository(session)
+        dec = await repo.get_latest_active_decision(incident_id, hazard_type)
+        if dec:
+            payload = dict(dec.payload) if isinstance(dec.payload, dict) else {}
+            payload["status"] = dec.status
+            return payload
+        return None
+
+    async def _transition_decision_status_impl(
+        self,
+        session: AsyncSession,
+        decision_id: str,
+        expected_status: str,
+        new_status: str,
+        responder_id: Optional[str] = None,
+        reason: Optional[str] = None,
+        workflow_id: Optional[str] = None,
+    ) -> Tuple[bool, Optional[Dict[str, Any]]]:
+        repo = DecisionRepository(session)
+        dec = await repo.transition_status(
+            decision_id=decision_id,
+            expected_status=expected_status,
+            new_status=new_status,
+            reason=reason,
+            responder_id=responder_id,
+        )
+        if dec:
+            payload = dict(dec.payload) if isinstance(dec.payload, dict) else {}
+            payload["status"] = dec.status
+            if responder_id:
+                payload["action_by"] = responder_id
+            if reason:
+                payload["action_reason"] = reason
+            if workflow_id:
+                payload["workflow_id"] = workflow_id
+            dec.payload = payload
+            await session.commit()
+            return True, payload
+        return False, None
+
+    async def _get_latest_recommended_route_impl(
+        self, session: AsyncSession, incident_id: str, hazard_type: Optional[str] = None
+    ) -> Optional[Dict[str, Any]]:
+        repo = EvacuationRouteRepository(session)
+        route = await repo.get_recommended_route(incident_id, hazard_type=hazard_type)
+        if route:
+            risk_sum = dict(route.risk_summary) if isinstance(route.risk_summary, dict) else {}
+            return {
+                "route_id": risk_sum.get("route_id", route.route_name),
+                "route_name": route.route_name,
+                "created_at": route.created_at.isoformat() if route.created_at else None,
+                "safety_score": route.safety_score,
+            }
+        return None
+
+    async def _save_evacuation_routes_impl(
+        self, session: AsyncSession, incident_id: str, response: Any
+    ) -> bool:
+        repo = EvacuationRouteRepository(session)
+        routes_to_save: List[EvacuationRoute] = []
+
+        def _to_dict(obj: Any) -> Dict[str, Any]:
+            if hasattr(obj, "model_dump"):
+                return obj.model_dump()
+            if hasattr(obj, "dict"):
+                return obj.dict()
+            return obj if isinstance(obj, dict) else {}
+
+        rec = getattr(response, "recommended_route", None)
+        if rec:
+            wp_dicts = [_to_dict(w) for w in rec.waypoints] if hasattr(rec, "waypoints") and rec.waypoints else []
+            orig_w = wp_dicts[0] if wp_dicts else {}
+            dest_w = wp_dicts[-1] if wp_dicts else {}
+            score_details_val = _to_dict(rec.score_details)
+
+            routes_to_save.append(
+                EvacuationRoute(
+                    id=uuid.uuid4(),
+                    incident_id=incident_id,
+                    route_name=rec.name,
+                    route_type="primary",
+                    is_recommended=True,
+                    hazard_type=getattr(response, "hazard_type", "flood"),
+                    origin_name=orig_w.get("label", "Origin"),
+                    origin_lat=orig_w.get("lat", 28.6448),
+                    origin_lon=orig_w.get("lng", 77.2167),
+                    destination_name=dest_w.get("label", "Destination"),
+                    destination_lat=dest_w.get("lat", 28.6310),
+                    destination_lon=dest_w.get("lng", 77.2450),
+                    waypoint_coords=wp_dicts,
+                    distance_km=rec.distance_km,
+                    estimated_minutes=float(rec.eta),
+                    safety_score=rec.safety_score,
+                    congestion_index=round(1.0 - float(rec.safety_score), 2),
+                    risk_summary={
+                        "route_id": rec.id,
+                        "route_name": rec.name,
+                        "status": rec.status,
+                        "score_details": score_details_val,
+                    },
+                )
+            )
+
+        for alt in (getattr(response, "alternative_routes", []) or []):
+            wp_dicts = [_to_dict(w) for w in alt.waypoints] if hasattr(alt, "waypoints") and alt.waypoints else []
+            orig_w = wp_dicts[0] if wp_dicts else {}
+            dest_w = wp_dicts[-1] if wp_dicts else {}
+            score_details_val = _to_dict(alt.score_details)
+
+            routes_to_save.append(
+                EvacuationRoute(
+                    id=uuid.uuid4(),
+                    incident_id=incident_id,
+                    route_name=alt.name,
+                    route_type="alternative",
+                    is_recommended=False,
+                    hazard_type=getattr(response, "hazard_type", "flood"),
+                    origin_name=orig_w.get("label", "Origin"),
+                    origin_lat=orig_w.get("lat", 28.6448),
+                    origin_lon=orig_w.get("lng", 77.2167),
+                    destination_name=dest_w.get("label", "Destination"),
+                    destination_lat=dest_w.get("lat", 28.6310),
+                    destination_lon=dest_w.get("lng", 77.2450),
+                    waypoint_coords=wp_dicts,
+                    distance_km=alt.distance_km,
+                    estimated_minutes=float(alt.eta),
+                    safety_score=alt.safety_score,
+                    congestion_index=round(1.0 - float(alt.safety_score), 2),
+                    risk_summary={
+                        "route_id": alt.id,
+                        "route_name": alt.name,
+                        "status": alt.status,
+                        "score_details": score_details_val,
+                    },
+                )
+            )
+
+        if routes_to_save:
+            await repo.save_routes(routes_to_save)
+            await session.commit()
+        return True
+
+    # ── Decision Support Durable State (Public API) ───────────────────────────
+    async def save_decision(self, decision_data: Dict[str, Any]) -> bool:
+        """Persist a decision recommendation record into decisions table."""
+        if not self.is_enabled or not self.db_available:
+            return False
+
+        try:
+            db_mgr = get_db_manager()
+            async with db_mgr.get_session() as session:
+                return await self._save_decision_impl(session, decision_data)
+        except Exception as exc:
+            logger.error("Failed to persist decision to DB: %s", exc)
+            if self.mode == "required":
+                raise RuntimeError(f"Database write failed in required mode: {exc}") from exc
+            return False
+
+    def save_decision_sync(self, decision_data: Dict[str, Any]) -> bool:
+        if not self.is_enabled or not self.db_available:
+            return False
+        try:
+            return run_async_in_sync(self._save_decision_impl, decision_data)
+        except Exception as exc:
+            logger.error("Failed to persist decision to DB (sync): %s", exc)
+            if self.mode == "required":
+                raise RuntimeError(f"Database write failed in required mode: {exc}") from exc
+            return False
+
+    async def get_decision(self, decision_id: str) -> Optional[Dict[str, Any]]:
+        """Fetch decision record by ID from decisions table."""
+        if not self.is_enabled or not self.db_available:
+            return None
+
+        try:
+            db_mgr = get_db_manager()
+            async with db_mgr.get_session() as session:
+                return await self._get_decision_impl(session, decision_id)
+        except Exception as exc:
+            logger.error("Failed to fetch decision from DB: %s", exc)
+            return None
+
+    def get_decision_sync(self, decision_id: str) -> Optional[Dict[str, Any]]:
+        if not self.is_enabled or not self.db_available:
+            return None
+        try:
+            return run_async_in_sync(self._get_decision_impl, decision_id)
+        except Exception as exc:
+            logger.error("Failed to fetch decision from DB (sync): %s", exc)
+            return None
+
+    async def get_latest_active_decision(
+        self, incident_id: str, hazard_type: Optional[str] = None
+    ) -> Optional[Dict[str, Any]]:
+        """Fetch the latest active decision record from decisions table."""
+        if not self.is_enabled or not self.db_available:
+            return None
+
+        try:
+            db_mgr = get_db_manager()
+            async with db_mgr.get_session() as session:
+                return await self._get_latest_active_decision_impl(session, incident_id, hazard_type)
+        except Exception as exc:
+            logger.error("Failed to fetch latest active decision from DB: %s", exc)
+            return None
+
+    def get_latest_active_decision_sync(
+        self, incident_id: str, hazard_type: Optional[str] = None
+    ) -> Optional[Dict[str, Any]]:
+        if not self.is_enabled or not self.db_available:
+            return None
+        try:
+            return run_async_in_sync(self._get_latest_active_decision_impl, incident_id, hazard_type)
+        except Exception as exc:
+            logger.error("Failed to fetch latest active decision from DB (sync): %s", exc)
+            return None
+
+    async def transition_decision_status(
+        self,
+        decision_id: str,
+        expected_status: str,
+        new_status: str,
+        responder_id: Optional[str] = None,
+        reason: Optional[str] = None,
+        workflow_id: Optional[str] = None,
+    ) -> Tuple[bool, Optional[Dict[str, Any]]]:
+        """Atomic status transition on decisions table."""
+        if not self.is_enabled or not self.db_available:
+            return False, None
+
+        try:
+            db_mgr = get_db_manager()
+            async with db_mgr.get_session() as session:
+                return await self._transition_decision_status_impl(
+                    session, decision_id, expected_status, new_status, responder_id, reason, workflow_id
+                )
+        except Exception as exc:
+            logger.error("Failed to transition decision status in DB: %s", exc)
+            if self.mode == "required":
+                raise RuntimeError(f"Database status transition failed in required mode: {exc}") from exc
+            return False, None
+
+    def transition_decision_status_sync(
+        self,
+        decision_id: str,
+        expected_status: str,
+        new_status: str,
+        responder_id: Optional[str] = None,
+        reason: Optional[str] = None,
+        workflow_id: Optional[str] = None,
+    ) -> Tuple[bool, Optional[Dict[str, Any]]]:
+        if not self.is_enabled or not self.db_available:
+            return False, None
+        try:
+            return run_async_in_sync(
+                self._transition_decision_status_impl,
+                decision_id,
+                expected_status,
+                new_status,
+                responder_id,
+                reason,
+                workflow_id,
+            )
+        except Exception as exc:
+            logger.error("Failed to transition decision status in DB (sync): %s", exc)
+            if self.mode == "required":
+                raise RuntimeError(f"Database status transition failed in required mode: {exc}") from exc
+            return False, None
+
+    # ── Evacuation Route Durable State (Public API) ───────────────────────────
+    async def get_latest_recommended_route(
+        self, incident_id: str, hazard_type: Optional[str] = None
+    ) -> Optional[Dict[str, Any]]:
+        """Fetch the latest recommended EvacuationRoute from DB for route change tracking."""
+        if not self.is_enabled or not self.db_available:
+            return None
+
+        try:
+            db_mgr = get_db_manager()
+            async with db_mgr.get_session() as session:
+                return await self._get_latest_recommended_route_impl(session, incident_id, hazard_type)
+        except Exception as exc:
+            logger.error("Failed to fetch latest recommended route from DB: %s", exc)
+            return None
+
+    def get_latest_recommended_route_sync(
+        self, incident_id: str, hazard_type: Optional[str] = None
+    ) -> Optional[Dict[str, Any]]:
+        if not self.is_enabled or not self.db_available:
+            return None
+        try:
+            return run_async_in_sync(self._get_latest_recommended_route_impl, incident_id, hazard_type)
+        except Exception as exc:
+            logger.error("Failed to fetch latest recommended route from DB (sync): %s", exc)
+            return None
+
+    async def save_evacuation_routes(
+        self, incident_id: str, response: Any
+    ) -> bool:
+        """Persist recommended and alternative routes from EvacuationIntelligenceResponse into DB."""
+        if not self.is_enabled or not self.db_available:
+            return False
+
+        try:
+            db_mgr = get_db_manager()
+            async with db_mgr.get_session() as session:
+                return await self._save_evacuation_routes_impl(session, incident_id, response)
+        except Exception as exc:
+            logger.error("Failed to save evacuation routes to DB: %s", exc)
+            if self.mode == "required":
+                raise RuntimeError(f"Database evacuation route write failed in required mode: {exc}") from exc
+            return False
+
+    def save_evacuation_routes_sync(self, incident_id: str, response: Any) -> bool:
+        if not self.is_enabled or not self.db_available:
+            return False
+        try:
+            return run_async_in_sync(self._save_evacuation_routes_impl, incident_id, response)
+        except Exception as exc:
+            logger.error("Failed to save evacuation routes to DB (sync): %s", exc)
+            if self.mode == "required":
+                raise RuntimeError(f"Database evacuation route write failed in required mode: {exc}") from exc
+            return False
 
 
 _persistence_service: Optional[PersistenceService] = None
