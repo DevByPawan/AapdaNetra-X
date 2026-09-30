@@ -63,8 +63,15 @@ export interface EvacRoute {
   id: string;
   name: string;
   eta: number;
+  eta_minutes?: number;
   failureProbability: number;
+  failure_probability?: number;
   safetyScore: number;
+  safety_score?: number;
+  distanceKm?: number;
+  distance_km?: number;
+  riskScore?: number;
+  risk_score?: number;
   waypoints: RouteWaypoint[];
   isBlocked?: boolean;
   is_blocked?: boolean;
@@ -449,7 +456,15 @@ export interface DecisionSupportData {
     route_spatial_hazard?: number | null;
     provenance: string;
   };
-  route_recommendation: string;
+  route_recommendation?: string | {
+    id?: string;
+    name?: string;
+    eta?: number;
+    failure_probability?: number;
+    failureProbability?: number;
+    safety_score?: number;
+    safetyScore?: number;
+  } | null;
   route_safety: number;
   route_eta: number;
   active_alerts: Array<{ id: string; title: string; severity: string }>;

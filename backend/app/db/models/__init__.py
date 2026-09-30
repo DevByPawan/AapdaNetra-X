@@ -7,6 +7,7 @@ from app.db.base import Base
 from app.db.models.alert import Alert
 from app.db.models.asset import CriticalAsset
 from app.db.models.audit import AuditEvent
+from app.db.models.decision import Decision
 from app.db.models.incident import Incident
 from app.db.models.risk import RiskPrediction
 from app.db.models.route import EvacuationRoute
@@ -25,4 +26,5 @@ __all__ = [
     "Simulation",
     "Alert",
     "AuditEvent",
+    "Decision",
 ]

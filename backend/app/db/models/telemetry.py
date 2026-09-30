@@ -71,6 +71,11 @@ class TelemetryObservation(Base):
     provenance = mapped_column(JSONB, nullable=False)
     provider_metadata = mapped_column(JSONB, nullable=True)
 
+    # ── Durable Idempotency ─────────────────────────────────────────
+    fingerprint: Mapped[str | None] = mapped_column(
+        String(64), nullable=True
+    )
+
     # ── Timestamps ───────────────────────────────────────────────────
     observed_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()

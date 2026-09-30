@@ -47,6 +47,9 @@ async def lifespan(app: FastAPI):
 
         if success:
             logger.info("Persistence mode: %s — database ready", mode)
+            from app.events.broker import get_event_broker
+            broker = get_event_broker()
+            await broker.start_listener()
         elif mode == "required":
             logger.error(
                 "Persistence mode: required — database unavailable: %s",
@@ -64,6 +67,10 @@ async def lifespan(app: FastAPI):
     yield  # ── Application runs here ──
 
     # ── Shutdown ──────────────────────────────────────────────────────
+    from app.events.broker import get_event_broker
+    broker = get_event_broker()
+    await broker.stop_listener()
+
     if mode != "disabled":
         from app.db.session import get_db_manager
 

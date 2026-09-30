@@ -42,14 +42,37 @@ class TelemetryRepository(BaseRepository[TelemetryObservation]):
         await self.session.flush()
         return observation
 
+    async def get_by_fingerprint(self, fingerprint: str) -> Optional[TelemetryObservation]:
+        """Fetch telemetry observation by unique fingerprint hash."""
+        stmt = (
+            select(TelemetryObservation)
+            .where(TelemetryObservation.fingerprint == fingerprint)
+            .limit(1)
+        )
+        result = await self.session.execute(stmt)
+        return result.scalars().first()
+
     async def get_latest(
         self, incident_id: Optional[str] = None
     ) -> Optional[TelemetryObservation]:
         """Fetch the most recent telemetry observation."""
+        return await self.get_latest_observation(incident_id=incident_id)
+
+    async def get_latest_observation(
+        self,
+        incident_id: Optional[str] = None,
+        hazard_type: Optional[str] = None,
+        before_dt: Optional[datetime] = None,
+    ) -> Optional[TelemetryObservation]:
+        """Fetch the most recent telemetry observation by incident_id, optional hazard_type, and optional before_dt cutoff."""
         stmt = select(TelemetryObservation)
         if incident_id:
             stmt = stmt.where(TelemetryObservation.incident_id == incident_id)
-        stmt = stmt.order_by(TelemetryObservation.observed_at.desc()).limit(1)
+        if hazard_type:
+            stmt = stmt.where(TelemetryObservation.hazard_type == hazard_type)
+        if before_dt:
+            stmt = stmt.where(TelemetryObservation.observed_at < before_dt)
+        stmt = stmt.order_by(TelemetryObservation.observed_at.desc(), TelemetryObservation.id.desc()).limit(1)
         result = await self.session.execute(stmt)
         return result.scalars().first()
 

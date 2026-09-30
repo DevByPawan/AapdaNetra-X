@@ -44,6 +44,35 @@ export function AIRecommendation({ routesData, incidentId }: AIRecommendationPro
   const riskScore = decisionData ? decisionData.risk_score : 74.0;
   const riskInterval = decisionData?.risk_interval;
 
+  const routeRecObj = typeof decisionData?.route_recommendation === 'object' && decisionData?.route_recommendation !== null
+    ? decisionData.route_recommendation
+    : null;
+
+  const displayRouteName: string =
+    (typeof routeRecObj?.name === 'string' ? routeRecObj.name : null)
+    || (typeof decisionData?.route_recommendation === 'string' ? decisionData.route_recommendation : null)
+    || (typeof recommended?.name === 'string' ? recommended.name : null)
+    || 'Primary Evacuation Route';
+
+  const rawEta = decisionData?.route_eta
+    ?? routeRecObj?.eta
+    ?? recommended?.eta
+    ?? 0;
+  const displayRouteEta: number = typeof rawEta === 'number' ? rawEta : Number(rawEta) || 0;
+
+  const rawRouteSafety = decisionData?.route_safety
+    ?? routeRecObj?.safety_score
+    ?? (routeRecObj as any)?.safetyScore
+    ?? (routeRecObj?.failure_probability != null ? 1 - routeRecObj.failure_probability : null)
+    ?? (routeRecObj?.failureProbability != null ? 1 - routeRecObj.failureProbability : null)
+    ?? recommended?.safetyScore
+    ?? recommended?.safety_score
+    ?? (recommended?.failureProbability != null ? 1 - recommended.failureProbability : null)
+    ?? (recommended?.failure_probability != null ? 1 - recommended.failure_probability : null)
+    ?? 0.88;
+
+  const displayRouteSafety = `${Math.round((typeof rawRouteSafety === 'number' ? rawRouteSafety : 0.88) * 100)}%`;
+
   async function handleApprove() {
     if (isSubmitting || currentStatus !== 'RECOMMENDED') return;
     setIsSubmitting(true);
@@ -148,7 +177,9 @@ export function AIRecommendation({ routesData, incidentId }: AIRecommendationPro
           </div>
 
           <p className="text-[10px] text-ax-muted leading-[1.5] m-0 mb-[10px]">
-            {decisionData?.recommended_action || recommendation.text}
+            {typeof decisionData?.recommended_action === 'string'
+              ? decisionData.recommended_action
+              : (decisionData?.recommended_action as any)?.text || recommendation.text}
           </p>
 
           {/* Risk Score & Conformal Uncertainty Interval */}
@@ -202,19 +233,19 @@ export function AIRecommendation({ routesData, incidentId }: AIRecommendationPro
             <div className="rounded-[7px] p-2" style={{ background: '#081522' }}>
               <small className="block text-[8px] text-ax-muted">Recommended Route</small>
               <b className="text-[11px] text-ax-text truncate block">
-                {decisionData?.route_recommendation || recommended.name}
+                {displayRouteName}
               </b>
             </div>
             <div className="rounded-[7px] p-2" style={{ background: '#081522' }}>
               <small className="block text-[8px] text-ax-muted">Est. Evac ETA</small>
               <b className="text-[11px] text-ax-text">
-                {decisionData?.route_eta ?? recommended.eta} min
+                {displayRouteEta} min
               </b>
             </div>
             <div className="rounded-[7px] p-2" style={{ background: '#081522' }}>
               <small className="block text-[8px] text-ax-muted">Route Safety</small>
               <b className="text-[11px] text-ax-text">
-                {decisionData ? `${Math.round(decisionData.route_safety * 100)}%` : `${Math.round((1 - recommended.failureProbability) * 100)}%`}
+                {displayRouteSafety}
               </b>
             </div>
           </div>
@@ -314,39 +345,70 @@ export function AIRecommendation({ routesData, incidentId }: AIRecommendationPro
               <span className="text-[8px] text-ax-muted">ML Feature Attribution</span>
             </div>
             {decisionData?.evidence && decisionData.evidence.length > 0 ? (
-              decisionData.evidence.map(({ feature, contribution_text }) => {
-                const isUp = contribution_text.includes('+');
-                const badgeColor = isUp ? '#ff6b6b' : '#38d9a9';
-
-                return (
-                  <div
-                    key={feature}
-                    className="flex justify-between items-center text-[9px] my-[4px] py-[2px] px-[6px] rounded"
-                    style={{ background: 'rgba(255,255,255,0.02)' }}
-                  >
-                    <span className="text-[#b6c6d5]">{feature}</span>
-                    <span className="font-bold font-mono text-[9px]" style={{ color: badgeColor }}>
-                      {contribution_text}
-                    </span>
-                  </div>
-                );
-              })
-            ) : (
-              decisionTrace.map(({ factor, contribution }) => {
-                const isUp = contribution.includes('↑');
-                const isDown = contribution.includes('↓');
+              decisionData.evidence.map((item: any, idx: number) => {
+                if (typeof item === 'string') {
+                  return (
+                    <div
+                      key={idx}
+                      className="flex justify-between items-center text-[9px] my-[4px] py-[2px] px-[6px] rounded"
+                      style={{ background: 'rgba(255,255,255,0.02)' }}
+                    >
+                      <span className="text-[#b6c6d5]">{item}</span>
+                    </div>
+                  );
+                }
+                const feature = typeof item?.feature === 'string' ? item.feature : typeof item?.factor === 'string' ? item.factor : `Driver ${idx + 1}`;
+                const contribText = typeof item?.contribution_text === 'string' ? item.contribution_text : typeof item?.contribution === 'string' ? item.contribution : '';
+                const isUp = contribText.includes('+') || contribText.includes('↑');
+                const isDown = contribText.includes('-') || contribText.includes('↓');
                 const badgeColor = isUp ? '#ff6b6b' : isDown ? '#38d9a9' : '#a0aec0';
 
                 return (
                   <div
-                    key={factor}
+                    key={feature + idx}
+                    className="flex justify-between items-center text-[9px] my-[4px] py-[2px] px-[6px] rounded"
+                    style={{ background: 'rgba(255,255,255,0.02)' }}
+                  >
+                    <span className="text-[#b6c6d5]">{feature}</span>
+                    {contribText && (
+                      <span className="font-bold font-mono text-[9px]" style={{ color: badgeColor }}>
+                        {contribText}
+                      </span>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              decisionTrace && decisionTrace.map((item: any, idx: number) => {
+                if (typeof item === 'string') {
+                  return (
+                    <div
+                      key={idx}
+                      className="flex justify-between items-center text-[9px] my-[4px] py-[2px] px-[6px] rounded"
+                      style={{ background: 'rgba(255,255,255,0.02)' }}
+                    >
+                      <span className="text-[#b6c6d5]">{item}</span>
+                    </div>
+                  );
+                }
+                const factor = typeof item?.factor === 'string' ? item.factor : typeof item?.feature === 'string' ? item.feature : `Factor ${idx + 1}`;
+                const contribution = typeof item?.contribution === 'string' ? item.contribution : typeof item?.contribution_text === 'string' ? item.contribution_text : '';
+                const isUp = contribution.includes('↑') || contribution.includes('+');
+                const isDown = contribution.includes('↓') || contribution.includes('-');
+                const badgeColor = isUp ? '#ff6b6b' : isDown ? '#38d9a9' : '#a0aec0';
+
+                return (
+                  <div
+                    key={factor + idx}
                     className="flex justify-between items-center text-[9px] my-[4px] py-[2px] px-[6px] rounded"
                     style={{ background: 'rgba(255,255,255,0.02)' }}
                   >
                     <span className="text-[#b6c6d5]">{factor}</span>
-                    <span className="font-bold font-mono text-[9px]" style={{ color: badgeColor }}>
-                      {contribution}
-                    </span>
+                    {contribution && (
+                      <span className="font-bold font-mono text-[9px]" style={{ color: badgeColor }}>
+                        {contribution}
+                      </span>
+                    )}
                   </div>
                 );
               })

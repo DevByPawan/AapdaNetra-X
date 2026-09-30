@@ -55,7 +55,7 @@ async def test_02_alembic_migration_head_status(test_db_session: AsyncSession):
     """Verify Alembic version in test database matches a valid migration head."""
     res = await test_db_session.execute(text("SELECT version_num FROM alembic_version;"))
     version_num = res.scalar()
-    assert version_num in ("002_postgis_indexes_perf", "003_add_hazard_type_persistence"), f"Test DB alembic version is '{version_num}'!"
+    assert version_num in ("002_postgis_indexes_perf", "003_add_hazard_type_persistence", "004_distributed_state_foundation"), f"Test DB alembic version is '{version_num}'!"
 
 
 # ── SECTION D: ORM CRUD TESTS ──────────────────────────────────────────────
