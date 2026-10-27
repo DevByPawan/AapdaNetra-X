@@ -64,12 +64,17 @@ class WaterLevelAdapter(DataProvider):
         if self.source == "simulated":
             self.status = DataProviderStatus.FALLBACK
             self.fallback_used = True
+            self.freshness_status = "SIMULATED"
+            self.unavailability_reason = "Simulated source mode"
+            self.cache_status = "none"
             return result
 
         now_mono = time.monotonic()
         if self._cached_features is not None and (now_mono - self._cache_timestamp) < self.cache_ttl:
             self.age_seconds = round(now_mono - self._cache_timestamp, 1)
             self.is_stale = self.age_seconds > (2 * self.cache_ttl)
+            self.cache_status = "cached"
+            self.freshness_status = "STALE" if self.is_stale else "FRESH"
             return dict(self._cached_features)
 
         try:
@@ -106,14 +111,21 @@ class WaterLevelAdapter(DataProvider):
                             result["water_level_trend"] = wlt_val
                             self.status = DataProviderStatus.LIVE
 
+            self.received_at = datetime.now(timezone.utc).isoformat()
             if result["water_level"] is not None:
                 self.fallback_used = False
-                self.observed_at = datetime.now(timezone.utc).isoformat()
+                self.observed_at = self.received_at
                 self.age_seconds = 0.0
                 self.is_stale = False
+                self.cache_status = "newly_fetched"
+                self.freshness_status = "FRESH"
+                self.unavailability_reason = None
             else:
                 self.status = DataProviderStatus.FALLBACK
                 self.fallback_used = True
+                self.freshness_status = "UNAVAILABLE"
+                self.cache_status = "none"
+                self.unavailability_reason = "No water level override configured or file missing"
 
             self.last_error = None
             self._cached_features = dict(result)
@@ -123,12 +135,18 @@ class WaterLevelAdapter(DataProvider):
             self.status = DataProviderStatus.ERROR
             self.last_error = f"Invalid water level value: {e}"
             self.fallback_used = True
+            self.freshness_status = "MISSING"
+            self.cache_status = "none"
+            self.unavailability_reason = self.last_error
             logger.warning(f"[WaterLevelAdapter] Parse error: {e}")
 
         except Exception as e:
             self.status = DataProviderStatus.ERROR
             self.last_error = str(e)
             self.fallback_used = True
+            self.freshness_status = "MISSING"
+            self.cache_status = "none"
+            self.unavailability_reason = str(e)
             logger.warning(f"[WaterLevelAdapter] Unexpected error: {e}")
 
         return result

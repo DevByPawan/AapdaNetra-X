@@ -76,8 +76,10 @@ class InfrastructureAdapter(DataProvider):
 
         now_mono = time.monotonic()
         if self._cached_index is not None and (now_mono - self._cache_timestamp) < self.cache_ttl:
-            self.age_seconds = round(now_mono - self._cache_timestamp, 1)
-            self.is_stale = self.age_seconds > (2 * self.cache_ttl)
+            self.freshness_status = "PROVISIONAL"
+            self.cache_status = "cached"
+            self.age_seconds = None
+            self.is_stale = False
             result["infrastructure_vulnerability"] = self._cached_index
             return result
 
@@ -85,7 +87,9 @@ class InfrastructureAdapter(DataProvider):
             self.status = DataProviderStatus.FALLBACK
             self.last_error = "Infrastructure dataset not configured or file not found"
             self.fallback_used = True
-            logger.debug("[InfrastructureAdapter] No dataset file configured — using fallback.")
+            self.freshness_status = "PROVISIONAL"
+            self.cache_status = "none"
+            self.unavailability_reason = "Infrastructure dataset file missing; using default provisional score"
             return result
 
         try:
@@ -96,9 +100,13 @@ class InfrastructureAdapter(DataProvider):
                 result["infrastructure_vulnerability"] = clamped_idx
                 self._cached_index = clamped_idx
                 self._cache_timestamp = now_mono
-                self.observed_at = datetime.now(timezone.utc).isoformat()
-                self.age_seconds = 0.0
+                self.received_at = datetime.now(timezone.utc).isoformat()
+                self.observed_at = None
+                self.age_seconds = None
                 self.is_stale = False
+                self.cache_status = "newly_fetched"
+                self.freshness_status = "PROVISIONAL"
+                self.unavailability_reason = "Provisional infrastructure vulnerability score; no real-time measured vulnerability feed"
                 self.status = DataProviderStatus.LIVE
                 self.last_error = None
                 self.fallback_used = False
@@ -106,12 +114,20 @@ class InfrastructureAdapter(DataProvider):
             else:
                 self.status = DataProviderStatus.FALLBACK
                 self.fallback_used = True
+                self.freshness_status = "PROVISIONAL"
+                self.cache_status = "none"
+                self.unavailability_reason = "Dataset index returned None; using provisional default"
 
         except Exception as e:
             self.status = DataProviderStatus.ERROR
             self.last_error = str(e)
             self.fallback_used = True
+            self.freshness_status = "PROVISIONAL"
+            self.cache_status = "none"
+            self.unavailability_reason = str(e)
             logger.warning(f"[InfrastructureAdapter] Error processing dataset: {e}")
+
+        return result
 
         return result
 

@@ -120,17 +120,47 @@ class RiskPredictor:
             "disclaimer": self._metadata.get("disclaimer", "Model trained on synthetic data. Not validated for real-world deployment.") if self._metadata else "Model trained on synthetic data. Not validated for real-world deployment.",
         }
 
-    def predict(self, raw_features: Dict[str, Any]) -> Dict[str, Any]:
+    def predict(
+        self,
+        raw_features: Dict[str, Any],
+        data_mode: str = "simulated",
+        provenance: Optional[Dict[str, str]] = None,
+        freshness: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> Dict[str, Any]:
         """
-        Executes ML risk inference.
-        Returns:
-          {
-            "risk_score": float (0.0 to 100.0),
-            "risk_category": str ("LOW" | "MODERATE" | "HIGH" | "CRITICAL"),
-            "prediction_reliability": float (0.0 to 1.0),
-            "cleaned_features": dict
-          }
+        Executes ML risk inference with Phase 6.25 Data Contract validation.
         """
+        from app.services.risk_contract import evaluate_risk_engine_contract
+        contract = evaluate_risk_engine_contract(
+            raw_features=raw_features,
+            data_mode=data_mode,
+            provenance=provenance,
+            freshness=freshness,
+        )
+        contract_dict = contract.to_dict()
+
+        # Handle structurally invalid or ineligible inputs cleanly
+        if not contract.is_valid_structure or contract.inference_eligibility == "INELIGIBLE_INVALID_INPUT":
+            cleaned = validate_and_clean_features(raw_features)
+            from ml.uncertainty import quantify_uncertainty
+            interval = quantify_uncertainty(50.0)
+            return {
+                "risk_score": 50.0,
+                "risk_category": "MODERATE",
+                "prediction_reliability": 0.0,
+                "cleaned_features": cleaned,
+                "model_data_status": self.model_data_status,
+                "model_version": self.model_version,
+                "uncertainty": interval.to_dict(),
+                "prediction_interval": [interval.lower_bound, interval.upper_bound],
+                "interval_lower": interval.lower_bound,
+                "interval_upper": interval.upper_bound,
+                "nominal_coverage": interval.nominal_coverage,
+                "data_contract": contract_dict,
+                "input_contract": contract_dict,
+                "is_eligible": False,
+            }
+
         # 1. Validate and clean input features
         cleaned = validate_and_clean_features(raw_features)
 
@@ -170,6 +200,9 @@ class RiskPredictor:
             "interval_lower": interval.lower_bound,
             "interval_upper": interval.upper_bound,
             "nominal_coverage": interval.nominal_coverage,
+            "data_contract": contract_dict,
+            "input_contract": contract_dict,
+            "is_eligible": True,
         }
 
     def _heuristic_fallback(self, cleaned: Dict[str, float]) -> float:
@@ -217,6 +250,16 @@ def get_predictor() -> RiskPredictor:
     return _global_predictor
 
 
-def predict_risk(features: Dict[str, Any]) -> Dict[str, Any]:
+def predict_risk(
+    features: Dict[str, Any],
+    data_mode: str = "simulated",
+    provenance: Optional[Dict[str, str]] = None,
+    freshness: Optional[Dict[str, Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
     """Model-agnostic public inference API."""
-    return get_predictor().predict(features)
+    return get_predictor().predict(
+        features,
+        data_mode=data_mode,
+        provenance=provenance,
+        freshness=freshness,
+    )

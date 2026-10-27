@@ -52,19 +52,22 @@ def compute_scenario_fingerprint(
     return hashlib.sha256(encoded).hexdigest()
 
 
+import math
+
 def transform_baseline_features(
     base_features: Dict[str, float],
     params: SimulationRequest,
 ) -> Dict[str, float]:
     """
-    Deterministically transforms baseline features using scenario input parameters.
+    Deterministically transforms baseline features using scenario input parameters
+    and optional direct feature overrides.
     Maintains 7 ML feature schema and respects feature bounds.
     """
     scenario_features = dict(base_features)
 
-    rf_mult = max(0.1, params.rainfallMultiplier)
-    drain_eff = max(0.1, params.drainageEfficiency)
-    pace = max(0.3, params.evacuationPace)
+    rf_mult = max(0.0, float(params.rainfallMultiplier))
+    drain_eff = max(0.1, float(params.drainageEfficiency))
+    pace = max(0.1, float(params.evacuationPace))
     blockage_factor = 1.35 if params.routeBlockage else 1.0
 
     # 1. Modify rainfall intensity & trend
@@ -83,6 +86,18 @@ def transform_baseline_features(
     rf_congestion_add = max(0.0, (rf_mult - 1.0) * 0.12)
     scenario_features["road_congestion"] = ((base_features["road_congestion"] + rf_congestion_add) * blockage_factor) / pace
     scenario_features["population_exposure"] = base_features["population_exposure"] + params.populationMovement
+
+    # 4. Direct hypothetical feature overrides if provided
+    if params.feature_overrides:
+        for fname, fval in params.feature_overrides.items():
+            if fname in FEATURE_SPECS and fval is not None:
+                try:
+                    fval_flt = float(fval)
+                    if math.isnan(fval_flt) or math.isinf(fval_flt):
+                        raise ValueError(f"Feature override for '{fname}' cannot be NaN or Infinity")
+                    scenario_features[fname] = fval_flt
+                except (ValueError, TypeError) as exc:
+                    raise ValueError(f"Invalid numeric value for feature override '{fname}': {fval}") from exc
 
     # Clean and clip to canonical ML schema bounds
     return validate_and_clean_features(scenario_features)
@@ -188,23 +203,103 @@ def execute_scenario_analysis(
     Executes a complete counterfactual scenario analysis.
     Produces deterministic baseline vs scenario comparison.
     """
-    from app.services.risk_engine import _get_base_features
+    from app.hazards import HazardType, get_hazard_registry
+    from app.services.risk_engine import get_horizon_features
+    from app.services.risk_contract import evaluate_risk_engine_contract
+    from app.data.providers.data_adapter import get_data_adapter
+
+    # 0. Hazard Type Check & Validation
+    h_type_str = (request.hazard_type or "flood").strip().lower()
+    try:
+        ht_enum = HazardType(h_type_str)
+    except ValueError as exc:
+        raise ValueError(f"Unknown or unsupported hazard_type: '{request.hazard_type}'") from exc
+
+    registry = get_hazard_registry()
+    defn = registry.get_definition(ht_enum)
+
+    # Non-flood hazard handling (model unavailable, contextual or unsupported)
+    if ht_enum != HazardType.FLOOD:
+        adapter = registry.get_adapter(ht_enum)
+        eval_res = adapter.evaluate_risk()
+        return SimulationResponse(
+            newRisk=0.0,
+            baselineRisk=0.0,
+            baseline_risk=0.0,
+            scenarioRisk=0.0,
+            scenario_risk=0.0,
+            riskDelta=0.0,
+            risk_delta=0.0,
+            riskCategory="LOW",
+            predictionReliability=0.0,
+            prediction_reliability=0.0,
+            routeRecommendation="Route optimization unavailable",
+            flaggedAssets=[],
+            narrative=f"SIMULATED SCENARIO OUTPUT: Scenario simulation for hazard type '{defn.hazard_type.value}' is unavailable ({defn.capability_status.value}). {eval_res.message}",
+            severity="MINOR",
+            scenario_id=str(uuid.uuid4()),
+            fingerprint=compute_scenario_fingerprint({"rainfall_intensity": 0.0}, request.model_dump(), "v1.0.0"),
+            label=f"HYPOTHETICAL SIMULATION — {defn.display_name.upper()}",
+            baseline_features={},
+            scenario_features={},
+            feature_deltas={},
+            uncertainty={"status": "unsupported", "disclaimer": eval_res.disclaimer},
+            shap={"status": "unsupported", "disclaimer": "SHAP explainability model unavailable for non-flood hazards."},
+            spatial={"status": "unsupported"},
+            routes={"route_changed": False, "reason": f"Routing unavailable for hazard '{defn.hazard_type.value}'"},
+            alerts={"simulated_alerts": []},
+            reproducibility={
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "incident_id": incident_id,
+                "hazard_type": defn.hazard_type.value,
+                "model_available": False,
+            },
+            disclaimer=f"SIMULATED SCENARIO OUTPUT — {defn.disclaimer}",
+            horizon=getattr(request, "horizon", 0),
+            hazard_type=defn.hazard_type.value,
+            data_contract={
+                "status": "unsupported_model",
+                "hazard_type": defn.hazard_type.value,
+                "capability_status": defn.capability_status.value,
+                "supported": defn.supported,
+                "model_available": False,
+                "routing_available": False,
+                "is_eligible": False,
+                "message": eval_res.message,
+            },
+            input_contract={
+                "status": "unsupported_model",
+                "hazard_type": defn.hazard_type.value,
+                "capability_status": defn.capability_status.value,
+            },
+        )
+
+    horizon = max(0, min(3, getattr(request, "horizon", 0)))
+    data_adapter = get_data_adapter()
 
     # 1. Capture baseline state
-    base_features = _get_base_features()
-    baseline_ml = predict_risk(base_features)
+    base_features = get_horizon_features(horizon)
+
+    baseline_contract = evaluate_risk_engine_contract(
+        base_features,
+        data_mode=data_adapter.data_mode,
+        provenance=data_adapter.provenance,
+        freshness=data_adapter.get_feature_freshness(),
+    )
+
+    baseline_ml = predict_risk(
+        base_features,
+        data_mode=data_adapter.data_mode,
+        provenance=data_adapter.provenance,
+        freshness=data_adapter.get_feature_freshness(),
+    )
     baseline_risk = float(baseline_ml["risk_score"])
     baseline_category = str(baseline_ml["risk_category"])
 
     # Baseline conformal uncertainty
     quantifier = get_conformal_quantifier()
     baseline_unc_obj = quantifier.quantify(baseline_risk)
-    baseline_unc = {
-        "lower_bound": baseline_unc_obj.lower_bound,
-        "upper_bound": baseline_unc_obj.upper_bound,
-        "nominal_coverage": baseline_unc_obj.nominal_coverage,
-        "uncertainty_method": baseline_unc_obj.uncertainty_method,
-    }
+    baseline_unc = baseline_unc_obj.to_dict()
 
     # Baseline SHAP attributions
     explainer = get_explainer()
@@ -214,12 +309,13 @@ def execute_scenario_analysis(
     baseline_route_opt = optimize_routes(
         predicted_risk_score=baseline_risk,
         route_blockage=False,
-        horizon_index=0,
+        horizon_index=horizon,
+        data_contract=baseline_contract.to_dict(),
     )
-    
+
     from app.services.spatial_service import get_spatial_service
     spatial_svc = get_spatial_service()
-    
+
     baseline_waypoints = [
         {"lat": wp.lat, "lng": wp.lng} for wp in baseline_route_opt.recommended.waypoints
     ]
@@ -231,8 +327,19 @@ def execute_scenario_analysis(
     # 2. Derive scenario state
     scenario_features = transform_baseline_features(base_features, request)
 
+    scenario_contract_prov = {k: "HYPOTHETICAL_SIMULATION" for k in FEATURE_NAMES}
+    scenario_contract = evaluate_risk_engine_contract(
+        scenario_features,
+        data_mode="simulated",
+        provenance=scenario_contract_prov,
+    )
+
     # 3. ML Scenario Inference & Reliability
-    scenario_ml = predict_risk(scenario_features)
+    scenario_ml = predict_risk(
+        scenario_features,
+        data_mode="simulated",
+        provenance=scenario_contract_prov,
+    )
     scenario_risk = float(scenario_ml["risk_score"])
     scenario_category = str(scenario_ml["risk_category"])
     reliability = float(scenario_ml["prediction_reliability"])
@@ -241,16 +348,10 @@ def execute_scenario_analysis(
     model_status = str(scenario_ml.get("model_data_status", "synthetic"))
 
     risk_delta = round(scenario_risk - baseline_risk, 1)
-    risk_delta_pct = round((risk_delta / baseline_risk) * 100, 1) if baseline_risk > 0 else 0.0
 
     # Scenario conformal uncertainty
     scenario_unc_obj = quantifier.quantify(scenario_risk)
-    scenario_unc = {
-        "lower_bound": scenario_unc_obj.lower_bound,
-        "upper_bound": scenario_unc_obj.upper_bound,
-        "nominal_coverage": scenario_unc_obj.nominal_coverage,
-        "uncertainty_method": scenario_unc_obj.uncertainty_method,
-    }
+    scenario_unc = scenario_unc_obj.to_dict()
 
     # Scenario SHAP attributions
     scenario_shap_raw = explainer.explain(scenario_features)
@@ -268,14 +369,23 @@ def execute_scenario_analysis(
         if isinstance(item, dict) and "feature" in item
     }
 
+    feature_deltas = {}
     for fname in FEATURE_NAMES:
+        b_feat_val = float(base_features.get(fname, 0.0))
+        s_feat_val = float(scenario_features.get(fname, 0.0))
+        f_delta = round(s_feat_val - b_feat_val, 4)
+        feature_deltas[fname] = f_delta
+
         b_val = float(base_shap_dict.get(fname, 0.0))
         s_val = float(scen_shap_dict.get(fname, 0.0))
         shift = round(s_val - b_val, 3)
         shap_attribution_changes.append({
             "feature": fname,
-            "baseline_value": base_features.get(fname, 0.0),
-            "simulated_value": scenario_features.get(fname, 0.0),
+            "baseline_value": b_feat_val,
+            "simulated_value": s_feat_val,
+            "delta": f_delta,
+            "baseline_classification": baseline_contract.feature_classification.get(fname, "SIMULATED"),
+            "scenario_classification": "HYPOTHETICAL_SIMULATION",
             "baseline_shap": round(b_val, 3),
             "scenario_shap": round(s_val, 3),
             "shap_attribution_change": shift,
@@ -290,7 +400,8 @@ def execute_scenario_analysis(
     scenario_route_opt = optimize_routes(
         predicted_risk_score=scenario_risk,
         route_blockage=request.routeBlockage,
-        horizon_index=0,
+        horizon_index=horizon,
+        data_contract=scenario_contract.to_dict(),
     )
 
     scenario_waypoints = [
@@ -349,6 +460,8 @@ def execute_scenario_analysis(
         f"{route_change_reason}"
     )
 
+    contract_info = scenario_contract.to_dict()
+
     # Structured response
     return SimulationResponse(
         newRisk=scenario_risk,
@@ -365,14 +478,14 @@ def execute_scenario_analysis(
         flaggedAssets=flagged_assets,
         narrative=narrative,
         severity="SEVERE" if is_severe else ("MODERATE" if scenario_risk >= 50.0 else "MINOR"),
-        
-        # Extended Phase 6.16 Metadata
+
+        # Extended Metadata
         scenario_id=scenario_id,
         fingerprint=fingerprint,
         label="SIMULATED SCENARIO OUTPUT",
         baseline_features=base_features,
         scenario_features=scenario_features,
-        feature_deltas={k: round(scenario_features[k] - base_features[k], 4) for k in FEATURE_NAMES},
+        feature_deltas=feature_deltas,
         uncertainty={
             "baseline": baseline_unc,
             "scenario": scenario_unc,
@@ -381,11 +494,11 @@ def execute_scenario_analysis(
             "disclaimer": "Split-conformal prediction intervals. Wider interval does not imply higher physical severity.",
         },
         shap={
-            "canonical_features": FEATURE_NAMES,
+            "canonical_features": list(FEATURE_NAMES),
             "baseline_total_shap_delta": baseline_shap_raw.get("total_shap_delta", 0.0),
             "scenario_total_shap_delta": scenario_shap_raw.get("total_shap_delta", 0.0),
             "attribution_changes": shap_attribution_changes,
-            "disclaimer": "SHAP attributions describe model scoring behavior and do not constitute causal physical mechanisms.",
+            "disclaimer": "SHAP attributions describe model scoring behavior under hypothetical inputs and do not constitute causal physical mechanisms.",
         },
         spatial={
             "baseline_route_spatial_exposure": b_exp,
@@ -424,8 +537,13 @@ def execute_scenario_analysis(
             "model_data_status": model_status,
             "deterministic": True,
         },
-        disclaimer="SIMULATED SCENARIO OUTPUT — Decision support simulation only, not an official flood forecast or real-world disaster prediction.",
+        disclaimer="SIMULATED SCENARIO OUTPUT — Decision support simulation only, not an official flood forecast or real-world disaster prediction. Synthetic-trained GBR model weights.",
+        horizon=horizon,
+        hazard_type="flood",
+        data_contract=contract_info,
+        input_contract=contract_info,
     )
+
 
 
 async def execute_scenario_analysis_async(
@@ -465,4 +583,3 @@ async def execute_scenario_analysis_async(
 
     await ps.save_simulation(sim)
     return res
-

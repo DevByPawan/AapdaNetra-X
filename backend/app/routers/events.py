@@ -1,17 +1,14 @@
-"""AapdaNetra-X — Real-Time Events API Router
-
-Provides GET /api/events/stream SSE endpoint broadcasting live domain events.
-"""
-
 from __future__ import annotations
 
 import asyncio
 import logging
 from typing import AsyncGenerator, Optional
 
-from fastapi import APIRouter, Request, Query, Header
+from fastapi import APIRouter, HTTPException, Request, Query, Header
 from starlette.responses import StreamingResponse
 
+from app.config import settings
+from app.core.security import KNOWN_TOKENS
 from app.events.broker import get_event_broker
 from app.events.schemas import EventEnvelope
 
@@ -26,13 +23,14 @@ async def sse_event_generator(
 ) -> AsyncGenerator[str, None]:
     """Async generator yielding Server-Sent Events with Last-Event-ID replay and periodic ping heartbeat."""
     broker = get_event_broker()
+    client_ip = request.client.host if request.client else "127.0.0.1"
 
     # Determine effective Last-Event-ID (header takes precedence over query param)
     header_last_id = request.headers.get("Last-Event-ID") or request.headers.get("last-event-id")
     effective_last_id = last_event_id or header_last_id
 
     # Subscribe first to ensure no live events are missed during transition
-    queue = broker.subscribe()
+    queue = broker.subscribe(client_ip=client_ip)
 
     # Initial connection acknowledgment comment
     yield ": connected\n\n"
@@ -74,7 +72,7 @@ async def sse_event_generator(
     except asyncio.CancelledError:
         logger.debug("SSE connection stream cancelled by client")
     finally:
-        broker.unsubscribe(queue)
+        broker.unsubscribe(queue, client_ip=client_ip)
 
 
 @router.get("/events/stream", response_class=StreamingResponse)
@@ -82,8 +80,36 @@ async def stream_events(
     request: Request,
     last_event_id: Optional[str] = Query(None, alias="last_event_id"),
     last_event_id_header: Optional[str] = Header(None, alias="Last-Event-ID"),
+    token: Optional[str] = Query(None, alias="token"),
 ) -> StreamingResponse:
-    """Real-time Server-Sent Events (SSE) stream endpoint supporting Last-Event-ID replay."""
+    """Real-time Server-Sent Events (SSE) stream endpoint supporting Last-Event-ID replay and auth verification."""
+    # SSE Authentication Check
+    auth_header = request.headers.get("Authorization")
+    api_key_header = request.headers.get("X-API-Key")
+    eff_token = token or api_key_header or (auth_header.replace("Bearer ", "") if auth_header else None)
+
+    is_prod = settings.environment.lower() == "production"
+    if settings.sse_auth_required or settings.auth_enabled or is_prod:
+        valid = False
+        if settings.api_key and eff_token == settings.api_key:
+            valid = True
+        elif not is_prod and eff_token in KNOWN_TOKENS:
+            valid = True
+
+        if not valid and (settings.auth_enabled or settings.sse_auth_required or is_prod):
+            raise HTTPException(
+                status_code=401,
+                detail="Authentication credentials required for SSE event stream",
+            )
+
+    broker = get_event_broker()
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    if broker._ip_subscribers[client_ip] >= settings.max_sse_subscriptions_per_ip:
+        raise HTTPException(
+            status_code=429,
+            detail=f"Maximum SSE subscriptions per IP ({settings.max_sse_subscriptions_per_ip}) reached.",
+        )
+
     effective_id = last_event_id_header or last_event_id
     if effective_id:
         gen = sse_event_generator(request, last_event_id=effective_id)

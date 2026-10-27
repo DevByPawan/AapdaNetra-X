@@ -35,3 +35,5 @@ class RoutingOptimizationResult:
     blocked_segments: List[Dict[str, Any]]
     route_reason: str
     horizon_index: int = 0
+    data_contract: Optional[Dict[str, Any]] = None
+    is_eligible: bool = True

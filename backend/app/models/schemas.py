@@ -84,6 +84,8 @@ class RiskResponse(BaseModel):
     alerts_available: Optional[bool] = True
     routing_available: Optional[bool] = True
     decision_support_available: Optional[bool] = True
+    data_contract: Optional[Dict[str, Any]] = None
+    input_contract: Optional[Dict[str, Any]] = None
 
 
 # ── Forecast ─────────────────────────────────────────────────────────────
@@ -145,6 +147,9 @@ class RoutesResponse(BaseModel):
     decisionTrace: List[DecisionFactor]
     blockedSegments: Optional[List[Dict[str, Any]]] = []
     routeReason: Optional[str] = ""
+    data_contract: Optional[Dict[str, Any]] = None
+    input_contract: Optional[Dict[str, Any]] = None
+    hazard_type: Optional[str] = Field(default="flood", description="Hazard type identifier")
 
 
 # ── Explainability ────────────────────────────────────────────────────────
@@ -159,6 +164,8 @@ class ExplainabilityFeature(BaseModel):
     raw_value: float
     contribution_magnitude: Optional[float] = 0.0
     attribution_statement: Optional[str] = ""
+    provenance: Optional[str] = None
+    classification: Optional[str] = None
 
 
 class ExplainabilityResponse(BaseModel):
@@ -172,6 +179,9 @@ class ExplainabilityResponse(BaseModel):
     is_shap_consistent: Optional[bool] = True
     predictionInterval: Optional[PredictionInterval] = None
     prediction_interval: Optional[Dict[str, Any]] = None
+    data_contract: Optional[Dict[str, Any]] = None
+    input_contract: Optional[Dict[str, Any]] = None
+    hazard_type: Optional[str] = Field(default="flood", description="Hazard type identifier")
 
 
 # ── Alerts ───────────────────────────────────────────────────────────────
@@ -204,6 +214,9 @@ class SimulationRequest(BaseModel):
     rainfallIncrease: float = Field(default=0.0, ge=0.0, le=500.0, description="Additional rainfall intensity mm/h")
     populationMovement: int = Field(default=0, ge=-100000, le=100000, description="Net population movement delta")
     waterLevelIncrease: float = Field(default=0.0, ge=0.0, le=20.0, description="Additional river gauge water level in meters")
+    horizon: int = Field(default=0, ge=0, le=3, description="Target prediction horizon 0..3")
+    hazard_type: Optional[str] = Field(default="flood", description="Hazard type identifier")
+    feature_overrides: Optional[Dict[str, float]] = Field(default=None, description="Optional direct hypothetical feature overrides")
 
     @field_validator("evacuationPace", "rainfallMultiplier", "drainageEfficiency", "rainfallIncrease", "waterLevelIncrease")
     @classmethod
@@ -243,6 +256,10 @@ class SimulationResponse(BaseModel):
     alerts: Optional[Dict[str, Any]] = None
     reproducibility: Optional[Dict[str, Any]] = None
     disclaimer: str = "SIMULATED SCENARIO OUTPUT — Decision support simulation only, not an official flood forecast or real-world disaster prediction."
+    horizon: int = 0
+    hazard_type: str = "flood"
+    data_contract: Optional[Dict[str, Any]] = None
+    input_contract: Optional[Dict[str, Any]] = None
 
 
 class ScenarioCompareRequest(BaseModel):
@@ -285,6 +302,8 @@ class DecisionSupportResponse(BaseModel):
     model_version: str = "v1.0.0"
     source: str = "AapdaNetra-X Decision Engine"
     hazard_type: Optional[str] = "flood"
+    data_contract: Optional[Dict[str, Any]] = None
+    input_contract: Optional[Dict[str, Any]] = None
 
 
 class DecisionSupportUnavailableResponse(BaseModel):

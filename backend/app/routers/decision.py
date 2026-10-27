@@ -8,8 +8,10 @@ Provides structured AI-assisted decision recommendations and state machine trans
 
 from datetime import datetime, timezone
 from typing import Optional, Union
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 
+from app.core.rate_limit import check_rate_limit
+from app.core.security import AuthenticatedUser, require_roles
 from app.events.broker import get_event_broker
 from app.events.schemas import EventEnvelope, EventType
 from app.models.schemas import (
@@ -58,11 +60,16 @@ async def get_decision_recommendation(
 
 
 @router.post("/decision/approve", response_model=DecisionActionResponse)
-async def approve_decision(request: DecisionActionRequest):
+async def approve_decision(
+    request: DecisionActionRequest,
+    user: AuthenticatedUser = Depends(require_roles(["responder", "admin"])),
+    _rl: bool = Depends(check_rate_limit),
+):
     """
     Approves an emergency decision support recommendation.
     Validates state transition (RECOMMENDED -> APPROVED), logs AuditEvent,
     and publishes decision.approved SSE event.
+    Enforces server-side authentication and role-based authorization.
     """
     success, msg, decision = transition_decision(
         decision_id=request.decision_id,
@@ -135,10 +142,15 @@ async def approve_decision(request: DecisionActionRequest):
 
 
 @router.post("/decision/reject", response_model=DecisionActionResponse)
-async def reject_decision(request: DecisionActionRequest):
+async def reject_decision(
+    request: DecisionActionRequest,
+    user: AuthenticatedUser = Depends(require_roles(["responder", "admin"])),
+    _rl: bool = Depends(check_rate_limit),
+):
     """
     Rejects an emergency decision support recommendation.
     Validates state transition (RECOMMENDED -> REJECTED) and logs AuditEvent.
+    Enforces server-side authentication and role-based authorization.
     Does NOT publish decision.approved SSE event.
     """
     success, msg, decision = transition_decision(

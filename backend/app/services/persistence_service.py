@@ -847,7 +847,11 @@ class PersistenceService:
     # ── Decision Support Durable State (Public API) ───────────────────────────
     async def save_decision(self, decision_data: Dict[str, Any]) -> bool:
         """Persist a decision recommendation record into decisions table."""
-        if not self.is_enabled or not self.db_available:
+        if not self.is_enabled:
+            return False
+        if not self.db_available:
+            if self.mode == "required":
+                raise RuntimeError("Database unavailable in required persistence mode")
             return False
 
         try:
@@ -861,7 +865,11 @@ class PersistenceService:
             return False
 
     def save_decision_sync(self, decision_data: Dict[str, Any]) -> bool:
-        if not self.is_enabled or not self.db_available:
+        if not self.is_enabled:
+            return False
+        if not self.db_available:
+            if self.mode == "required":
+                raise RuntimeError("Database unavailable in required persistence mode")
             return False
         try:
             return run_async_in_sync(self._save_decision_impl, decision_data)

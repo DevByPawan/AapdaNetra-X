@@ -72,6 +72,9 @@ class WeatherAdapter(DataProvider):
             self.status = DataProviderStatus.FALLBACK
             self.last_error = "No API key configured"
             self.fallback_used = True
+            self.freshness_status = "MISSING"
+            self.unavailability_reason = "No API key configured"
+            self.cache_status = "none"
             logger.debug("[WeatherAdapter] No API key — using fallback.")
             return result
 
@@ -79,6 +82,8 @@ class WeatherAdapter(DataProvider):
             raw = self._fetch_with_cache()
             if raw is None:
                 self.fallback_used = True
+                self.freshness_status = "MISSING"
+                self.unavailability_reason = self.last_error or "Weather fetch returned None"
                 return result
 
             # Extract rainfall_intensity
@@ -102,16 +107,23 @@ class WeatherAdapter(DataProvider):
 
             if self.observed_at is None:
                 self.observed_at = datetime.now(timezone.utc).isoformat()
+            if self.received_at is None:
+                self.received_at = datetime.now(timezone.utc).isoformat()
 
             self.status = DataProviderStatus.LIVE
             self.last_error = None
             self.fallback_used = False
+            self.unavailability_reason = None
+            if not self.freshness_status or self.freshness_status == "SIMULATED":
+                self.freshness_status = "FRESH"
             logger.info(f"[WeatherAdapter] Live weather data: rainfall_intensity={rf_intensity:.1f} mm/h")
 
         except Exception as e:
             self.status = DataProviderStatus.ERROR
             self.last_error = str(e)
             self.fallback_used = True
+            self.freshness_status = "MISSING"
+            self.unavailability_reason = str(e)
             logger.warning(f"[WeatherAdapter] Error fetching weather data: {e}")
 
         return result
@@ -145,6 +157,8 @@ class WeatherAdapter(DataProvider):
         if self._cached_response is not None and (now_mono - self._cache_timestamp) < self.cache_ttl:
             self.age_seconds = round(now_mono - self._cache_timestamp, 1)
             self.is_stale = self.age_seconds > (2 * self.cache_ttl)
+            self.cache_status = "cached"
+            self.freshness_status = "STALE" if self.is_stale else "FRESH"
             return self._cached_response
 
         # Make HTTP request
@@ -161,28 +175,37 @@ class WeatherAdapter(DataProvider):
             if resp.status_code == 401:
                 self.status = DataProviderStatus.ERROR
                 self.last_error = "Invalid API key (HTTP 401)"
+                self.freshness_status = "MISSING"
+                self.unavailability_reason = self.last_error
+                self.cache_status = "none"
                 logger.error("[WeatherAdapter] Invalid API key.")
                 return None
 
             if resp.status_code != 200:
                 self.status = DataProviderStatus.ERROR
                 self.last_error = f"HTTP {resp.status_code}"
+                self.freshness_status = "MISSING"
+                self.unavailability_reason = self.last_error
+                self.cache_status = "none"
                 logger.warning(f"[WeatherAdapter] HTTP {resp.status_code} from OWM.")
                 return None
 
             data = resp.json()
             self._cached_response = data
             self._cache_timestamp = now_mono
+            self.received_at = datetime.now(timezone.utc).isoformat()
+            self.cache_status = "newly_fetched"
 
             # Extract UTC observation timestamp if present in OWM response ('dt' field)
             dt_ts = data.get("dt")
             if dt_ts:
                 self.observed_at = datetime.fromtimestamp(dt_ts, timezone.utc).isoformat()
             else:
-                self.observed_at = datetime.now(timezone.utc).isoformat()
+                self.observed_at = self.received_at
 
             self.age_seconds = 0.0
             self.is_stale = False
+            self.freshness_status = "FRESH"
             return data
 
         except httpx.TimeoutException as e:
@@ -194,9 +217,14 @@ class WeatherAdapter(DataProvider):
             if self._cached_response is not None:
                 self.age_seconds = round(now_mono - self._cache_timestamp, 1)
                 self.is_stale = True
+                self.cache_status = "stale_cache"
+                self.freshness_status = "STALE"
                 logger.info("[WeatherAdapter] Serving stale cached weather response.")
                 return self._cached_response
 
+            self.cache_status = "none"
+            self.freshness_status = "MISSING"
+            self.unavailability_reason = str(e)
             return None
 
         except httpx.RequestError as e:
@@ -208,9 +236,14 @@ class WeatherAdapter(DataProvider):
             if self._cached_response is not None:
                 self.age_seconds = round(now_mono - self._cache_timestamp, 1)
                 self.is_stale = True
+                self.cache_status = "stale_cache"
+                self.freshness_status = "STALE"
                 logger.info("[WeatherAdapter] Serving stale cached weather response.")
                 return self._cached_response
 
+            self.cache_status = "none"
+            self.freshness_status = "MISSING"
+            self.unavailability_reason = str(e)
             return None
 
     def invalidate_cache(self):

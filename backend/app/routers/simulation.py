@@ -8,7 +8,8 @@ lookup by ID, incident history, and scenario comparison.
 
 from typing import List, Optional
 import uuid
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
+from app.core.rate_limit import check_rate_limit
 from app.models.schemas import (
     ScenarioCompareRequest,
     ScenarioCompareResponse,
@@ -22,20 +23,33 @@ router = APIRouter()
 
 @router.post("/simulation", response_model=SimulationResponse)
 @router.post("/simulations", response_model=SimulationResponse)
-async def run_simulation(request: SimulationRequest, incident_id: str = Query(default="INC-2026-DEFAULT")):
+async def run_simulation(
+    request: SimulationRequest,
+    incident_id: str = Query(default="INC-2026-DEFAULT"),
+    _rl: bool = Depends(check_rate_limit),
+):
     """
     Runs counterfactual disaster scenario simulation against the GBR ML model & spatial risk engine.
     """
-    return await execute_scenario_analysis_async(request, incident_id=incident_id)
+    try:
+        return await execute_scenario_analysis_async(request, incident_id=incident_id)
+    except ValueError as val_err:
+        raise HTTPException(status_code=400, detail=str(val_err)) from val_err
 
 
 @router.post("/simulations/compare", response_model=ScenarioCompareResponse)
-async def compare_simulations(request: ScenarioCompareRequest):
+async def compare_simulations(
+    request: ScenarioCompareRequest,
+    _rl: bool = Depends(check_rate_limit),
+):
     """
     Compares two What-If disaster scenarios side-by-side against the same baseline.
     """
-    scen_a = execute_scenario_analysis(request.scenario_a, incident_id=request.incident_id)
-    scen_b = execute_scenario_analysis(request.scenario_b, incident_id=request.incident_id)
+    try:
+        scen_a = execute_scenario_analysis(request.scenario_a, incident_id=request.incident_id)
+        scen_b = execute_scenario_analysis(request.scenario_b, incident_id=request.incident_id)
+    except ValueError as val_err:
+        raise HTTPException(status_code=400, detail=str(val_err)) from val_err
 
     risk_diff = round(scen_b.scenarioRisk - scen_a.scenarioRisk, 1)
     route_changed = scen_a.routeRecommendation != scen_b.routeRecommendation
@@ -53,6 +67,7 @@ async def compare_simulations(request: ScenarioCompareRequest):
         route_change_between_scenarios=route_changed,
         summary_comparison=summary,
     )
+
 
 
 @router.get("/simulations/{simulation_id}", response_model=SimulationResponse)

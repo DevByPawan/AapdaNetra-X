@@ -7,6 +7,10 @@ from enum import Enum
 from typing import Dict, Optional
 
 
+from datetime import datetime, timezone
+from typing import Dict, Optional, Any
+
+
 class DataProviderStatus(str, Enum):
     """Status of the most recent data fetch from a provider."""
     LIVE = "live"
@@ -33,6 +37,13 @@ class DataProvider(ABC):
     def __init__(self):
         self.status: DataProviderStatus = DataProviderStatus.FALLBACK
         self.last_error: Optional[str] = None
+        self.received_at: Optional[str] = None
+        self.observed_at: Optional[str] = None
+        self.age_seconds: Optional[float] = None
+        self.is_stale: bool = False
+        self.cache_status: Optional[str] = "none"
+        self.freshness_status: str = "SIMULATED"
+        self.unavailability_reason: Optional[str] = None
 
     @abstractmethod
     def get_features(self) -> Dict[str, Optional[float]]:
@@ -52,3 +63,19 @@ class DataProvider(ABC):
     @property
     def provider_name(self) -> str:
         return self.__class__.__name__
+
+    def calculate_age(self, now_reference: Optional[datetime] = None) -> Optional[float]:
+        """Calculates age in seconds from observed_at against now_reference or current UTC time."""
+        if not self.observed_at:
+            return None
+        try:
+            dt_obs = datetime.fromisoformat(self.observed_at.replace("Z", "+00:00"))
+            ref = now_reference or datetime.now(timezone.utc)
+            if dt_obs.tzinfo is None:
+                dt_obs = dt_obs.replace(tzinfo=timezone.utc)
+            if ref.tzinfo is None:
+                ref = ref.replace(tzinfo=timezone.utc)
+            diff = (ref - dt_obs).total_seconds()
+            return max(0.0, round(diff, 1))
+        except Exception:
+            return None

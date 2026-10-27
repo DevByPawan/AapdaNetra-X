@@ -42,7 +42,8 @@ class RouteOptimizer:
         route_blockage: bool = False,
         horizon_index: int = 0,
         origin: str = "Sector_B",
-        destination: str = "Shelter_H"
+        destination: str = "Shelter_H",
+        data_contract: Optional[Dict[str, Any]] = None,
     ) -> RoutingOptimizationResult:
         """
         Executes graph-based route optimization taking ML predicted risk state into account.
@@ -193,12 +194,22 @@ class RouteOptimizer:
         alternatives = route_paths[1:]
 
         # 5. Generate route selection reasoning narrative
+        is_eligible = True
+        prefix = ""
+        if data_contract is not None:
+            elig = data_contract.get("inference_eligibility", "")
+            if elig == "INELIGIBLE_INVALID_INPUT" or not data_contract.get("is_valid_structure", True):
+                is_eligible = False
+                prefix = "[INELIGIBLE_INVALID_INPUT] Route calculated under fallback policy: invalid/non-finite risk inputs detected. Model weights unvalidated on real-world disaster data. "
+            elif elig == "ELIGIBLE_REAL" or data_contract.get("data_mode") == "real":
+                prefix = "[REAL_DERIVED_EVIDENCE] Route evaluated using ERA5/CWC/WorldPop/Traffic 2020 inputs (GBR synthetic-trained). "
+
         if route_blockage:
-            reason = f"Route {recommended.name} selected: Avoids blocked corridor. Safety Score: {int(recommended.safetyScore * 100)}%."
+            reason = f"{prefix}Route {recommended.name} selected: Avoids blocked corridor. Safety Score: {int(recommended.safetyScore * 100)}%."
         elif norm_pred_risk >= 75.0:
-            reason = f"Route {recommended.name} selected: Provides lower hazard exposure ({recommended.riskScore:.1f}) vs elevated risk on primary flood corridor."
+            reason = f"{prefix}Route {recommended.name} selected: Provides lower hazard exposure ({recommended.riskScore:.1f}) vs elevated risk on primary flood corridor."
         else:
-            reason = f"Route {recommended.name} selected: Provides optimal balance of ETA ({recommended.eta} min) and safety ({int(recommended.safetyScore * 100)}%)."
+            reason = f"{prefix}Route {recommended.name} selected: Provides optimal balance of ETA ({recommended.eta} min) and safety ({int(recommended.safetyScore * 100)}%)."
 
         recommended.route_reason = reason
 
@@ -208,6 +219,8 @@ class RouteOptimizer:
             blocked_segments=blocked_segments,
             route_reason=reason,
             horizon_index=horizon_index,
+            data_contract=data_contract,
+            is_eligible=is_eligible,
         )
 
 
@@ -231,11 +244,13 @@ def reset_optimizer():
 def optimize_routes(
     predicted_risk_score: float = 74.0,
     route_blockage: bool = False,
-    horizon_index: int = 0
+    horizon_index: int = 0,
+    data_contract: Optional[Dict[str, Any]] = None,
 ) -> RoutingOptimizationResult:
     """Public helper function for networkx route optimization."""
     return get_optimizer().optimize(
         predicted_risk_score=predicted_risk_score,
         route_blockage=route_blockage,
         horizon_index=horizon_index,
+        data_contract=data_contract,
     )

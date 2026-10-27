@@ -66,8 +66,10 @@ class PopulationAdapter(DataProvider):
 
         now_mono = time.monotonic()
         if self._cached_count is not None and (now_mono - self._cache_timestamp) < self.cache_ttl:
-            self.age_seconds = round(now_mono - self._cache_timestamp, 1)
-            self.is_stale = self.age_seconds > (2 * self.cache_ttl)
+            self.freshness_status = "CONTEXTUAL_STATIC"
+            self.cache_status = "cached"
+            self.age_seconds = None
+            self.is_stale = False
             result["population_exposure"] = self._cached_count
             return result
 
@@ -75,6 +77,9 @@ class PopulationAdapter(DataProvider):
             self.status = DataProviderStatus.FALLBACK
             self.last_error = "Population dataset not configured or file not found"
             self.fallback_used = True
+            self.freshness_status = "MISSING"
+            self.cache_status = "none"
+            self.unavailability_reason = "Population dataset file missing"
             logger.debug("[PopulationAdapter] No dataset file configured — using fallback.")
             return result
 
@@ -86,9 +91,13 @@ class PopulationAdapter(DataProvider):
                 result["population_exposure"] = pop_count
                 self._cached_count = pop_count
                 self._cache_timestamp = now_mono
-                self.observed_at = datetime.now(timezone.utc).isoformat()
-                self.age_seconds = 0.0
+                self.received_at = datetime.now(timezone.utc).isoformat()
+                self.observed_at = f"{self.dataset_year}-01-01T00:00:00Z"
+                self.age_seconds = None
                 self.is_stale = False
+                self.cache_status = "newly_fetched"
+                self.freshness_status = "CONTEXTUAL_STATIC"
+                self.unavailability_reason = "Static WorldPop demographic dataset baseline; not a live real-time sensor stream"
                 self.status = DataProviderStatus.LIVE
                 self.last_error = None
                 self.fallback_used = False
@@ -96,11 +105,17 @@ class PopulationAdapter(DataProvider):
             else:
                 self.status = DataProviderStatus.FALLBACK
                 self.fallback_used = True
+                self.freshness_status = "UNAVAILABLE"
+                self.cache_status = "none"
+                self.unavailability_reason = "Dataset returned None"
 
         except Exception as e:
             self.status = DataProviderStatus.ERROR
             self.last_error = str(e)
             self.fallback_used = True
+            self.freshness_status = "MISSING"
+            self.cache_status = "none"
+            self.unavailability_reason = str(e)
             logger.warning(f"[PopulationAdapter] Error processing dataset: {e}")
 
         return result

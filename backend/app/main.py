@@ -23,6 +23,9 @@ logger = logging.getLogger("aapdanetra")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Manage startup and shutdown of the database layer."""
+    # ── Phase 6.32: Production Security Settings Validation ────────────
+    settings.validate_production_security()
+
     # ── Startup ───────────────────────────────────────────────────────
     mode = settings.persistence_mode.lower()
 
@@ -94,7 +97,7 @@ app.add_middleware(
     allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "X-Request-ID", "Accept"],
+    allow_headers=["Content-Type", "Authorization", "X-Request-ID", "Accept", "X-API-Key"],
 )
 
 # ── Request logging, correlation & security headers middleware ──────────
@@ -104,6 +107,18 @@ async def log_requests(request: Request, call_next):
 
     req_id = request.headers.get("X-Request-ID") or generate_request_id()
     set_request_id(req_id)
+
+    # Payload size check
+    content_length = request.headers.get("content-length")
+    if content_length:
+        try:
+            if int(content_length) > settings.max_request_body_bytes:
+                return JSONResponse(
+                    status_code=413,
+                    content={"detail": "Payload too large. Maximum allowed request size exceeded.", "request_id": req_id},
+                )
+        except ValueError:
+            pass
 
     start = datetime.now(timezone.utc)
     try:
@@ -124,6 +139,9 @@ async def log_requests(request: Request, call_next):
     response_obj.headers["X-Frame-Options"] = "DENY"
     response_obj.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     response_obj.headers["X-XSS-Protection"] = "1; mode=block"
+    response_obj.headers["Content-Security-Policy"] = "default-src 'self'"
+    if settings.environment.lower() == "production" or request.headers.get("X-Forwarded-Proto") == "https":
+        response_obj.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
 
     logger.info(
         f"[{req_id}] {request.method} {request.url.path}  {response_obj.status_code}  {duration:.1f}ms"

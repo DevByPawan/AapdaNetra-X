@@ -1,0 +1,4195 @@
+Flood Monitoring Cell
+Geo-Meteorological Risks Management Division
+
+NATIONAL INSTITUTE OF DISASTER MANAGEMENT
+Ministry of Home Affairs, Government of India
+
+Yamuna Urban Floods in Delhi with focus on July 2023 event
+ISBN No: 978-81-993586-5-2
+Copyright © 2025, National Institute of Disaster Management, Delhi
+Edition: 2025
+Authors:
+Shri Madhup Vyas
+Prof. Surya Parkash Gupta
+Shri Manjeet Singh Dhillon
+Published by:
+National Institute of Disaster Management (NIDM), Ministry of Home Affairs, Government
+of India, Delhi-110042
+Citation:
+Gupta, Surya P., Vyas, M. and Dhillon, M.S. (2025). Yamuna urban floods in Delhi with focus
+on 2023 event. National Institute of Disaster Management, Delhi, India, Pages 90
+Disclaimer:
+This document may be freely reviewed, reproduced, or translated, in part or whole, purely
+on non-profit basis for humanitarian, social and environmental well being with permission
+from the National Institute of Disaster Management and with due credits to the authors.
+Receiving information and suggestions on its adaptation or use in actual training situations
+are welcome.
+The document can be downloaded from the website https://www.nidm.gov.in
+
+jk"Vªh; vkink izCkaèku laLFkku
+National Institute of Disaster Management
+
+¼x`g e=aky;] “kjr ljdkj½
+Ministry of Home Affairs, Govt. of India
+
+eËkqi O;kl] “k- Á- l¢-
+
+IykV u- 15] CyWkd ch] ikWdsV 3]
+lsDVj 29] jksfg.h] fnYyh & 110042
+
+dk;Zdkjh funs'kd
+
+Madhup Vyas, IAS
+
+Plot No. 15, Block B, Pocket 3,
+Sector-29, Rohini, Delhi-110042
+
+Executive Director
+
+FOREWORD
+
+Under the Disaster Management Act 2005, NIDM has been assigned nodal responsibilities for human resource
+development, capacity building, training, research, documentation and policy advocacy in the field of disaster
+management. The developing countries like India suffer the greatest costs when a disaster hits. More deaths are
+caused by hazards that occur in developing countries, and losses due to natural hazards are much greater in
+developing countries than in industrialized countries. Since urban flooding has become a prominent disaster
+affecting various cities across the globe, increasing trend of urban flooding is a universal phenomenon and poses a
+great challenge to urban planners the world over.
+While the factors like lack of adequate drainage system, large scale urbanization, reduction in holding capacity of
+the catchment, the confining of river spread by construction of embankments coupled with climate change
+phenomenon are the major causes of flood in Delhi. Challenges and complexities of governance and multiple
+organizations for flood control and drainage exacerbate the flood problem of Delhi.
+It is in the context of Yamuna urban floods problems of Delhi with focus on flood during July 2023, this
+publication is being brought out. The documentation is based on research, first hand experiences of the
+stakeholders, knowledge and experiences of many resource persons, Data and information received from relevant
+departments in Delhi. Not only the genesis causes, impacts of flood of July 2023 have been addressed but also
+flood scenario of Delhi is seen with a retrospective viewpoint by delving upon the history of floods in Delhi in its
+essence. The challenges faced in evacuation, response relief and rescue have also been highlighted.
+It is hoped that the publication of this documentation will stimulate improved data collection and research, which
+can enable the gaps so identified in the management of disasters, to be addressed in future.
+
+(Madhup Vyas)
+
+vkink izCkaèku egkfopkj% Ikwjk “kjr “kxhnkj
+Qksu / Ph.: +91-11-20873401 • bZ esy / E-mail: ed.nidm@nic.in • osCk lkbZV / Website: https://nidm.gov.in
+
+iii
+
+PREFACE
+This publication is focused not only on Yamuna urban flood of Delhi that occurred in July 2023 but also
+encompasses the past recurrent floods in Delhi with a retrospective view point. Based on the lessons
+drawn and challenges faced in the past, a way forward is suggested. It needs to be realized that the issue
+of flooding of Delhi is complex and its solution is not simple and straightforward but presents a daunting
+task. The reasons for floods in Delhi are manifold and more or less known but its high time that an
+implementable action plan is drawn. However, in order to conceive the solution to the flooding in Delhi,
+a micro level analysis along with a holistic approach is required to be dwelled upon at the same time.
+The instant documentation is,therefore,intended to be an intermediate step in right direction towards a
+feasible and practical solution to the problem. In order to draw an actionable strategy, this publication
+reflects upon the complexities in all dimensions with respect to reasons, multitude of stakeholders,
+widespread impacts, mitigation strategies and challenges in response relief and recovery.
+Rapid and haphazard urbanization, encroachment into flood plain and drainage channels, reclamation of
+wetlands and flood plain, inadequacies and lacuna in drainage system results in pronounced urban
+flooding and it’s the poor who have built shelters on illegal, unsafe land in high risk zones are the worst
+affected. Besides, flood in Delhi also renders infrastructural damages and disruption in economic
+activities, vital services and means of transport.
+On account of precarious nature of flood in Delhi, this publication is intended to be an eye opener to all
+associated with the flood in Delhi including administration, all stakeholders, line departments and the
+ministries who were brought onto one forum by holding a consultative workshop during the process of
+documentation. The issue has been thoroughly researched from the existing literature review including
+published papers and reports, newspaper reports, various website and the internet, updated data and
+information obtained from concerned organizations and many resource persons. All perspectives have
+been taken care of as far as possible from viewpoint of basin states to town planners and academicians,
+professionals and policy makers alike.
+It is hoped that the publication, which is an attempt to synthesize and synergize the myriad perspectives,
+will serve to appreciate the differential viewpoints of one stakeholder by another and will serve as a
+reference document and guide for the way forward of future endeavors in respect of flood risk reduction
+and resilience in Delhi.
+
+(Surya Parkash)
+
+v
+
+ACKNOWLEDGEMENT
+The eventful flood of July 2023 of Delhi when the High Flood Level of Yamuna recorded highest ever in the history
+has pointed how much vulnerable to floods is the city of Delhi. Though, there has been no human casualty but life,
+however many vital services like water supply and transport were badly affected. It was worthwhile, therefore, not
+only to document this flood event and its related causes, effects, relief and response activities along with the past
+floods and to delve into depth of the issue in order to consolidate the lessons learnt and the way forward.
+The publication is the result of much handholding and team effort. First of all I would like to thank
+Shri Madhup Vyas, IAS, Executive Director, NIDM for his visionary guidance and immense support during
+the process of documentation. The documentation would not have been possible without the contribution of
+many departments through the data and information provided to NIDM in time and as and when required. In
+particular IMD, DDMA, I&FC Delhi, CWC and many other stakeholders and line departments who contributed
+by giving worthwhile suggestions due to their first hand experience in dealing with Delhi Floods in general
+and July 2023 event in particular.
+Thanks are due to Shri Santosh Kumar Tiwari, Librarian, NIDM, and Ms Karanpreet Kaur Sodhi, Jr. Consultant,
+publication cell for extending the necessary cooperation in printing of the document. Time to time suggestions and
+feedback provided by the GMRD team of NIDM primarily, Shri M. S. Dhillon, Sandeep Kumar Singh, Dr. Ravinder
+Singh, Vimal Tiwari, Dr. Shubham Badola, Karishma Choudhary, Stanzin Tsela, Dr. Kundan Deval for providing
+review assistance and Ms. Pallavi, for their assistance in completing this task, heartfelt thanks are due to them. All
+the faculty and staff members of NIDM, who have directly and indirectly supported in preparing the document, are
+also acknowledged
+It is hoped this documentation on “Yamuna Urban Floods in Delhi with Focus on July 2023 Event” will go a long
+way in helping those who are committed to building a disaster-resilient society
+
+(Surya Parkash)
+
+vii
+
+CONTENTS
+• Foreword
+
+iii
+
+• Preface
+v
+• Acknowledgement vii
+xiii
+• List of Figures
+
+• List of Tables
+• Abbreviations and Acronyms
+• About the Organisation
+
+xv
+xvii
+xxi
+
+1. Introduction to Floods
+1.1
+Background
+1.2
+Urban Flooding: Global Scenario
+1.3
+Urban Flooding: Indian Scenario
+1.4
+Urban Flood Management Guidelines
+1.5
+Institutional Framework for Management of Urban Floods
+
+1
+1
+2
+4
+6
+6
+
+2. Salient Characteristics of Delhi
+2.1
+Location and General Characteristics
+2.2
+Weather and Climate
+2.3
+Geomorphology
+2.4
+Hydrogeology
+2.5
+Demographic Profile
+
+10
+10
+11
+11
+12
+13
+14
+15
+18
+19
+20
+20
+21
+21
+22
+
+2.6
+2.7
+2.8
+
+Economic Profile
+Land Use Pattern
+Administrative Setup
+2.8.1 Local
+2.8.2 State - Government of NCT of Delhi
+2.8.3 Water
+2.8.4 Electricity
+
+2.9
+
+2.8.5 Union - Government of India
+Multiple Institutions for flood control and drainage
+
+3. Multi- hazard scenario in Delhi
+3.1
+Earthquake
+3.1.1 Geological Setting of Delhi
+3.1.2 Seismic Zoning
+3.1.3 History of Earthquakes in Delhi
+3.2
+
+Floods
+
+23
+23
+23
+23
+24
+25
+
+ix
+
+3.3
+3.4
+
+Fire
+Other Hazards
+
+26
+27
+
+4. Floods Hazards, Vulnerability and Risks in Delhi
+4.1
+Major Flood Hazard Events in Delhi
+4.1.1
+4.1.2
+4.1.3
+4.1.4
+4.1.5
+4.1.6
+4.1.7
+4.1.8
+4.2
+
+4.3
+
+The 1924 flood
+The 1977 flood
+The 1978 flood
+The 1995 flood
+The 2010 flood
+The 2013 flood
+The 2019 Flood
+The 2023 Flood
+
+28
+28
+28
+28
+28
+29
+29
+29
+29
+30
+
+Flood Vulnerability and Risks in Delhi
+4.2.1 Local Flooding
+
+30
+31
+31
+4.2.2 Settlement Pattern in Flood Plain
+32
+4.2.3 Risk of breach in embankments
+4.2.4 Risk to Population, Infrastructure,Critical Facilities,
+Services and Utilities 32
+Standard Operating Procedure for Flood Risk Reduction
+33
+4.3.1 Declaration
+33
+4.3.2 Flood Forecasting and Warning
+33
+4.3.3 Trigger Mechanism
+35
+4.3.4 Duties, Roles and Responsibilities of Various Departments
+35
+4.3.5 Assessment of Damage/Loss and Needs
+38
+
+5. Yamuna Urban Flood of Delhi- July 2023 Event
+5.1 Heavy Rainfall over Delhi
+5.1.1 08 July 2023
+5.1.2 09 July, 2023
+5.1.3 10 July, 2023
+5.1.4 11 July, 2023
+5.2
+Meteorological conditions
+5.3
+Flood Forecasting
+
+39
+41
+42
+42
+42
+43
+44
+44
+
+x
+
+5.4
+
+Flood Events July 10th to July 31st 2023
+5.4.1 Monday, July 10th 2023
+5.4.2 Tuesday, July 11 th 2023
+5.4.3 Wednesday, July 12th 2023
+5.4.4 Thursday, July 13th 2023
+5.4.5 Problems faced as on July 13th 2023
+5.4.6 Friday, July 14th, 2023
+5.4.7 Saturday, July 15th 2023
+5.4.8 Sunday, July 16th and Monday July 17th, 2023
+5.4.9 July 18th to July 31st, 2023
+
+47
+49
+49
+49
+50
+50
+53
+53
+53
+53
+
+5.5
+
+Flood Impacts
+5.5.1 Life Disruptions
+5.5.2 Record of Rainfall of 16th July, 2023
+5.5.3 Disruption in water supply
+
+54
+54
+54
+55
+55
+55
+55
+56
+56
+
+5.5.4 Vector-borne diseases
+5.5.5 Silt Accumulation
+5.5.6 Flooding of fields
+5.5.7 Embankment Breach at Alipur
+5.5.8 Malfunctioning and Repair of Regulator and Barrage at ITO
+6.
+6.1
+
+Causes of Floods in Delhi
+Causes of the July 2023 Event
+
+6.2
+
+Causes of Current Floods in Delhi
+
+7.
+7.1
+
+Response, Relief and Recovery (2023 flood)
+Preparedness for Flood Response
+7.1.1 District Disaster Management Authority and Delhi Police
+7.1.2 Traffic Police
+7.1.3 Education Department
+7.1.4 Instructor Civil Defense
+
+7.1.5
+
+Delhi Urban Shelter Improvement Board
+
+7.1.6
+7.1.7
+
+Delhi Health Services
+Municipal Corporation of Delhi
+
+58
+58
+60
+62
+62
+62
+63
+63
+63
+63
+64
+65
+
+xi
+
+7.2
+7.3
+
+7.1.8 Public Works Department
+7.1.9 Delhi Development Authority
+7.1.10 Boat Club In charge
+7.1.11 Delhi Transport Corporation
+Evacuation, Rescue and Relief
+Decisions made with increasing water level
+
+65
+65
+65
+65
+65
+67
+
+8.
+
+Flood Disaster Risk Management Strategies for Delhi
+
+8.1
+8.2
+8.3
+8.4
+
+Structural Measures
+Non-structural Measures
+Beyond Structural and Non-structural Measures
+Proposed Strategies for Urban Floods in Other Cities and Metros
+
+72
+72
+73
+75
+75
+76
+76
+76
+76
+
+8.4.1
+8.4.2
+8.4.3
+8.4.4
+
+Chennai
+Mumbai
+Kolkatta
+Surat
+
+9.
+9.1
+9.2
+9.3
+
+Key Suggestions from Stakeholders’ Consultative Workshop
+Objectives
+Contents of the Workshop
+Summary and Overall Key Suggestions
+
+10.
+
+The lessons, challenges and the way forward
+
+10.1
+10.2
+
+10.3
+
+11.
+
+77
+77
+77
+78
+
+81
+Lessons
+81
+Challenges
+82
+10.2.1 Flood Management
+82
+10.2.2 Drainage
+82
+10.2.3 Evacuation, Response, Relief and Rescue during July 2023 event 82
+10.2.4 Administration
+83
+Way Forward
+83
+10.3.1 Flood Management
+83
+10.3.2 Drainage
+85
+10.3.3 Evacuation, Response, Relief and Rescue
+87
+10.3.4 Administration
+87
+References
+88
+
+xii
+
+LIST OF FIGURES
+
+Fig 1.1:
+Fig 1.2:
+Fig 2.1:
+Fig 2.2:
+Fig 2.3:
+Fig 2.4:
+Fig 2.5:
+Fig 2.6:
+Fig 2.7:
+Fig 2.8:
+Fig 2.9:
+Fig 2.10:
+Fig 2.11:
+Fig 2.12:
+Fig 3.1:
+Fig 4.1:
+Fig 4.2:
+Fig 5.1:
+Fig 5.2:
+Fig 5.3:
+Fig 5.4:
+Fig 5.5:
+Fig 5.6:
+Fig 5.7:
+Fig 5.8:
+Fig 5.9:
+Fig 5.10:
+Fig 5.11:
+Fig 5.12:
+Fig 5.13:
+Fig 5.14:
+Fig 5.15:
+
+Exponential Increase in Urban Population
+Urban population by size class of urban settlement
+Location of Delhi
+Soil Characteristics of Delhi
+Depth to Water Level Map of Delhi
+Water Level Depth Zone Area Coverage-January 2019
+Groundwater Potential of Delhi
+Population of Delhi from 1951 to 2011
+Land Use and Land Cover Map of Delhi 2018
+Land Use Land Cover Map of Delhi, 2008
+Land Use Land Cover Map of Delhi, 1998
+Land Use Land Cover Map of Delhi, 1985
+The eleven administrative districts of Delhi
+Union, State, and Local Agencies Involved in the Governance of Delhi
+Seismic Zoning Map of India
+The Yamuna River Basin
+Vulnerable Areas along Yamuna.
+The Old Railway Bridge (ORB)
+Yamuna River Course through Delhi
+Hathnikund Barrage
+Wazirabad Barrage
+ITO Barrage
+Location of Hathnikund Barrage
+Okhla Barrage
+IMD Rainfall Monitoring Stations in Delhi
+Daily Rainfall reported in mm at various stations of Delhi during different
+dates at 0830 hrs IST from past 24-h during 8-11 July 2023
+Total rainfall in mm realized at various stations of Delhi during 8-11 July
+2023 for 0830 till 0830 hrs
+CWC Flood Forecasting process for Disaster Risk Reduction
+Flood Category and Alert Colour Codes used by CWC
+Red Bulletin issued by CWC on 13th July 2023
+Level Forecast issued by CWC for ORB on 13th July 2023
+Discharge at Hathikund Barrage and Water Level at ORB July 9th to July
+16th (First Peak)
+
+xiii
+
+Fig 5.16:
+Fig 5.17:
+Fig 5.18:
+Fig 5.19:
+Fig 5.20:
+Fig 5.21:
+Fig 5.22:
+Fig 5.23:
+Fig 5.24:
+Fig 5.25:
+Fig 5.26:
+Fig 6.1:
+Fig 6.2:
+Fig 6.3:
+Fig 7.1:
+Fig 7.2:
+Fig 7.3:
+Fig 7.4:
+Fig 7.5:
+Fig 7.6:
+Fig 7.7:
+
+Satellite Images Before and during flood
+The submergence starts at Monastry Market in Kashmere Gate
+Major Inundated areas and the aftereffects
+Innudation near ISBT
+Inundation at the Nigambodh Ghat
+Inundation at Civil Lines
+Inundation at Red Fort
+Deluge in Noida
+The Ring Road Submergence due to broken Regulator
+Inundation at the Rajghat and Fixation of Regulator
+Submergence of Yamuna Bank Metro Station
+Yearly Highest Flood Level of Yamuna River Observed at Old Railway
+Bridge
+The Central Water Commission Flood Monitoring Stations and
+Comparative Study
+Reduction in Yamuna flood plains boundaries in Delhi.
+Flood Relief Camps of North East District
+Response of NDRF
+Relief Material Distributed with photographs
+Saving Lives and Beyond
+Medical/ Vet Camps
+Challenges faced
+Cattle being rescued
+
+xiv
+
+List of Tables
+
+Table 1.1:
+Table 2.1:
+Table 2.2:
+Table 3.1:
+Table 3.2:
+Table 3.3:
+Table 4.1:
+Table 5.1:
+
+Responsibilities of Departments and Authorities for Urban Flood
+Management
+Area- Rural and Urban
+Land Use Land Cover Area Statistics of 1985-2018
+History of Earthquakes in Delhi
+Major Flood events in Yamuna River in Delhi
+Vulnerability Matrix of Delhi
+Response Action & Concerned Departments
+Highest Rainfall Record
+
+xv
+
+ABBREVIATIONS
+AND ACRONYMS
+
+ADAG
+
+: Anil Dhirubhai Ambani Group
+
+API
+
+: Antecedent Precipitation Index
+
+ATI
+
+: Administrative Training Institute
+
+BIS
+
+: Bureau of Indian Standards
+
+BMTPC
+
+: Building Materials and Technology Promotion Council
+
+BRPS
+
+: BSES Rajdhani Power Supply Ltd.
+
+BSES
+
+: Bombay Suburban Electric Supply
+
+BYPL
+
+: BSES Yamuna Power Limited
+
+CAPF
+
+: Central Armed Police Forces
+
+CBRI
+
+: Central Buildings Research Institute
+
+CBRN
+
+: Chemical, Biological, Radiological, and Nuclear
+
+CBSE
+
+: Central Board of Secondary Education
+
+CDEF
+
+: Cultural Development and Exchange Fund
+
+CPHEEO
+
+: Central Public Health and Environmental Engineering Organization
+
+CrPC
+
+: Criminal Penal Code
+
+CRRI
+
+: Central Road Research Institute
+
+CSIR
+
+: Council of Scientific & Industrial Research
+
+Cumec
+
+: Cubic meters per second
+
+Cusec
+
+: Cubic feet per second
+
+d/s
+
+: Downstream
+
+DC
+
+: District Collector
+
+DCB
+
+: Delhi Cantonment Board
+
+DDA
+
+: Delhi Development Authority
+
+DDMA
+
+: Delhi Disaster Management Authority
+
+xvii
+
+Degrees C
+
+: Degrees Celsius
+
+DERC
+
+: Delhi Electric Regulatory Commission
+
+DESU
+
+: Delhi Electric Supply Undertaking
+
+DG
+
+: Director General
+
+DHS
+
+: Directorate of Health Services
+
+DIAL
+
+: Delhi International Airport Limited (DIAL)
+
+DL
+
+: Danger Level
+
+DPCL
+
+: Delhi Power Supply Corporation Limited
+
+DTC
+
+: Delhi Transport Corporation
+
+DUSIB
+
+: Delhi Urban Shelter Improvement Board
+
+DVB
+
+: Delhi Vidyut Board
+
+EOC
+
+: Emergency Operations Center
+
+F&ES
+
+: Fire and Emergency Services
+
+FSO
+
+: Food Security Officer
+
+GNCTD
+
+: Government of National Capital Territory of Delhi
+
+GOI
+
+: Government of India
+
+GSDP
+
+: Gross State Domestic Product
+
+HFL
+
+: High Flood Level
+
+Hrs
+
+: Hours
+
+I&FCD
+
+: Irrigation and Flood Control Department, Delhi
+
+IAS
+
+: Indian Administrative Service
+
+IE(I)
+
+: Institution of Engineers (India)
+
+IMD
+
+: India Meteorological Department
+
+IRC
+
+: Indian Roads Congress
+
+Kms
+
+: Kilometers
+
+L/B
+
+: Left Bank
+
+LG
+
+: Lieutenant Governor
+
+lpm
+
+: Liters per minute
+
+m. bgl
+
+: meters below ground level
+
+MAFW
+
+: Ministry of Agriculture and Farmers Welfare
+
+MCA
+
+: Ministry of Corporate Affairs
+
+xviii
+
+MCD
+
+: Municipal Corporation of Delhi
+
+MEITY
+
+: Ministry of Electronics and Information Technology
+
+MFIN
+
+: Ministry of Finance
+
+MoHFW
+
+: Ministry of Health and Family Welfare
+
+MHRD
+
+: Ministry of Human Resource Development
+
+MLA
+
+: Member of Legislative Assembly
+
+MoCI
+
+: Ministry of Commerce and Industry
+
+MoEFCC
+
+: Ministry of Environment, Forest and Climate Change
+
+MoES
+
+: Ministry of Earth Sciences
+
+MoHA
+
+: Ministry of Home Affairs
+
+MoHUA
+
+: Ministry of Housing and Urban Affairs
+
+MoJS
+
+: Ministry of Jal Shakti
+
+MoRD
+
+: Ministry of Rural Development
+
+MoSPI
+
+: Ministry of Statistics & Programme Implementation
+
+MoWR
+
+: Ministry of Water Resources
+
+MP
+
+: Member of Parliament
+
+MS
+
+: Mild Steel
+
+MSJE
+
+: Ministry of Social Justice and Empowerment
+
+MWCD
+
+: Ministry of Women Child Development
+
+MYAS
+
+: Ministry of Youth Affairs and Sports
+
+NBCC
+
+: National Buildings Construction Corporation
+
+NDMA
+
+: National Disaster Management Authority
+
+NDMC
+
+: New Delhi Municipal Council
+
+NDRF
+
+: National Disaster Response Force
+
+NE
+
+: North East
+
+NGO
+
+: Non-Governmental Organization
+
+ORB
+
+: Old Railway Bridge
+
+xix
+
+ORS
+
+: Oral Rehydration Solution
+
+PRIS
+
+: Panchayati Raj Institutes
+
+PS
+
+: Police Station
+
+R/B
+
+: Right Bank
+
+RWA
+
+: Resident Welfare Association
+
+SDM
+
+: Sub Divisional Magistrate
+
+SDMA
+
+: State Disaster Management Authority
+
+SE
+
+: Superintending Engineer
+
+SERC
+
+: Structural Engineering Research Center
+
+SIDM
+
+: Society of Indian Defense Manufacturers
+
+SOP
+
+: Standard Operating Procedure
+
+SQ
+
+: Square
+
+STP
+
+: Sewage Treatment Plant
+
+SW
+
+: South West
+
+TPDDL
+
+: Tata Power Delhi Distribution Limited
+
+u/s
+
+: Upstream
+
+UDD
+
+: Urban Development Department
+
+ULB
+
+: Urban Local Body
+
+UN
+
+: United Nations
+
+USD
+
+: United States Dollars
+
+WD
+
+: Withdrawal
+
+WL
+
+: Warning Level
+
+WTP
+
+: Water Treatment Plant
+
+xx
+
+About the Organisation
+National Institute of Disaster Management (NIDM)
+The National Institute of Disaster Management (NIDM) was established under an Act of Parliament to
+serve as a premier institute for capacity development in disaster management in India and the region.
+Initially formed as the National Centre for Disaster Management (NCDM) in 1995, it was later redesigned
+as NIDM in 2003, focusing on training and capacity building. Under the Disaster Management Act of
+2005, NIDM was tasked with responsibilities such as human resource development, capacity building,
+training, research, documentation, and policy advocacy in disaster management.
+NIDM has played a vital role in bringing disaster risk reduction to the national forefront by promoting a
+"Culture of Prevention" involving all stakeholders. The Institute collaborates with various ministries,
+central, state, and local governments, academic, research, and technical organizations, both within India
+and internationally, as well as with bilateral and multilateral agencies.
+The Institute boasts a multi-disciplinary team of professionals dedicated to various aspects of disaster
+management. It offers state-of-the-art facilities, including classrooms, seminar halls, and videoconferencing capabilities. NIDM also has a specialized library focused on disaster management and
+mitigation. Training is provided through face-to-face sessions, online platforms, self-learning modes,
+and satellite-based training. Free in-house and off-campus training is available to state government
+officials, including modest boarding and lodging.
+NIDM supports national and state agencies in Disaster Management and Disaster Risk Reduction by
+building capacity and preparedness at all levels. Its vision is to create a Disaster Resilient India through
+comprehensive capacity building for disaster prevention and preparedness.
+
+Delhi Disaster Management Authority (DDMA)
+Delhi Disaster Management Authority (DDMA) was established on 19 March 2008, under the chairmanship
+of the Hon'ble Lt. Governor of Delhi. The Secretary (DDMA)/Divisional Commissioner of Delhi heads
+the nodal department for disaster management and serves as the Convenor of DDMA. This framework
+aims to provide institutional structures for unified command, control, and coordination, with legal
+authority to address Delhi's disaster management needs, including defining roles and
+
+xxi
+
+responsibilities, creating a techno-legal regime, generating awareness, building capacity, and developing
+disaster management plans at all levels.
+The Disaster Risk Management (DRM) programme, in collaboration with GoI-UNDP from 2003-2008,
+emphasized awareness, education, training, and capacity development for better disaster preparedness
+and risk management at community, district, and state levels. It also focused on strengthening
+Emergency Operation Centers. Key elements of the disaster management strategy include generating
+awareness, developing preparedness and response plans, fostering collaboration between government
+and civil society, and building the capacity of government institutions in disaster mitigation and
+recovery. Efforts have been made to develop a database on hazards, vulnerabilities, and risks in Delhi.
+The establishment of Emergency Operation Centers at state and district levels ensures coordinated relief
+and rescue during emergencies. Partnerships with academic institutions and the private sector support
+the development of disaster risk management plans and projects. Both structural and non-structural
+measures are being implemented to reduce disaster impacts, enhance management skills, and improve
+the preparedness and response capacities of communities, local authorities, urban bodies, and state
+authorities.
+
+Irrigation & Flood Control Department (I&FC)
+Irrigation & Flood Control Department is headed by Principal Secretary (I & FC) along with two Chief
+Engineers. As per sanctioned strength there are Six Superintending Engineers/ SSW (Civil),TwentyFive Executive Engineers/ SW (Civil), Four Executive Engineers (Mech.), Eighty-Two Assistant
+Engineers (Civil), Eighteen Assistant Engineers (Mech.), One Hundred Fifty Junior Engineer (Civil),
+Twenty-Six Junior Engineers (Mech.), Six Drafts Man Grade-I, 24 Drafts Man Grade-II and Seven
+Drafts Man Grade-III and Four Surveyor. The total sanctioned strength of Technical Staff is 352. Two
+zones are assisted by one Administrative Officer and Financial Advisor-cum Accounts Officer and 19
+AAO. The total sanctioned staff strength of Ministerial staff and Administrative Staff is 265. Thus, the
+overall sanctioned strength of Technical + Ministerial & Accounts Cadre is 617.
+The Irrigation and Flood Control Department of Delhi is responsible for managing water resources in
+the region, including irrigation systems, flood management, and infrastructure related to water supply.
+They implement various projects to prevent flooding and ensure efficient water usage within the city.
+
+xxii
+
+Chapter 1: Introduction to Floods
+
+1.1
+
+Background
+
+Disaster means a catastrophe, mishap, calamity or grave occurrence in any area, arising from natural or
+manmade causes, or by accident or negligence, which results in substantial loss of life or human
+suffering or damage to, and destruction of, property, or damage to, or degradation of, environment, and
+is of such a nature or magnitude as to be beyond the coping capacity of the community of the affected
+area (DM Act 2005).
+Hazards are often divided into natural hazard and anthropogenic hazards depending upon their genesis
+and source. Examples of natural hazards include avalanches, flooding, cold waves and heat waves,
+droughts, earthquakes, cyclones, landslides, lightning, tsunamis, volcanic activity, wildfires, and winter
+precipitation (hazards.fema.gov). Examples of anthropogenic hazards include stampede, terrorism, war,
+industrial hazards, engineering hazards, fire and transportation hazards. However, in modern times, the
+divide between natural, human-made and human-accelerated disasters is difficult to draw (Gould et. al. 2016).
+Developing countries like India suffer the greatest costs when a disaster hits. More than 65% of all
+deaths caused by hazards occur in developing countries, and losses due to natural hazards are 20 times
+greater (as a percentage of gross domestic product) in developing countries than in industrialized
+countries (Ballesteros Luis Flores, 2008).
+Urban flooding has become a prominent disaster affecting various cities across the globe. Urban
+flooding is the inundation of land or property in a built environment, particularly in more densely
+populated areas, caused by rainfall over the city itself overwhelming the capacity of drainage systems,
+such as storm sewers or additionally due to river or a water body near or passing through the city,
+causing inundation of the low lying urban areas. Although, sometimes triggered by events such as flash
+flooding or snowmelt, urban flooding is a condition, characterized by its repetitive and systemic impacts
+on communities that can happen regardless of whether or not affected communities are located within
+designated floodplains or near any body of water. Aside from potential overflow of rivers and lakes,
+snowmelt, storm water or water released from damaged water mains may accumulate on property and in
+public rights-of-way, seep through building walls and floors, or backup into buildings through drains,
+sewer pipes, toilets and sinks.
+Urban Floods typically result from the confluence of meteorological, hydrological and physiographic
+factors such as rainfall frequency and intensity, storms, temperature, land use, land forms and other
+physiographic conditions further exacerbated by human actions and built environment. The replacement
+
+1
+
+of earth's natural land cover and vegetation by impervious surfaces such as built-up structures and roads
+has raised the issues of inundation of urban areas over the last few decades. This is diminishing the
+natural storage capacity of the soil and alters the existing hydrological cycle often increasing the surface
+runoffs. According to the National Disaster Management Authority (NDMA), the volumes in case of
+urban floods can increase by up to 6 times while the peaks from 1.8 to 8 times in comparison to that of a
+rural flood. As a result, urban flooding can occur within a very short duration, sometimes even within a
+couple of minutes, due to high-speed flow. The artificial drainage channels that are constructed also fail
+to deal with the excess runoff creating inundation and flooding. Several issues like encroachment of
+river plains, land reclamation below flood level, disposal of wastes in water bodies, loss of natural drains
+and ponds, etc. also arise due to the increasing urban population. These urban challenges further get
+aggravated by impacts of climate change. Global climate change is resulting in changed weather patterns
+and increased episodes of high intensity rainfall events occurring in shorter periods of time. Then the
+threat of sea level rise is also looming large, threatening all the coastal cities. Cities/towns located on the
+coast, on river banks, upstream / downstream of dams, inland cities and in hilly areas can all be affected
+Increasing trend of urban flooding is a universal phenomenon and poses a great challenge to urban
+planners the world over. Problems associated with urban floods range from relatively localized incidents
+to major incidents, resulting in cities being inundated from hours to several days. Therefore, the impact
+can also be widespread, including temporary relocation of people, damage to civic amenities, loss of
+lives, property damage, and deterioration of water quality and risk of epidemics.
+Urban flooding also impacts critical public services, including public transportation systems (Suraez et.
+al. 2005, Chang et. al. 2010). Traffic congestion can be worsened by urban flood events, impacting ease
+of access to transportation, as well as the ability of emergency services to operate effectively. Urban
+flooding can also create far-reaching supply chain issues, which can create significant interruptions in
+the availability of goods and services, as well as financial losses for businesses.
+
+1.2 Urban Flooding: Global Scenario
+Some of the most obvious impacts of urban flooding are those to human life and to property damage. In
+2020, floods caused an estimated 6,000 deaths and caused US$51.3B in damages globally (source:
+Centre for Research on the Epidemiology; UN Office for Disaster Risk Reduction, 2021). Flood and its
+related disasters are caused by excessive volumes of runoff, which are not absorbed by the ground.
+Residents at low-elevated regions are often at risk of inundation, financial loss, and even the loss of lives.
+As the pace of urbanization accelerates around the world, flash flood damage takes place more
+frequently. Between 1961 and 2020, nearly 10,000 cases were reported with 1.3 million deaths and a
+minimum of USD 3.3 trillion of financial losses at an equivalent loss rate of almost USD 1800 per
+second. On an average, the total reported deaths worldwide were around 23,000/year for the past 6
+decades at an equivalent rate of one death every 24 min. (Ling et. al. 2022)
+The Los Angeles flood of 1938, which witnessed high runoff leading to floods and the Rapid City Flood
+of 1972 that resulted due to the clogging of water channels and drains, were some of the early instances
+of urban flooding. The major issues of urban floods, however, started arising in the 21st century and
+gradually amplified with urbanization. The frequency of urban floods across the world started increasing,
+resulting in heavy loss and damage. There have been 3,600 cases of urban flooding in the United States
+
+2
+
+as reported by the National Weather Service between 1993 and 2017 (Poon, 2018). Illinois alone has
+suffered a loss of 2.3 billion USD between 2007 and 2014 (Grabar, 2019). The Hull Flood of 2007,
+Newcastle Flood of 2012, Ireland Flood of 2012-13 and Cumbria Floods of 2017 are a few of the
+catastrophic urban flooding in Europe. The Queensland Flooding of 2011 and Townsville Floods of
+2019 have been the major events of urban flooding in Australia in the previous decade.
+In Asia, urban flooding is a frequent phenomenon. In urban environments, farmland, vegetation cover,
+and bare soil have been converted into built-up areas. In urban areas, with rapid increase in impermeable
+surfaces and urban development, the likelihood of flooding has increased. Similarly, the intensity of
+urban floods becomes higher with prolonged rainfall. The probability of urban flooding is expected to
+further increase with changing climate (Carmin et al., 2013). In Asia, numerous coastal cities are
+exposed to both urban and coastal floods, whereas inland cities are vulnerable to flash floods, river
+floods, or urban floods. In developing countries, human encroachments onto the active flood channel,
+poor flood management strategies, lack of flood early warning systems, and disposal of solid waste in
+drainage lines are the major causes of urban flooding.
+In Asian cities, populations grow gradually, and these new residents/immigrants need shelter to
+accommodate their needs. As urban populations grow, the pressure on existing resources and
+infrastructure intensifies. At the same time, land values increase, and higher buildings are constructed to
+fulfill the housing demand. Finally, the most pronounced aspect of cities in the developing world is
+haphazard urban expansion over valuable natural resources. In all these cases, poor people are the ones
+who have no choice but to build shelter on illegal, unsafe land in high-risk zones. This situation, where
+people consistently encroaching onto the flood prone areas narrow the channel and in turn reduce the
+channel carrying capacity, is very common in almost every megacity.
+In Asia, almost every city of the continent is prone to urban floods because of their climatic conditions
+and topographical characteristics. Asian megacities like Bangkok, Manila, Guangzhou, Dhaka, Ho Chi
+Minh City, Jakarta and Mumbai are extremely vulnerable to frequent flooding.
+Top 20 cities vulnerable to urban flooding in the world are as follows:1.
+2.
+3.
+4.
+5.
+6.
+7.
+8.
+9.
+10.
+11.
+12.
+13.
+14.
+15.
+
+Guangzhou, China
+Mumbai, India
+Kolkata, India
+Guayaquil, Ecuador
+Shenzen, China
+Miami, Florida, USA
+Tianjin, China
+New York — Newark, New Jersey, USA
+Ho Chi Minh City, Vietnam
+New Orleans, Louisiana
+Jakarta, Indonesia
+Abidjan, Ivory Coast
+Chennai, India
+Surat, India
+Zhanjiang, China
+
+3
+
+16.
+17.
+18.
+19.
+20.
+
+Tampa—St. Petersburg, Florida, USA
+Boston, Massachusetts, USA
+Bangkok, Thailand
+Xiamen, China
+Nagoya, Japan
+
+(Source- https://www.archdaily.com/429767/the-20-cities-most-vulnerable-to-flooding )
+
+1.3 Urban Flooding: Indian Scenario
+A special feature in India is that it has heavy rainfall during monsoons. There are other weather
+systems also that bring in a lot of rain. Storm surges can also affect coastal cities/ towns. Sudden release
+or failure to release water from dams can also have severe impact.
+There has been an increasing trend of flooding in Indian towns and cities over the last few decades due
+to the increase in the average annual rainfall in many parts of India over the years. Most of the major
+cities of India at present are vulnerable to urban flooding and have witnessed repeated instances of
+flooding. The most notable amongst them are Hyderabad in 2000 and 2020, Ahmedabad in 2001, Delhi
+in 2002, 2003, 2009, 2010, 2013 and 2019 Chennai in 2004 and 2015, Mumbai in 2005 and 2017, Surat
+in 2006, Kolkata in 2007, Jamshedpur in 2008, and Guwahati in 2010, Bengaluru in 2022 and now the
+most recent flood in Delhi during July 2023.
+The heavy rainfall received in India during southwest monsoons makes its towns and cities extremely
+vulnerable to urban floods. The average annual rainfall received in the country varies from 2813 mm in
+Panaji on the higher side to 609 mm in Jaipur on the lower side. Many Indian cities like Cherrapunji
+(11,777 mm); Port Blair (2872 mm); Panaji (2813 mm); Dibrugarh (2569 mm); Dehradun (2220 mm);
+Shillong (2207 mm); Mumbai (2186 mm); Agartala (2149); Kohima (1831 mm) Kolkata (1800 mm) ,
+and Guwahati (1722 mm) receive high rainfall compared to that of flood- vulnerable cities of other
+countries like Guangzhou (1720 mm) ; Miami (1570 mm) and Jakarta (1755 mm). The coastal cities are
+also vulnerable to flooding because of storm surges and cyclones. The exponential increase in urban
+populations and the expansion of urbanized areas (Fig 1.1 and Fig 1.2) further worsen these conditions.
+The rapid urbanization is leading to the reclamation of wet lands and flood plains, encroachment on
+drainage channels, clogging of channels due to improper waste disposal, poor maintenance of storm water
+drains, etc. It also leads to urban heat island effect increasing the rainfall received in urban areas. The issue
+of over-concretization has been a serious problem for all the flood-prone towns and cities. The impacts of
+changing climate and seasonal unpredictability also add to the gravity of the situation.
+
+4
+
+Fig 1.1: Exponential Increase in Urban Population
+(Source: https://population.un.org/wup/country-profiles/)
+
+Fig 1.2: Urban population by size class of urban settlement
+(Source: https://population.un.org/wup/country-profiles/)
+
+5
+
+India suffers huge infrastructural damages, destruction of properties, disruption of economic services
+and activities and loss of lives with the increasing occurrences of urban flooding. It has been projected
+that by 2030, infrastructure of approximately 150 billion USD would be exposed to disaster risks
+because of urban flooding in India. Urban areas are also centers of economic activities with vital
+infrastructure which needs to be protected 24x7. In most of the cities, damage to vital infrastructure has
+a bearing not only for the state and the country but it could even have global implications. Major cities
+in India have witnessed loss of life and property, disruption in transport and power and incidence of
+epidemics. Therefore, management of urban flooding has to be accorded top priority.
+
+1.4 Urban Flood Management Guidelines
+Urban Flooding has become a nightmare for urban planners, designers, engineers and Disaster Risk
+Reduction (DRR) professionals. The characteristics of urban floods being different from flash floods is a
+major challenge for the authorities. The July 2005 urban flood of Mumbai was an eye-opener for the
+entire nation and urban flooding was introduced as a separate disaster by NDMA, delinking it from
+riverine and coastal floods. The flooding in Surat in 2006 and the flooding of Kolkata in 2007 brought to
+the fore the need for comprehensive interventions for urban flood mitigation. The NDMA set up a
+committee in 2008 to formulate the "National Guidelines on Management of Urban Floods", which was
+published in the year of 2010. The National Guidelines have been prepared with an objective to guide
+the ministries and departments for the management of urban flooding risks and call for a proactive ,
+participatory, well-structured, multi-disciplinary and multi-sectoral Urban Local Bodies (ULBs) to
+implement catchment-based planning and designing for storm water drainage systems. A mandate for
+detailed contour mapping with 0.2-0.5 meters interval has been issued for planning drainage systems of
+urban areas as per the National Guidelines. The "Manual on Sewerage" published in 1993 by the Central
+Public Health and Environmental Engineering Organization (CPHEEO) has a specific section for the
+storm drainage basin. Guidelines on urban drainage which provide for drainage design for roads (SP-501999, IRC) was brought out by the Indian Roads Congress (IRC) in 1999. Both of these guidelines do
+not take into account the spatial distribution of rainfall over India or within cities. However, an exclusive
+and detailed "Manual on Storm Water Drainage Systems" has been published in May 2019 by CPHEEO
+under the MoHUA.
+
+1.5 Institutional Frame work for Management of Urban Floods
+The institutional framework for the whole of India, in general, is such that the nodal ministry for
+providing coordination, technical inputs, and support for the management of urban flooding is the
+Ministry of Housing and Urban Affairs (MoHUA). The ministry also acts as the nodal ministry for
+central assistance. The dissemination of warning and information is coordinated by the Ministry of Jal
+Shakti (MoJS) and Ministry of Earth Sciences (MoES) at the national level and State Disaster
+Management Authority (SDMA) and Revenue Department at the state level. The District Disaster
+Management Authority (DDMA) and ULBs coordinate preparedness and response at the district and
+local level. Table 1.1 shows Responsibilities of Departments and Authorities for Urban Flood
+Management.
+
+6
+
+Table 1.1: Responsibilities of Departments and Authorities for Urban Flood Management
+Authorities
+
+Understanding Urban
+Flood Risks
+
+Responsibilities
+
+National Authorities
+
+Mapping/Zoning,
+Estimation of Possible
+Inundation Levels,
+Monitoring Networks
+Information Systems,
+Monitoring,
+Forecasting, Early
+Warning
+Hazard, Risk
+Vulnerability and
+Capacity Assessment
+(HRVCA)
+Disaster Data
+Collection and
+Management
+Overall Disaster
+Governance
+
+MoHUA, MoES, MoJS, DMD, SDMA, RD,
+DoS
+SRSAC, DDMA, PRIs
+(for peri-urban areas),
+ULBs
+MoES, MoJS
+
+Response
+
+MoHUA
+
+Warnings, Information,
+Data
+
+MoES (IMD)-Nodal
+Body, MoJS, MoES,
+NDMA, MEITY
+
+Non-Structural
+Measures
+
+MoHUA, BIS, NDMA
+
+Civil Works
+
+MoHUA(Nodal Body),
+NBCC, BMTPC,
+CBRI, SERC, IE(I),
+CRRI
+Relevant Central
+Ministries, MHA
+
+NDMA, NIDM, MSJE
+
+MHA (Nodal
+Body), MoSPI, all
+ministries /departments
+MoHUA
+
+Inter-Agency
+Coordination
+
+Structural DRR
+Measures
+
+State
+
+Establishment/
+Strengthening of
+Emergency Operation
+Centers
+Hazard resistant
+construction,
+strengthening and
+retrofitting of all
+lifeline structures and
+critical infrastructure
+Preparation of
+
+7
+
+DMD, SDMA, all
+departments
+DMD, SDMA,
+RD, DDMA,ULBs,
+PRIs (for peri-urban
+areas)
+DMD, SDMA,
+RD, DDMA,ULBs,
+PRIs (for peri-urban
+areas)
+DMD, SDMA,
+RD, DDMA,ULBs,
+PRIs (for peri-urban
+areas)
+DMD, SDMA,
+RD, DDMA,ULBs,
+PRIs (for peri-urban
+areas)
+DMD, UDD, ULBS,
+PRIs (for peri-urban
+areas)
+DMD, SDMA, ULBs,
+PRIs (for peri urban
+areas)
+
+NDMA, NBCC,
+BMTPC, CBRI, SERC,
+IE(I)
+
+SDMA, DDMA, ULBs,
+PRIs (for peri-urban
+areas)
+
+MoHUA
+
+DMD, SDMA,
+
+Authorities
+
+Non-Structural DRR
+measures
+
+Responsibilities
+
+National Authorities
+
+comprehensive Urban
+Storm Drainage Design
+Manual
+Preparation of Storm
+Water Drainage System
+Inventory
+Operation and
+Maintenance of
+Drainage System
+Environmental Impact
+Assessment
+
+State
+
+DDMA,UDD
+
+MoHUA
+
+MoHUA
+
+MoEFCC (Nodal
+Body), MoHUA
+
+Techno-Legal Regime
+Land use planning
+City/Town planning
+Constitution of Urban
+Flooding Cell for
+Integrated UFDM
+Public- Private
+Partnerships
+
+MoHUA, MFIN
+
+MoHUA
+
+DMD, SDMA, ULBs,
+PRIs (for peri urban
+areas)
+DMD, SDMA, ULBs,
+PRIs (for peri urban
+areas)
+DMD, SDMA, ULBs,
+EFD, PRIs (for peri
+urban areas
+DMD, SDMA, ULBs,
+EFD, PRIs (for peri
+urban areas
+DMD, SDMA, UDD
+
+NDMA, MoHUA, MCA UDD, SDMA, DDMA
+(Nodal Body), MCF,
+MoCI, MPFI, MHIPE,
+MFIN
+MFIN (Nodal Body),
+DFIN (Nodal Body),
+NDMA, MHA, MoAFW DMD, SDMA, State
+Department of
+Agriculture
+MoHUA(Nodal Body), ULB, PRIs (For periMHRD, MoHFW,
+urban areas), SDRF
+NDRF, NIDM, CBSE,
+MYAS
+MoHUA (Nodal Body), DMD, SDMA, RD,
+NDMA, NDRF,
+DDMA, SDRF, F&ES,
+CAPF, NIDM
+CDEF, Police, ULB,
+PRIs (for peri-urban
+areas)
+NIDM
+DMD, SDMA, RD,
+DDMA, ULB, State
+ATI
+MWCD (Nodal Body), DMD, SDMA, DDMA,
+MSJE, NDMA, NIDM RD, SIDM, ATI and
+other State- level
+institutions
+MoHUA (Nodal body), DMD, SDMA, SDRF,
+MoRD (Nodal
+RD, DDMA, ULB,
+Agency), NDMA,
+SIDM
+
+Risk Transfer
+
+Education and Training
+
+Awareness Generation
+
+Capacity Development
+Documentation
+
+Empowering Women,
+marginalized and
+persons with
+disabilities
+Community- Based
+Disaster Management
+
+8
+
+Authorities
+
+National Authorities
+
+Responsibilities
+
+Mock Drills/Exercises
+
+State
+
+NIDM
+MoHUA, NDMA, All Govt DMD, SDMA, RD,
+DDMA, ULB, SDRF,
+Ministries/Agencies,
+F&ES, CDEF, Police
+NDRF, Armed Forces
+CAPF
+
+Climate Change
+Risk Management
+
+Research,
+Forecasting/Early
+Warning, Data
+Management, Zoning,
+Mapping
+
+MoES, MoJS (Nodal
+Body), MoST,
+CSIR, DoS, NLRTI
+
+DMD, SDMA,
+RD, IRD, WRD,
+SLRTI
+
+Climate Change
+Adaptation (CCA)
+
+MoES & MoEFCC
+(Nodal Body), MoST,
+DoS, MoJS
+
+DMD, SDMA, IRD,
+WSD (Nodal Body),
+EFD, DRD, DDMA,
+ULBs, PRIs (for peri
+urban areas)
+
+9
+
+Chapter 2: Salient Characteristics of Delhi
+The flood vulnerability of Delhi is required to be perceived in the backdrop of its salient characteristics.
+Delhi is surrounded by four states viz Haryana, Uttar Pradesh and Rajasthan makes its situation peculiar
+in the Yamuna Basin for their influence with respect to floods. Additionally the upstream states like
+Himachal Pradesh and Uttarakhand affect the flooding in Delhi. Similarly weather and climate, geomorphology, hydrogeology, demographic profile, economic profile, and land use pattern have influence on the
+urban flooding risk in Delhi. The complex administration of Delhi and multiple agencies looking after
+floods exacerbate the urban flooding in Delhi. Following paragraphs dwell on the salient characteristics of
+Delhi.
+
+2.1 Location and General Characteristics
+Delhi is the capital of India. It is located in northern part of the country between the latitudes of 28°24’-17” and 28°-53’-00” North and longitudes of 76°-50’-24” and 77°-20’-37” East. Delhi shares
+border with the States of Uttar Pradesh and Haryana (Fig 2.1) It has an area of 1,484 sq. kms. Its
+maximum length is 51.90 kms and maximum width is 48.48 kms. Its geography divides the state into
+three parts- the Delhi ridge, the Yamuna flood plain and the plains. The Yamuna flood plains are very
+fertile as they are flooded by the river and are rich in alluvial soil. The Delhi ridge is the most important
+characteristic of the state and is a part of the Aravalli range that passes through Delhi.
+
+Fig 2.1: Location of Delhi
+
+10
+
+2.2 Weather and Climate
+Delhi weather varies with the different climatic conditions that are faced by this city. It is a city
+characterized by weather extremes. The geographical location of this city influences the weather
+conditions. Delhi experiences tropical steppe type of climate and hence, its seasons are marked with
+extreme temperatures. The summer season commences in the month of April and continues till July.
+During this season, continental air blows over the city and makes the weather in Delhi very dry and hot.
+Summer weather condition is characterized by scorching heat and unbearable temperature. Temperature
+reaches almost 45 degrees C in the summer months. On the contrary, winter, which lasts from December
+to January, is extremely cold. Temperature falls to almost 5 degrees C during the winter months in Delhi.
+The rainy season in Delhi begins in June and continues almost till October. Delhi receives most of its
+rain during this period of Delhi remains pleasant during the rainy season, but humidity level remains
+
+2.3 Geomorphology
+Delhi is bounded by the Indo-Gangetic alluvial plains in the North and East, by Thar Desert in the West and
+by Aravalli hill ranges in the South. The terrain of Delhi is flat in general except for a low NNE-SSW
+trending ridge that is considered as an extension of the Aravalli hills of Rajasthan.The ridge may be said to
+enter Delhi from the SW.The eastern part of the ridge extends up to Okhla in the South and disappears below
+Yamuna alluvium in the NE on the right bank of the river. Fig 2.2 shows Geomorphological map of Delhi.
+
+Fig 2.2: Geomorphological Map of Delhi
+(Source: http://www.rainwaterharvesting.org/index_files/geology.html)
+
+11
+
+2.4 Hydrogeology
+In terms of hydrogeology, fresh water is available up to 60 meters depth below ground level for over 90
+per cent of the city, and the quality of water is also potable. For the 10 per cent of city limits comprising
+the Ridge, that is not suitable for water recharge or aquifer; the remainder has saline and brackish
+waters. A map showing January 2018 ground water levels in NCT of Delhi is given in Figure 2.3 and
+areas under various depth zones presented in Figure 2.4. Around 16% of NCT Delhi areas, in parts of
+North, North West and some small pockets of Central & Southwest districts have shallow water level up
+to 5 m bgl. Deep water levels of 20 to 60 m observed in around 30% of NCT Delhi, in South, South East,
+New Delhi, West & South West districts. In rest of NCT Delhi, 54 % areas have water level in range of
+5 to 20 m bgl. In terms of groundwater potential (as indicated in Fig. 2.5) of the city, area covered by
+younger alluvium has the potential to yield 800 litres per minute (lpm) to 3200 lpm. For areas under
+older alluvium, the yield is 400 lpm to 500 lpm. While for fringe areas, yield is low at 150 lpm to 300
+lpm and for the Delhi quartzite or the area under Delhi ridge, the yield of groundwater is limited at 100
+lpm to 150 lpm.
+
+Fig 2.3: Depth to Water Level Map of Delhi
+(Source: Ground Water Year Book National Capital Territory, Delhi 2018-19)
+
+12
+
+Fig 2.4: Water Level Depth Zone Area Coverage-January 2019
+(Source: Ground Water Year Book National Capital Territory, Delhi 2018-19)
+
+Fig 2.5: Groundwater Potential of Delhi
+(Source: http://www.indiaenvironmentportal.org.in/files/Kaushik.pdf)
+
+2.5 Demographic Profile of Delhi
+Delhi is one of the fastest growing cities in the country. Due to rapid pace of urbanization,the landscape of Delhi
+has undergone a change from a rural majority to urban. The rural to urban area change during the last three
+censuses in Delhi is depicted in Table 2.1. The population in Delhi during 1951-2011 is depicted in Fig 2.6.
+Table 2.1: Area – Rural and Urban (Source : Population Census of India)
+1991
+
+2001
+
+2011
+
+S.
+No.
+
+Classification
+of Area
+
+Km2
+
+%
+
+Km2
+
+%
+
+Km2
+
+%
+
+1.
+
+Rural
+
+797.66
+
+53.79
+
+558.32
+
+37.65
+
+369.35
+
+24.90
+
+2.
+
+Urban
+
+685.34
+
+46.21
+
+924.68
+
+62.35
+
+1113.5
+
+75.1
+
+3.
+
+Total
+
+1483
+
+100
+
+1483
+
+100
+
+1483
+
+100
+
+13
+
+Fig 2.6: Population of Delhi from 1951 to 2011
+(Source : Population Census of India)
+
+2.6 Economic Profile of Delhi
+Main Highlights of Delhi Economic Survey 2022-23 are:
+(i) The Advance Estimate of Gross State Domestic Product (GSDP) of Delhi at current prices during
+2022-23 is likely to attain a level of `1043759 crore which is at a growth of 15.38% over 2021-22.
+(ii) Overall economic activity in Delhi has recovered more faster compared to national, past the prepandemic levels. In the years 2021-22 & 2022-23, a sharp recovery of real GSDP of Delhi with growth
+of 9.14% & 9.18% respectively is based on a low base effect and inherent strengths of the economy.
+(iii) Its economy was a predominant Service Sector with its share of contribution to Gross State Value
+Added (at current prices) at 84.84% during 2022-23 followed by contribution of Secondary Sector
+(12.53%) and Primary Sector (2.63%).
+(iv) Its Per Capita Income during 2022-23 at current prices, has been worked out to `444768 as against
+`389529 during 2021-22 showing a growth of 14.18 percent.
+(v) Its Per Capita Income has always been around 2.6 times higher when compared to national average,
+both at current and constant prices.
+(vi) It has maintained its consistent Revenue Surplus; it increased to `3270 crore during 2021-22
+(Provisional) as compared to `1450 crore in 2020-21. Its revenue surplus was 0.36% of GSDP during
+2021-22 and 0.73% during 2022-23 (BE).
+(vii) Tax Collection of Delhi Government registered a tremendous growth of 36% during 2021-22
+(Provisional) as compared to the negative growth of 19.53% in 2020-21 (due to COVID Pandemic).
+(viii) Govt. of NCT of Delhi has been working with an aim to transform Delhi to a world class city and
+to fulfill the aspiration of its citizen by making it an inclusive, equitable and livable global city.
+
+14
+
+(ix) During 2022-23, Transport Sector has been allocated the major share of about 20% of total Budget
+allocation of Schemes/ Programmes/ Projects, followed by Education (17%), Water Supply & Sanitation
+(15%) and Medical & Public Health (13%).
+
+2.7 Land Use Pattern of Delhi
+The demographic structure has brought with it the areal growth and spatial transformation of the city. As
+there has been a sharp spurt in the population of the city in the last 20 to 30 years, there has been a
+parallel increase and growth in its built up area. The need to accommodate the growing population has
+caused this increase in area. The growth in its area has brought with the change in the nature of land use
+with the growing limits of the city. This has brought the encroachment of the peripheral villages.
+Consequently, there has been landscape change in the city. A considerable change in land use has
+occurred during the last few decades. The change may be in a specific area or the entire region. The
+change from rural to urban land use is so fast that the resultant need and complex uses coupled with the
+shortage of land have led to speculation and increase in land values.
+With reference to Table 2.2 and Figures 2.7 to 2.10, it may be interpreted that in 1985, Built-up land
+covered 298 km2 areas which are almost 20 % of the total area, where agricultural land 49.12 % or 729
+km2, 209 km2 area covered by forest, 215.98 km2 area under scrub, waste and barren land, and water
+bodies stand with 32 km2 or 2.16% of the area.
+In 1998, after 13 years there is a massive change observed in this area and built-up land rapidly
+increased to reach 31.88% or 473 km2, where the major impact of this expansion shown in agricultural
+land which shrinks from 729 km2 to 572 km2 almost 38 %, and forest slightly increased 209 to 211 km2
+or 14 per cent to 14.25%, waste-barren and scrub land are least effected and it stands 13.23 %
+(earier 14.56%) of the area, where water bodies have no major changes and it still stands on 2.16 to
+2.10 % respectively
+In 2008, after 10 years of gap, there is a major change seen in built-up land, and it covered 46.67% or
+692.50 km2, where 372 km2 or 25.07 % high density, 160.57 km2 or 10.82% medium, and 126.17 km2
+or 8.50 % low-density area, and this expansion is in the cost of agricultural land; which shrink from
+38.54 to 32.74%, forest; 14.25 to 10.38% and waste-barren-scrub land; 13.23 to 8.19%, respectively
+In 2018, the rate of growth was slow, and the urban built-up area reached at 773.59 km2 or 52.13% in
+which high density built-up increased from 372 to 461 or 25 to 31.45%, medium-density built-up area
+from 160.57 to 181 km2 or 10.82 to 12.19% and low density continue in decreasing trend and is almost
+2% area. In the other side, the agricultural area shrinks from 485.91 to 412.41 km2. During this period,
+the massive positive changes observed in the forest area, which has extended from 153.96 km2 to 197.34
+km2 area, which is almost 13.29% of the total area.
+Table 2.2: Land Use Land Cover Area Statistics of 1985-2018
+(Source: Rupesh Kumar Gupta, 2021)
+Year/LULC Category
+Delhi
+Built Up Land
+Agricultural Land
+Forest
+Barren & Scrub Land
+Water Bodies
+Total Area
+
+1985
+km2 %
+298
+20.08
+729
+49.12
+209.02 14.08
+215.98 14.56
+32
+2.16
+1484
+100
+
+1998
+Area
+%
+472.98 31.88
+572
+38.54
+211.42 14.25
+196.31 13.23
+31.29
+2.10
+1484
+100
+
+2008
+km2 %
+692.50 46.67
+485.91 32.74
+153.96 10.38
+121.55 8.19
+30.08 2.02
+1484
+100
+
+15
+
+2018
+km2
+%
+773.59 52.13
+412.41 27.79
+197.34 13.29
+74.23
+5.01
+26.43
+1.78
+1484
+100
+
+1985-1998 1998-2008 2008-2018
+Growth km2 per annum
+13.46
+21.95
+8.10
+12.07
+8.60
+7.35
+0.18
+5.75
+4.34
+1.51
+7.47
+4.73
+0.05
+0.12
+0.36
+
+Fig 2.7: Land Use and Land Cover Map of Delhi 2018
+(Source: Rupesh Kumar Gupta, 2021)
+
+Fig 2.8: Land Use Land Cover Map of Delhi, 2008
+(Source: Rupesh Kumar Gupta, 2021)
+
+16
+
+Fig 2.9: Land Use Land Cover Map of Delhi, 1998
+(Source: Rupesh Kumar Gupta, 2021)
+
+Fig 2.10: Land Use Land Cover Map of Delhi, 1985
+(Source: Rupesh Kumar Gupta, 2021)
+
+17
+
+2.8 Administrative Setup
+
+Fig 2.11: The eleven administrative districts of Delhi
+(Source: https://nriol.com/india-statistics/delhi/districts.asp)
+
+Delhi enjoys a unique (‘sui generis’) status compared to other States and Union Territories. Under
+Article 239AA, Delhi remains a Union Territory but possesses certain State-like features. As a Union
+Territory, the NCT of Delhi is an extension of the Union of India. Union Territories are directly
+governed by a Union-appointed Administrator (for Delhi, this is the Lieutenant Governor). However,
+since Delhi also has a democratically elected Legislative Assembly and Council of Ministers, the
+Lieutenant Governor’s powers are severely limited compared to the Administrators of other Union
+Territories.
+Government of the National Capital Territory of Delhi (GNCTD) is the governing body of the Union
+Territory of Delhi, whose urban area is the seat of the Government of India. It also governs the city or
+local governments in the area as per the 74th Constitutional Amendment Act.
+Union Territories are governed by the Union Government. There are a few exceptions, such as Delhi and
+Puducherry, which also have their own elected governments with some limitation
+
+18
+
+Ministry of
+Home Affairs
+
+Ministry of
+Defence
+
+Delhi Police
+
+Delhi Development Authority (DDA)
+
+Delhi Jal Urban Development
+Board
+Department
+(DJB)
+(UDD)
+
+State Government
+(Government of
+NCNC NCT of
+Delhi)
+Local
+Government
+
+New Delhi
+Municipal Council
+(NDMC)
+
+Ministry of Urban Development
+
+Delhi
+Cantonment
+Board (DCB)
+
+Delhi Urban Shelter
+Improvement Board
+(DUSIB)
+
+Six companies for electricity
+generation, transmission,
+and distribution
+
+Municipal Corporation of Delhi
+
+Fig 2.12: Union, State, and Local Agencies Involved in the Governance of Delhi
+(Source: https://cprindia.org/wp-content/uploads/2021/12/The-Intersection-of-Governments-in-Delhi.pdf)
+
+Many of the challenges and complexities of governance in Delhi arise from its place at the intersection
+of local, state, and national jurisdictions
+
+2.8.1 Local
+Delhi’s local government is made up of three urban local bodies: the New Delhi Municipal Council
+(NDMC), the Delhi Cantonment Board (DCB), Delhi Municipal Corporation (MCD). New Delhi
+Municipal Council (NDMC) was established through the NDMC Act, 1994, amended in 2011, and
+includes about three per cent of Delhi’s area under its jurisdiction. According to Census of India 2011,
+249,998 people live within the area governed by the NDMC. The Council is a nominated body, and is
+headed by a chairperson who is appointed by the Ministry of Home Affairs of the Government of India.
+The Council, in turn, is directly accountable to this Ministry.
+The Delhi Cantonment Board is also a municipality that has jurisdiction in the city, since cantonment
+boards are municipalities as per the Cantonment Board Act 2006 and are under control of the Ministry
+of Defence. The Delhi Cantonment Board (DCB), established in 1914, also has about three per cent of
+Delhi’s area under its jurisdiction, housing a population of 116,352 (Census 2011). The DCB is
+legislated by The Cantonments Act, 1924, amended in 2006, and is made up of eight elected members.
+The executive head of the Board is appointed by the Ministry of Defence, and, just as the NDMC
+answers directly to the Ministry of Home Affairs, the DCB is accountable to Ministry of Defence.
+Municipal Corporation of Delhi is one of the largest municipal bodies in the world providing civic
+services to approximately 20 million citizens of Delhi. It occupies an area of 1397.3 Sq. kms. which is
+sub- divided into 12 Zones i.e. Centre, South, West, Najafgarh, Rohini, Civil Lines, Karol Bagh, SP-City,
+Keshavpuram, Narela, Shahdara North & Shahdara South.The MHA appoints a commissioner to lead
+Municipal Corporation of Delhi.
+
+19
+
+2.8.2 State - Government of NCT of Delhi
+Although it briefly had a legislature after Independence, between 1956 and 1992 Delhi was a union
+territory, governed by the union government with no state-level legislative power. In 1992 the
+Government of National Capital Territory of Delhi Act, 1991 came into force, creating Delhi as a state
+with a new state-level representative government to be called the Government of the National Capital
+Territory of Delhi (GNCTD). At present, the GNCTD oversees nearly 1500 square kilometres.
+In many ways, the GNCTD is similar to any other state level government: it manages transport,
+industrial development, revenue administration, power generation, food and civil supplies, and health
+and family welfare. The GNCTD’s legislative body—the Legislative Assembly of the National Capital
+Territory of Delhi—is made up of 70 members (MLAs), each representing an assembly constituency
+averaging 200,000 voters, delimited based on data from the Census of India 2001. Each constituency
+contains four municipal wards.
+Due to certain special provisions inserted into the Constitution of India by the GNCTD Act, 1991, the
+legislature is more limited than other state governments. While the Legislative Assembly has the power
+to make laws for the whole or any part of the NCT of Delhi with respect to matters set out in the State
+List or in the Concurrent List of the Constitution, it does not have the power to make laws relating to
+police, public order, or land; these areas remain the purview of the Parliament of India. This limitation
+extends to executive power: according to the Constitution of India, executive power is ‘co-extensive’
+with the legislative power of the Parliament of India.
+In other words, the GNCTD is not responsible for physical planning, development of land, or law and
+order. These functions are overseen by bodies that are directly accountable to the Government of India,
+leading to a governance structure that is often described as “limited statehood”. For administrative
+purposes, the GNCTD area is divided into 11 districts (Fig 2.11).
+Presently, basic service provision in Delhi is largely the purview of the GNCTD, which has absorbed
+and reconfigured several local-level bodies since its creation in 1992.
+
+2.8.3 Water
+The Delhi Jal Board (DJB), formed in 1998, is directly accountable to the GNCTD and is responsible for
+water and sewage-related infrastructure in Delhi. The DJB oversees bulk water supply for all of Delhi
+and distribution of water in the MCD areas; the NDMC and DCB are responsible for distribution of
+water in the areas under their control. The DJB was preceded by the Delhi Water Supply and Sewage
+Disposal Undertaking (DWS&SDU), part of the MCD from 1958 until 1996, when it was transferred to
+the GNCTD.
+
+20
+
+2.8.4 Electricity
+Like water, electricity generation, transmission, and distribution was overseen by an MCD body for
+many years i.e. the Delhi Electric Supply Undertaking (DESU). In 1997, the state-level Delhi Vidyut
+Board (DVB) replaced the DESU, shifting responsibility for electricity to the GNCTD. In 2002, the
+DVB was split into six companies. Three of these have remained pure government undertakings: the
+Delhi Power Supply Company Limited (DPCL), a holding company; Indraprastha Power Generation
+Company Limited (referred to as Genco), the power generation company; and the Delhi Transco
+Limited (referred to as Transco), the power transmission company.
+The remaining three companies, which have become known as “discoms”, are responsible for
+distribution. Fifty per cent of each of these was auctioned to private players, resulting in three joint
+venture distribution companies: Tata Power Delhi Distribution Limited (TPDDL) for North Delhi, BSES
+Rajdhani Power Limited (BRPL) for South Delhi, and BSES Yamuna Power Limited (BYPL) for East
+Delhi. The private partner in Tata Power Delhi Distribution Limited (TPDDL) is the Tata Group, and the
+private partner in both BSES Rajdhani Power Limited (BRPL) and BSES Yamuna Power Limited
+(BYPL) is the Reliance Anil Dhirubhai Ambani Group (ADAG). The remaining fifty per cent of each of
+these distribution companies is still owned by the GNCTD. A sixth body, the Delhi Electricity
+Regulatory Commission (DERC), regulates electricity tariffs.
+
+2.8.5 Union - Government of India
+According to the 2011 Census of India, Delhi's seven Members of Parliament (MPs) each represent an
+average of 2,500,000 voters, distributed across ten assembly constituencies. This means that for every
+2.5 million voters, there is one national-level representative, ten state-level representatives, and
+approximately forty local representatives.
+The constitutional head of Delhi is the Lieutenant Governor (or LG) of Delhi, who is appointed by the
+President of India. Delhi is the only state with an LG, a post otherwise reserved for union territories. The
+LG of Delhi heads governance functions in Delhi vested with the union government, and he or she leads
+the executive bodies that carry out the functions of land, police, and public order.
+The Delhi Development Authority (DDA) is responsible for all physical planning and development of
+land and housing in Delhi. The DDA was established through the Delhi Development Act, 1957, passed
+by the Parliament of India. It is important to note that the DDA was created at a time when Delhi was a
+union territory, with no state level government. The DDA has remained a union government body since
+Delhi became a state in 1992 and continues to be accountable to the Ministry of Urban Development of
+the Government of India.
+In addition to its planning, Delhi’s law and order are also managed by the union government: the Delhi
+Police is directly accountable to the Ministry of Home Affairs at the Government of India.
+
+21
+
+2.9 Multiple Institutions for flood control and drainage
+The urban flood problem of Delhi is exasperated due to multitude organizations for flood control and
+drainage in Delhi. With regard to the management of the storm water drainage system within NCT of
+Delhi, there is, conspicuously, no single institution that bears an overall responsibility of the total system.
+To the contrary, the administrative authority of the capital’s drainage system is quixotically distributed
+amongst numerous civic bodies and various constituent departments of Government of NCT of Delhi as
+well as Government of India. These include
+(i)
+Irrigation & Flood Control, Delhi
+(ii)
+Delhi Jal Board
+(iii)
+Municipal Corporation of Delhi
+(iv)
+Urban Development Department, Delhi
+(v)
+Ministry of Housing and Urban Affairs, GoI
+(vi)
+New Delhi Municipal Council
+(vii) Delhi Development Authority
+(viii) Delhi Cantonment Board
+(ix)
+Delhi State Industrial Development Corporation
+(x)
+Public Works Department, Delhi
+(xi)
+Delhi Disaster Management Authority
+Other departments of the Government and civic bodies whose jurisdiction does not entail any direct
+responsibility pertaining to the state of the capital’s drainage system but nevertheless their
+effectiveness is indeed a matter of interest includes
+a)
+b)
+c)
+d)
+e)
+f)
+g)
+h)
+i)
+j)
+k)
+
+Irrigation & Flood Control, Government of Haryana
+Traffic Police, Delhi
+Geo Spatial Delhi Ltd.
+Central Water Commission, GoI
+Indian Meteorological Department
+Various Resident Welfare Associations (RWAs)
+Central Pollution Control Board (CPCB), Ministry of Environment, Forest and
+Climate Change, Govt. of India
+National Green Tribunal
+National Highway Authority of India
+Delhi International Airport Limited
+Civil society activist groups
+
+22
+
+Chapter 3: Multi-hazard scenario in Delhi
+
+Delhi, the capital of India, is vulnerable to natural disasters like earthquakes and urban flooding as well as
+human induced disasters such as bomb-blasts, acts of terrorism, industrial and CBRN hazards, road accidents
+etc. Some of these disasters have crosscutting issues with floods.
+
+3.1 Earthquake
+Earthquake disaster in Delhi has the potential to go well beyond the statistics of deaths and injuries. Such a
+disaster in the country's capital, which also happens to be a major commercial and industrial center, will have
+huge economic and political implications which will affect the entire country and not just the population of
+Delhi. This adds an extra dimension to the earthquakes problem for Delhi. Considering the potential for a
+mega disaster, we cannot afford to ignore the earthquake problem.
+
+3.1.1 Geological Setting of Delhi
+Delhi is bound by the Indo-Gangetic alluvial plains in the north and east, the Thar Desert and Aravalli Hill
+range in the west and south, respectively. The city has a flat terrain except for a low NNE-SSW trending ridge,
+an extension of Aravalli hills of Rajasthan.
+Delhi being one of the fastest-growing old cities, in terms of both built ambiences and population, and one of
+the seismically vulnerable areas of India, could be under high seismic risk. Delhi lies in the closer vicinity of
+Himalayan Belt, and many previous studies mentioned about the movement of the Indian plate and Eurasian
+plate along the Himalayan Belt that causes deformations in the Himalayan region including northern parts of
+Delhi. Seismicity in North India, including the Himalayas, is due to collision of the Indian plate with Eurasian
+plate. This is a continuous process happening for the last 50 million years. These colliding plates flex, storing
+energy like a spring, and when the plate's margin finally slip to release energy, an earthquake results.
+Delhi the capital of India, is a metropolitan city having a population of over 16 million people. It has an area of
+1484 km2 of which 784 km2 is designated as rural area and 700 km2 as urban area. The major reason behind
+Delhi’s seismic vulnerability is its location. The faults closer to Delhi with potential to generate moderate to
+large earthquakes are Mahendragarh fault line, Moradabad fault line, Delhi–Haridwar ridge zone, and the
+Sohna fault. The city also lies in the vicinity to the Himalayan active tectonic plate.
+
+3.1.2 Seismic Zoning
+The latest seismic zonation code of India (BIS 1893:2002, Part I) divides the country into four zones of
+different seismicity based on historical earthquake data rather than a scientific seismic hazard analysis.
+Currently, the seismic hazard zone map available for India as per Bureau of Indian Standards (IS1893-2002)
+broadly classifies India into four hazard zones based on past earthquake data (Fig.3.1) These maps are based on
+subjective estimates of intensity from available information on earthquake occurrence, geology and tectonics
+of the country. The zoning of a country is a continuous process which keeps undergoing changes as more and
+more data on occurrence of earthquakes in the country becomes available. Delhi lies in Seismic Zone IV.
+Some studies, however, indicate the inappropriateness of the seismic zone map since it renders amorphous
+regions of lower hazards as lumps of landmasses, lacking substantial data of past earthquakes (Raghu Kanth
+and Iyengar 2006; Menon et al. 2010); which implies the necessity for a state-of -the- art seismic hazard
+analysis.
+
+23
+
+Fig 3.1: Seismic Zoning Map of India
+(Source IS 1893-2002)
+
+3.1.3 History of Earthquakes in Delhi
+In the last 100 years, 25 to 30 earthquakes have happened in Delhi without significant damage. But, the capital is
+in such a position where it is not only affected by quakes in the Himalayan region but also has fault lines closer to
+it. National Capital's proximity to the Himalaya is one of the main reasons for frequent earthquakes in the
+Delhi-NCR, and adjoining parts of north India. The Himalaya range, which is roughly around 300 kilometers from
+Delhi, were formed due to collision between Indian and Eurasian tectonic plates. Table 3.1 shows history of some
+major earthquakes in Delhi.
+
+24
+
+Table 3.1: History of Earthquakes in Delhi
+Date
+27 July 1960
+28 July 1994
+28 February 2001
+28 April 2001
+25 November 2007
+7 September 2011
+5 March 2012
+24 April 2018
+20 December 2019
+12 April 2020
+13 April 2020
+12 November 2022
+23 January 2023
+21 March 2023
+28 May 2023
+13 June 2023
+5 August 2023
+
+Intensity on Richter Scale
+5.6
+4.0
+4.0
+3.8
+4.1
+4.2
+4.9
+3.5
+6.3
+3.5
+2.7
+5.4
+5.8
+6.6
+5.2
+5.4
+5.8
+
+(Source:https://www.timesnownews.com/india/article/timeline-of-earthquakes-that-struck-delhi-in-recent-history/603923)
+
+3.2 Floods
+Delhi is the capital of India. The city has been experiencing floods of various magnitudes in the past due to
+floods in the Yamuna and the Najafgarh Drain system. The Yamuna crossed its danger level (fixed at 205.33m)
+twenty five times during the last 33 years. Since 1900, Delhi has experienced 9 major floods in the years 1924,
+1947, 1977, 1978, 1988, 1995, 2010, 2013, 2019 when peak level of Yamuna River was one meter or more above
+danger level of 205.33 m at old rail bridge. Until July 2023, a High Flood Level of 2.66m above the danger level
+had occurred on sixth September 1978. The second record peak of 206.92m has been on twenty seventh
+September 1988. Urban flooding in Delhi has assumed importance particularly in view of the recent flood of
+July 2023 when an unprecedented flood hit the city and brought the life in many areas to standstill. During this
+flood the Highest Flood Level reached a record level of 208.66 m on the 13th July 2023. Table 3.2 lists major
+floods inn Delhi along with Gauge at Old Railway Bridge.
+
+Table 3.2: Major Flood events in Yamuna River in Delhi
+Year
+1976
+1978
+1988
+1995
+1998
+2010
+2013
+2019
+2023
+
+Gauge at ORB (m)
+206.70
+207.49
+206.92
+206.93
+206.36
+207
+207.32
+206.60
+208.66
+
+(Source: Irrigation and Flood Control Department, Delhi)
+
+25
+
+3.3 Fire
+In Delhi, there has been a substantial increase in population and industrialization, since Independence. Well over
+1,50,000 small scale industrial units in identified industrial units in identified industrial pockets (in addition to
+industries running illegally), over 1200 J.J. Clusters providing shelter to nearly one third of the population and
+over 3.5 million automotive vehicles have choked infrastructural services. The fast increase has not been
+planned for.
+Master Plan for Delhi, had been created as an instrument to control the use of land in urban area and protect
+the welfare of people. The concept of zoning has not yielded desirable results over and above allowing for
+mixed use and occupancy, authorized as well as unauthorized. Banquet halls in residential areas, cottage
+industries in congested areas, trade of hazardous chemicals from the highly congested residential/commercial
+areas, hazardous and non-hazardous industries in close vicinity are few to mention which have further
+deteriorated environmental services. This has certainly added to the fire risk already inherited by a particular
+occupancy. As a result losses due to fire are increasing to both the life and property. This is developing a
+dangerous trend. Man-made disasters are likely in these areas.
+Zoning and mixed use planning is a vital part of urban design. However, it can fail through abuse, misuse, and
+resistance to changes in urban pattern essential for the general welfare of the population. The price, which is
+being paid, is high. It needs to be understood, appreciated and accepted that the solution to complex problems
+is not always simple and widely acknowledged. Many a times they are complex, hard and unpopular in a
+democratic setup.
+Major fire incidents in Delhi:(i)
+
+June 13, 1997: A fire broke out at the Uphaar theatre during the screening of Bollywood film ‘Border’,
+killing 59 people and injuring over 100.
+(ii) November 20, 2011: Fourteen people died and over 30 were injured when a fire broke out at a
+community function of eunuchs in Nandnagari in east Delhi.
+(iii) January 20, 2018: At least 10 women and seven men were charred to death in a fire that broke out in a
+firecracker unit in northwest Delhi’s Bawana industrial area.
+(iv) April 13, 2018: Four members of a family, including two minor children, were killed in a major fire in
+Delhi’s Kohat Enclave.
+(v) April 23, 2018: At least 300 shanties were gutted after a major fire broke out in Shahdara’s MS Park.
+A girl was killed in the fire
+(vi) May 29, 2018: A massive blaze, which fire officials said was of “highest magnitude”, broke out at a
+godown in south Delhi’s Malviya Nagar. No casualty was reported.
+(vii) Nov 19, 2018: Four people were killed and one person was injured after a fire broke out at a factory in
+central Delhi’s Karol Bagh.
+(viii) January 30, 2019: Four people were injured in a fire at a chemical factory in Okhla Phase-I in
+southeastern Delhi.
+(ix) February 7, 2019: Scores of patients and staff at Noida’s Metro Hospital and Heart Institute had to be
+evacuated after a major fire.
+
+26
+
+3.4 Other Hazards
+Other than Earthquake, Floods and Fire, Delhi is subject to many other hazards as follows:
+
+1. Cold Wave and Heat Wave
+2. Cloud Burst
+3. Thunderstorm & Squall
+4. Epidemics Hazard
+5. Drinking Water Shortage
+6. Road accidents
+7. Industrial Hazards
+8. CBRN Disaster
+9. Building Collapse
+10. Terrorist Attacks and Bomb Blast
+11. Environment Pollution
+12. Societal Vulnerability
+Table 3.2 explains (on the basis of hazard analysis) district-wise degree of risk and vulnerability involved in
+Delhi for some of the main hazards
+
+Table 3.2: Vulnerability Matrix of Delhi
+
+(Source: DDMA Plan 2016-17)
+
+27
+
+Chapter 4:Floods Hazard, Vulnerability
+and Risks in Delhi
+4.1 Major Flood Hazard Events in Delhi
+Delhi has been experiencing floods of various magnitudes in the past due to floods in the Yamuna
+and the Najafgarh Drain system. The Yamuna crossed its danger level (fixed at 204.83m) twenty
+five times during the last 33 years. Since 1900, Delhi has experienced 9 major floods in the years
+1924, 1947, 1977, 1978, 1988, 1995, 2010, 2013 and 2019 when peak level of Yamuna river was
+one meter or more above danger level of 204.49m at old rail bridge (2.66m above the danger level)
+th
+th
+occurred on 6 September 1978. The second record peak of 206.92m was on 27 September 1988.
+During July 2023 flood, however, the Highest Flood Level reached a record level of 208.66 m
+th
+on the 13 July 2023.
+
+4.1.1 The 1924 flood
+During the 1924 flood, Tajewala Head Works was severely damaged, resulting in loss of life
+and property along the eastern bank of the river. Water flowed through breaches in
+embankments and eroded the Eastern Yamuna canal at several locations. Delhi-Shahdara
+railway line was damaged and it took a month to restore it. Shahdara and neighboring villages
+were submerged. In 1924 upper reach of the Yamuna was not embanked. The embankments
+were constructed after 1955. The trans-Yamuna area of Delhi did not have proper drainage
+network in 1924, thereby exacerbating the problem caused by the flood.
+
+4.1.2 The 1977 flood
+Delhi is at the tail end of Aravalli, due to which the major portion of the rainfall is absorbed
+in the semi-arid region of Sahibi catchment, and the remaining water is discharged into
+Jahajgarh and Najafgarh lakes in Haryana and Delhi, respectively. The flood havoc in 1977
+was due to the excess flow in Sahibi River, which originates from Rajasthan and enters Delhi
+at Dhansa after traversing a distance of 222 km. The Sahibi finally outfalls into Yamuna
+through Najafgarh drain. Due to heavy rainfall in Sahibi River catchment, an unprecedented
+flood occurred in Rajasthan, Haryana and Delhi.
+
+4.1.3 The 1978 flood
+th
+
+On the 11 of July, a 15 m wide breach occurred in drain number 6, which was connected to
+Bawana Escape. The breach resulted in the flooding of Jindpur, Hiranki and Mukhmailpur in
+th
+Alipur block, due to back flow of Yamuna water On the 4 of August, 30 m portion of
+Bawana Escape at Qadirpur breached due to back flow when the water level in Yamuna at the
+Old Railway Bridge (ORB) was 206.2 m. Due to this breach, a large area in Alipur block was
+flooded, forcing the administration to seek the help of Indian army in relief and rescue
+operations. The most severe flood in the history of Yamuna occurred on 3rd September, when
+release of more than 19,841 cumec (7 lakh cusec) was made from Tajewala barrage. Model
+town, Mukharjee Nagar and Nirankari Colony were amongst the several colonies that were
+submerged under water.
+
+28
+
+4.1.4 The 1995 flood
+During the 1995 flood, the maximum water level recorded at the ORB was 206.93 m due to
+the release of 15,193 cumec (5.36 lakh Cusec) from Tajewala barrage. The gauge at the ORB
+depends upon the operation of barrages at ITO and Okhla. People residing in the colonies in
+the vicinity of ORB such as Gautampuri near Raj Ghat, Nanglamachi near drain number 14,
+Shriram colony, Sonia Vihar, Geeta Colony, Shamsan Ghat, Shastri Park, Chandgi Ram
+Akhara and Nigam Bodh Ghat were evacuated to safer places. The entire zoo area was
+flooded due to blockage in storm water and sewage, endangering the animals.
+
+4.1.5 The 2010 flood
+The new barrage at Hathnikund replaced the old barrage at Tajewala in Haryana, and became
+operational in 2002. During the flood of 2010, a discharge of 21,090 cumec (7.44 lakh Cusec)
+was released from Hathnikund Barrage. It resulted in maximum water lever of 207.11 m at
+the ORB. The river flowed above danger level from 20 to 27 September. Several areas in
+Lalita Park, Sakarpur, Laxmi Nagar experienced seepage flow for almost one month when
+the Yamuna was flowing above the danger mark at the ORB.
+
+4.1.6 The 2013 flood
+Due to sudden heavy rainfall in the upper catchment of Yamuna, huge amount of water was
+released from the Hathnikund Barrage. Consequently, the level of river Yamuna rose to
+207.32 m at ORB on 19th June. Several areas in the vicinity of the ORB were affected. The
+ring road, which is a peripheral road in Delhi was flooded at several places. Around 10000
+people were shifted to safer places. Both the road and the rail traffic were not allowed on the
+ORB for three days.
+
+4.1.7 The 2019 Flood
+In 2019, on August 18-19, water was released in the river with a flow of (23464 cumec) 8.28
+lakh cusecs and the water level rose to 206.6 meters More than 10,000 people living in lowlying areas along the Yamuna in Delhi were evacuated by government agencies as the river
+breached the danger mark.
+
+29
+
+4.1.8 The 2023 Flood
+During 8-11 July 2023, Delhi experienced widespread rainfall with isolated Heavy to very
+heavy rainfall. As a result, Hathnikund Barrage in Haryana, the discharge from which is
+around 10 Cumec (352 Cusec) in the non-monsoon months hit a peak of 10173 Cumec (3.59
+Lakh Cusec) on 11 th July. The Highest Flood Level at the old railway bridge reached a record
+level of 208.66 m on the 13th of July 2023. Many areas in North, North East, East and South
+East were in deluge for weeks. The flood water submerged parts of the capital-including parts
+of the arterial Ring Road, the busy ITO intersection, Rajghat, and even reached the periphery
+of the Supreme Court.
+
+4.2 Flood Vulnerability and Risks in Delhi
+Delhi, a mega city with a population of 16.78 million, is situated on the bank of River
+Yamuna. During the last three decades, the hydrological characteristics of the Yamuna River
+basin (Fig 4.1) have significantly changed. Due to rapid urbanization in the basin, the runoff
+has considerably increased. Consequently, the flooding events are now occurring more
+frequently and with higher magnitudes. Large scale urbanization, reduction in holding
+capacity of the catchment, the confining of the river spread by construction of embankments
+coupled with the climate change phenomenon are the major contributors for increase in peak
+flow magnitude. Increase in impermeable surface during urbanization increases the peak flow,
+reduce the time of concentration and thus make the area more flood prone.
+
+Fig 4.1: The Yamuna River Basin
+(Source- Delhi Development Authority, DDA)
+
+30
+
+Fig 4.2 shows the vulnerable areas along Yamuna in Delhi.The rate of urbanization is relatively high in
+the regions of Upper Yamuna just upstream of Delhi compared to regions further up in the basin. There
+is clearly evident from the 2011 census of India (Chandramouli et al. 2011) which indicated an increase
+of more than 40% in the urban population of three states in the Upper Yamuna region. A majority of these
+settlements is in the low-lying areas, which make them highly vulnerableto flooding events of even
+moderate intensity.
+
+Fig 4.2: Vulnerable Areas along Yamuna.
+(Source: Sharif et al. 2016)
+
+4.2.1 Local Flooding
+A significant phenomenon which has been increasing during recent years is that of local flooding. Urban areas
+are characterized by an impervious high area under surfaces (Roads, pavements, houses etc.). High rates of
+development along with the resultant loss of soft landscape has led to high surface water run-off rates. This
+results in flash floods in the low lying areas even after moderate precipitation. Another factor adding to this
+effect is that of river because the river is already flowing at a higher level within its embankments. Thus, the
+water gets logged in the city areas and it takes several days to mechanically pump it out and bring the situation
+under control. Similarly, during the past few years, flooding due to the city's 18 major drains has also become
+a common phenomenon. Already under the pressure of the city's effluent discharge, these drains experience
+reverse flow from the Yamuna, which is in spate, and as a result they tip their banks, flooding the neighboring
+colonies.
+
+4.2.2 Settlement Pattern in Flood Plain
+A close analysis of the flood zoning pattern reveals that the high risk zones are the areas that have earlier been
+identified as unplanned or poorly planned areas having high population densities and substandard housing
+structures. These include areas of North Delhi, and Trans Yamuna Area. Some of the colonies that have come
+up in these areas are at levels 3 to 4 meters below the 1978 flood level.
+
+31
+
+The community exposed to the highest risk from floods comprises the families living in the
+villages and unauthorized colonies within the river-bed. There are over 15,000 such families,
+having over 75,000 persons. Situated on the wrong side of the embankments, these people
+live on the edge of the floods, and are the first ones to find their homes washed away.
+Direct effect of floods is due to the river Yamuna and the city's network of drains. These
+affect the population living in the Yamuna River-bed and on the banks of the river and drains.
+Local flash floods and water logging increased surface run-off due to high ratio of hard
+surfaces leading to flash floods. This in turn badly affects the low lying areas, particularly the
+unplanned colonies which get water logged.
+
+4.2.3 Risk of breach in embankments
+Protection from the river by embankments lead to a false sense of safety and development
+starts taking place in the shadow of these embankments. In the event of failure of these
+protective works, as has been seen in the form of breaches during past floods, the effect is
+devastating because the pressure of the entire embanked stretch is released at one point, and it
+takes the people by surprise.
+
+4.2.4 Risk to Population, Infrastructure, Critical Facilities, Services and
+Utilities
+District North-East, East, Central, and South East of Delhi are most affected by floods in the
+city. Most settlements situated along the Yamuna River are prone to the flood hazard. The
+extent of the vulnerability of the poor within the city is captured in the statistics offered by
+the Yamuna Action Plan, a river revitalization effort of the Government of India. They
+observe that about 45 percent of the city's population live in a combination of unregulated
+settlements, including unauthorized colonies, villages, slums, and the like. Further, three
+million people live along the Yamuna River, which is prone to flooding, where 600,000
+dwellings are classified as slums. Further, they observe that nearly 62,000 units are
+estimated to be located in the river bed of Yamuna on both sides of its stretch along Delhi
+and on the embankments of a few major storm water drains such as Najafgarh drain,
+Barapulla drain etc. Moreover, the low quality of housing in slums and their proximity
+to environmentally degraded land and flood‐prone areas further exacerbate the vulnerability
+of the poor. Within the slums, climate‐induced stress is likely to affect certain social groups
+more than others, particularly the elderly, women, and children.
+Delhi’s physical infrastructure, social services, and slum populations make the city highly
+vulnerable. Demand for basic infrastructure services like water, electricity, and public
+transport far exceeds supply (Delhi Development Authority, 2005). To add to the existing
+conditions, climate change- induced variability in rains and temperatures could worsen the
+severe shortage of drinking water in summers and aggravate the floods in the monsoon
+season, thus making the existing energy shortage more challenging to address.
+With regard to transportation, Delhi has the highest per capita vehicular population in India—
+5.4 million automobiles for 15 million people. This poses a challenge for a city with mixed
+land use and varying urban densities within the metropolitan region to introduce effective
+modes of public transport. Carbon emissions from vehicles, traffic congestion, and increasing
+
+32
+
+particulate matter all pose challenges. During the floods in Delhi roads are flooded which
+render transportation as highly vulnerable.
+Main vulnerable areas along the river Yamuna are shown in Figure 4.2 Many critical
+facilities, utilities and services like Police Training Camp, Metro Operational Office, Rajghat
+Power Plant, Indira Gandhi Indoor Stadium, Delhi Secretariat, CWG Village, Akshardham
+Temple, Millenium Depot, Rajiv Smriti Van and Indian Oil Bottling Plant are situated in
+flood prone area.
+
+4.3 Standard Operating Procedure for Flood Risk Reduction
+Floods are among the most common and destructive natural hazards causing extensive
+damage to infrastructure, public and private services, environment and economy. Though
+NCT of Delhi does not have a record of devastating flood of mass causalities, the flood risk
+still holds its place. Keeping this in the realm the immediate action plan has been
+incorporated to aid the management operation at its best efficient level.
+The Flood Action Plan consists of the following activities:
+Declaration of Flood disaster
+Flood Forecasting and Warning
+Trigger mechanism
+Response mechanism of the concerned line departments along with the roles and
+responsibilities Flood Action Plan
+Relief
+
+4.3.1
+
+Declaration
+
+The immediate response is to demarcate the areas affected by the severity of flood by
+declaring the situation a disaster at macro or micro level. The Delhi Govt. through Delhi
+Disaster Management Authority‘s network declares the graveness of the calamity as per the
+occurrence. The Relief Commissioner immediately propels all the District Collectors to act
+on the plan in relevance to their districts.
+
+4.3.2 Flood Forecasting and Warning
+Flood forecasting is the process whereby the impending risks to the livelihoods may be
+imparted at the earliest. It includes the meteorological interpretation to the occurrences in the
+atmosphere and thus warning the people of any grave occurrence. Since the forecasting is
+very important, it has to be done by the experts in this field. This is at present being done by
+the Meteorological Department of India and Central Water Commission. The main
+components of a national flood forecasting and warning system are as follows:
+Collection of real-time data and prediction of flood severity and time of onset of monsoon
+Particular levels of flooding
+Preparation of warning messages, describing what is happening, predictions of what will
+happen and expected impact. Messages can also include what action should be taken.
+
+33
+
+The communication and dissemination of such messages.
+Interpretation of the predictions and other flood information to determine flood impacts on
+communities
+Response to the warnings by the agencies involved and communities.
+Review of the warning system and improvement in the system after flood event.
+If predictions fail, the reasons of prediction failure should be communicated to communities
+in order to establish trust. For a flood warning system to work effectively, all these
+components must be present and they must be integrated with each other rather than
+operating in isolation.
+Central Flood Forecasting Division of Central Water Commission, R.K. Puram, New Delhi
+monitors the flood discharges in River Yamuna right from the upper catchment and issues
+flood forecasting bulletins for various stage of floods. The forecasts based on the discharge
+from the Hathnikund Barrage (3 km. u/s of Tajewala) are relevant to Delhi as the travel time
+required for the flood water from Hathni Kund Barrage to Delhi varies between 36 to 72
+hours depending upon the prevailing flow conditions in the river. First, second and third
+warning shall be issued from central flood control room situated at the office of D.C. (East)
+as per the discharge volume at Hathnikund Barrage, as laid down in flood control order of
+Delhi. Procedure for disseminating warnings to remote areas:
+Local radio, which should be supplied with clear and accurate information for Local
+means of raising alarms, for example, sirens, loud hailers, loudspeakers etc.
+'Sky Shout' from emergency service helicopters.
+Doordarshan and the local cable channels (TV channels & radio Channels including FM
+radio)
+Bulletins in the Press
+Satellite Based disaster Warning Systems
+Fax
+Telephone
+Media warnings (print and electronic)
+General warning indicators, for example sirens warnings delivered to areas by community
+leaders or emergency services
+A community-based warning system to pass any information about an approaching flood
+to every family
+
+34
+
+4.3.3 Trigger Mechanism
+Plan Activation: - The flood response system will be activated on the occurrence of a heavy
+rain. The Divisional Commissioner through (Central Flood Control Room) will activate all
+the Departments for emergency response. He will issue instructions to include the following
+details:
+Specify exact resources required
+The type of assistance to be provided
+The time limit within which assistance is needed
+The state, district or other contact persons/agencies for the provision of the assistance
+Other Task Forces with which coordination should take place
+The EOC (HQ) and other control rooms at the district level as well as sub-district control
+rooms should be activated with full strength. Once the situation is totally controlled and
+normalcy is restored, the Divisional Commissioner declares End of Emergency Response
+and issues instructions to demobilize the staff deployed in emergency duties.
+
+4.3.4 The duties, roles and responsibilities of the various departments
+have been clearly outlined in Table 4.1 below
+Table 4.1: Response Action and Concerned Departments
+SI.No.
+1
+
+2
+
+3
+
+4
+
+Concerned
+Department
+Report the occurrence of flood to Divisional In-Charge, Central Flood
+Commissioner, concerned DCs, Heads of line Control Room
+departments, Chief Secretary and Chief Minister's office
+and NEOC, MHA & NDMA
+Establish communication links by alternate
+communication equipment’s like HAM radio etc. in
+district EOC and flood watch locations.
+Verifying authenticity of flood from agencies like
+CWC, andalso from District EOCs
+Remain in constant touch with IMD and CWC for
+earlywarning information
+Hold first meeting with Duty Officers
+Divisional
+Commissioner
+Dispatch of Search & Rescue teams, medical aid
+teams to theaffected areas.
+Make arrangements for the aerial survey of affected
+areas
+Instruct local administration to evacuate victims to safer
+sites
+Hold meeting of SEC of DDMA within 12 hours of Chief Secretary
+flood, if situation demands and assess the initial situation
+reports.
+The sector committees affected districts shall conduct DCs of
+regular coordination meetings during the flood to
+concerned
+monitor & evaluate the situation and plan for response
+districts
+and relief activities.
+Response Action
+
+35
+
+5
+6
+
+7
+
+8
+
+9
+
+10
+11
+
+12
+
+13
+
+Assess the situation from initial survey reports and call
+for Army and NDRF, if situation demands.
+Although adequate Wireless sets are available in
+irrigation and flood control deptt., yet in case of
+emergency Civil Defence Volunteers / Home Guards
+will be responsible for setting up wireless stations at the
+Flood Control Room, L.M .Bund Office of the Dist.
+Magistrate (East) and various sectors as per
+requirements of the Divisional Commissioner Delhi. All
+these wireless stations will be manned by the Civil
+Defence Volunteers.
+Home guards/CDVs will be deployed for patrolling
+duties on bunds and regulators when required to guard
+against any sabotage and for initiating rescue operations
+of marooned villages. Civil Defence volunteers will be
+deployed for camp management, distribution of rations
+etc as per the requirements of the Divisional
+Commissioner
+On receipt of requisition from Divisional Commissioner,
+Delhi, Secretary (Health), Govt. of Delhi would make
+arrangements for setting up first aid posts/ mobile
+dispensaries at relief camps and arrange visits of
+medical teams to the flood affected area. In case of
+need, Secretary (Health) may seek the assistance from
+the chief Medical Officer, NDMC/MCD.
+Provision of temporary latrines, urinals and street
+lighting atcamp site. Providing safe drinking water to
+the victims would be arranged by Delhi Jal Board and
+other line departments in floodaffected areas and relief
+camps.
+
+Divisional
+Commissioner
+Divisional
+Commissioner & DG
+(Home Guards)
+
+Concerned DC
+(Revenue) and
+(Home Guards)
+
+DG
+
+Secretary (Health)
+
+Concerned Supdt.
+Engineer DJB,
+MCDs,
+NDMC,
+DUSIB &
+PWD
+A medical team of veterinary staff will be deployed in
+Director (Animal
+Husbandry)
+the flood affected areas and the cattle camps.
+Assess the condition of road and rail network for quick Secretary (Transport)
+mobilization of Emergency teams and resources to and Dy. Commissioner
+affected areas and take follow up steps. Adequate no. of (Traffic)
+trucks and other category vehicles as may be needed
+would be arranged when notified by the Divisional
+Commissioner for providing transport services to shelter
+sites.
+Establish Relief Camps in designated areas
+Revenue Department
+Providing temporary shelters to evacuated persons
+(Concerned DCs and
+Providing food materials to the victims
+SDMs)
+Arrangements to be made for quick
+identification and maintenance of the records of
+disposal of dead bodies in the affected areas
+
+36
+
+Secretary (Home),
+Secretary (Health),
+Commissioner of Police
+
+14
+
+15
+
+16
+
+17
+18
+
+19
+20
+
+21
+
+22
+
+Arrangements to be made to record the complaints of
+all persons reported missing
+Follow up action in terms of verification of the
+report alsoneeds to be made
+District Magistrates and sub-divisional magistrates to
+be empowered to exempt the requirement of
+identification and post-mortem in case of mass
+casualties.
+Separate Cell to be established district level to coordinate
+with the NGOs and outside do nor/aid agencies
+
+Secretary (Home),
+Divisional
+Commissioner
+
+Directorate of Information & Publicity to coordinate
+with the media to play a positive role in disseminating
+appropriate information to public and the government
+in order to facilitate the speedy recovery. Issue daily
+press releases
+Assess the requirements of deployment of rescue boats
+on dailybasis and also strategically position them.
+Ensure that local health workers and veterinary officers
+survey the affected area on regular basis for disease
+surveillance and prevention. Carry out Immunization
+and prevention of disease due to worms in domestic
+animals in water logged areas
+
+Director
+(DIP) and
+Divisional
+Commissioner
+
+Establish mobile veterinary health care posts and ensure
+supply of adequate animal food in affected areas.
+Health Post/Van with essential medicines and health
+kits anddistribution of chlorine, halogen and ORS
+packets at camps
+Sanitary Survey and water disinfection, Water supply
+restoration and purification. Demarcation of bore wells/
+tube wells unsafe for drinking water purposes.
+Ensure maintenance of registers at the relief centres
+fordamaged houses, stock of relief materials, visitors,
+suggestions, victims, etc.
+
+23
+
+Ensure daily reporting of situation of flood and relief
+centers toState EOC and Central Flood Control Room.
+
+24
+
+Mass feeding shall be only for initial period; if possible
+dry ration shall be given for home cooking. Food
+distribution shall be discontinued as soon as possible.
+NGOs and CBOs shall be involved in supplementing
+effort of Govt.
+
+37
+
+Concerned
+DCs and SDMs
+of Revenue
+Deptt.
+
+Secretary (I & FC)
+Director (DHS),
+Concerned
+Municipal
+HealthOfficers,
+Director
+(AH)
+Director (AH)
+Concerned
+CDMO &
+Municipal
+Health Officers
+Concerned Supdt.
+Engineer (DJB)
+
+Concerned SDM
+
+In-Charge of
+affected district’s
+EOC
+Divisional
+Commissioner,
+Secretary
+(F&S)
+
+25
+
+Arrangement of Tents, Clothing, Bedding, Stoves, Fuel,
+Lighting, Water, sanitary facilities and hygiene (temporary
+latrine & bathing, utensils, soaps, toothpastes, etc.), health
+care, electricity, solid waste disposal at relief camps. At
+least 1 mobile toilet/20 persons at relief camps.
+
+DC (Revenue),
+DC (MCD), SE
+(DUSIB)
+
+26
+
+Arrange for education at alternate locations for children
+at relief camps and affected areas.
+
+Director
+(Education)
+
+4.3.5 Assessment of Damage/Loss and Needs
+The Divisional Commissioner to issue instructions to the district magistrates to provide the
+'Need Assessment Report', 'Damage and Loss Assessment Report'.
+The relief need assessment report should be provided by each District Magistrate.
+Arrangements for distribution of gratuitous relief and cash doles to be made by Revenue
+Department.
+
+38
+
+Chapter 5:Yamuna Flood of DelhiThe July 2023 Event
+Delhi experienced an unprecedented flood during July 2023. Thousands of people abandoned their
+homes on the Yamuna floodplains as the water level in the river rose to a 45-year high of 208.05
+th
+meters on Wednesday ie 12 of July. The water level of the Yamuna touched an all-time high 208.66
+th
+m on Thursday, the 13 of July. Bringing with it multiplicity of woes like water logging , disruption
+in vital lifelines of Delhi including water supply, rail and road transport, metro, hospitals, siltation of
+roads and residential areas, flooding of fields, embankment breaches and threat of vector borne
+diseases. Many areas in North, North East, East and South East were in deluge for weeks. Even as the
+water level of the Yamuna began to recede slowly, the Army and the National Disaster Response
+Force (NDRF) were pressed into service on 14th July , as the flood water submerged parts of the
+capital-including parts of the arterial Ring Road, the busy ITO intersection, Rajghat, and even reached
+the periphery of the Supreme Court-following a breach caused by a malfunctioning drain regulator.
+The following paragraphs trace the events of rainfall causing outfow from the Hathnikund barrage and
+the consequent observed levels at the Old Railway bridge (ORB) as well as the after effects in the city.
+
+Fig 5.1: The Old Railway Bridge (ORB) –A witness to many floods beared the brunt of rising
+Yamuna, popularly known as Lohe ka pul, has seen several chapters of history unfold in the
+capital in its 150 years of existance.
+The course of Yamuna river passing through Delhi between Palla on the upstream and Jaitpur on the
+downstream is shown in Fig 5.3 alongwith location of Wazirabad barrage, Old Railway bridge, ITO
+barrage, Nizammudin bridge and Okhla barrage. Pictorial views of Hathnikund barrage, Wazirabad
+barrage, ITO barrage, and Okhla Barrage are shown in Fig 5.4, Fig 5.5, Fig 5.6 and Fig 5.7
+respectively. Fig 5.2 shows location of Hathnikund barrage.
+
+39
+
+Fig 5.2: Yamuna River Course through Delhi
+
+Fig 5.3: Hathnikund Barrage
+
+Fig 5.4: Wazirabad Barrage
+
+Fig 5.5: ITO Barrage
+
+Fig 5.6: Location of Hathnikund Barrage
+
+Fig 5.7: Okhla Barrage
+
+40
+
+5.1 Heavy Rain fall over Delhi
+During 8-11 July 2023, Delhi experienced widespread rainfall with isolated Heavy to very
+heavy rainfall. Annexure 1 shows significant rainfall reported over various stations at Delhi
+during 8-11 July (24 hours cumulative heavy rainfall in cm (≥ 1 cm) at time ending at 0830
+hours IST of the date). The state has around a total of 20 numbers of rainfall monitoring
+stations reporting daily rainfall (refer Fig 5.8). Rainfall data for the period shows during the
+period, heavy rainfall event was observed during 8-10 July, and the main city observatory
+Safderjung received 15cm for 24-h of 0830 hrs IST of 8th July till 0830 hours IST of 9 th
+July 2023 (reported at 0830 hrs IST of 9th July), which is the highest value among all stations
+for the state of Delhi in the period, followed by 12cm at Lodi Road, Delhi University, 10cm
+at the President house and 9cm at Mayur Vihar during the same date. It then continued on
+2 nd day on 9th July, but with some reduction in intensity with 12cm over Delhi Lodi Road,
+11cm over Safdarjung, 8cm over Delhi University and 8cm over the President house. On
+10th July, it was further reduced to moderate rainfall with only one station Delhi Pusa
+reported as 7cm while other stations were light to moderate rainfall (6.4cm). Historical IMD
+past data shows (Refer Table 1) the rainfall of 15cm reported on 9th July over Safaderjung is
+the highest 24-h rainfall observed over Safderjung after 25th July 1983, when 17cm rainfall
+was observed.
+Fig 5.9 shows date-wise rainfall realized at different stations as reported on dates of 8th July to
+11th July (4 days) while Fig 5.10 shows their cumulative values for the 3 days when rainfall
+was significant covering the period of 8-11 July 2023. It shows the heavy rainfall event spell
+was a 2-days spell and it mainly occurred on 8 th and 9 th July covering areas mainly for the
+districts of New Delhi, Central Delhi, and North Delhi with New Delhi areas received the
+highest rainfall. Fig 5.9 also shows none of the stations located in areas of West Delhi,
+Southwest Delhi and South Delhi (like Palam, IGI Airport, Nazafgarh and Aya Nagar etc),
+reported any rainfall >64mm for any date during the period and hence these areas had lower
+impacts.
+
+41
+
+Fig 5.8 : IMD Rainfall Monitoring Stations in Delhi
+(Source: IMD)
+
+5.1.1 08th July 2023
+Delhi Jafarpur AWS 5, Delhi University OBS 3, Delhi Pitampura AWS 1, Delhi University
+AWS 1
+
+5.1.2 09th July 2023
+Delhi Safdarjung 15, Lodi Road 12, Delhi University AWS 12, Delhi Unniversity OBS 11,
+Delhi President House 10, Delhi SPS Mayur Vihar 9, Delhi Jafarpur AWS 9, Delhi
+Pitampura AWS 9, Delhi Pusa AWS 7, Gurgaon Rev 7, Faridabad 7, Delhi Sports Complex
+AWS 5, Delhi Mungeshpur AWS 5, Delhi Aya Nagar 4, Delhi Palam 4, Delhi Narela AWS
+2, Delhi Green Field PS 1.
+th
+
+5.1.3 10 July 2023
+Delhi Lodi Road 12, Delhi Safdarjung 11, Delhii University OBS 8, Delhi President House 8,
+Gurgaon Rev 7, Delhi Ridge 7, Rai Rev 7, Delhi Pusa AWS 5, Panipat 5, Delhi Dhansa 5,
+Delhi SPS Mayur Vihar 5, Delhi Aya Nagar 4, Delhi Jafarpur AWS 4, Delhi Sports Complex
+AWS 4, Pataudi 4, Delhi University AWS 4, Delhi Pitampura AWS 3, Delhi Palam 3, Delhi
+Greenfield PS 2, Delhi Nazafgarh AWS 2, Delhi Narela AWS 1
+
+42
+
+5.1.4 11th July 2023
+Delhi Pusa AWS 7, Delhi SPS Mayur Vihar 4, Delhi University OBS 3, Delhi Dhansa 3,
+Delhi Ridge 3, Delhi President House 2, Delhi Pitampura AWS 2, Delhi Sports Complex
+AWS 1, Delhi University AWS 1, Delhi Lodi Road 1, Delhi Narela AWS 1, Delhi Safdarjung
+1.
+
+Fig 5.9: Daily Rainfall reported in mm at various stations of Delhi during different dates at 0830
+hrs IST from past 24-h during 8-11 July 2023 (Source: IMD)
+
+Fig 5.10 : Total rainfall in mm realized at various stations of Delhi during 8-11 July 2023 for
+0830 till 0830 hrs
+(Source: IMD)
+
+43
+
+Table 5.1: Highest Rainfall Records
+
+5.2 Meteorological Conditions
+As per IMD, this unique heavy rainfall event occurrences was mainly due to confluence of two
+systems over the region mainly during 8-10 July such as i) active monsoon trough located at south of
+the normal position with moisture laden easterly/southeasterly and extended upto 3000 feet from
+surface and lay at lower levels and mainly confined to north Rajasthan-south Haryan-Delhi-south
+Uttar Pradesh belt and interacted persistently during the period with ii) a very slowly moved active
+Wind Direction which lay as a north-south intense convergence line from extreme northeast Pakistan
+to northeast Arabian Sea across Gujarat - Rajasthan areas during the same period and then with an
+induce cycir/Lows during 8-11 July. A high moisture incursion was also observed by southerly winds
+from Arabian Sea at middle level when WD was highly intense with its longer amplitude north-south
+trough/convergence line was dipped to north Arabian Sea during 8-10 July.
+
+5.3 Flood Forecasting
+The Central Water Commission (CWC) set up by Government of India under the earstwhile MoWR
+in 1945 performs flood forecasting activities on major rivers and their tributaries in the country and
+issues flood forecast at 175 stations. The forecasts issued by CWC are utilized by local administration
+in taking suitable administrative measures including evacuation of people from flood affected areas to
+safer locations during floods. The inflow forecasts issued by CWC are utilized by the project
+authorities in proper operation of reservoirs in order to mitigate flood impact in the downstream areas.
+
+44
+
+Fig 5.11: CWC Flood Forecasting process for Disaster Risk Reduction
+
+Data Collection is done both Manually as through Sensors and Transmission through Wireless, Telephone,
+Mobiles, Telemetry, Vsat.
+While forecast Formulation or Data processing is done by both Statistical Correlations using gauge to
+gauge, Gauge – discharge data – Multiple coaxial correlations using gauge, rainfall, Antecedent
+Precipitation Index (API) Data as well as using Mathematical Models like MIKE - II– Rainfall Runoff
+module, Hydrodynamic module, Flood forecast module.
+Mode of communication now a days adopted widely-Email, SMS, Website (http://india-water.gov.in/ffs),
+Google Public Alert.
+Frequency: Once in day in case of normal flood, updated 12 hourly in case of High Flood and 3 hourly
+in case of unprecedented Flood preferably by SMS.
+Mailing list / Beneficiaries
+Commonly – civil / engineering authorities of concerned State, defence, railways / highways authorities,
+industrial and other important establishments located in the flood prone areas through telephone / fax /
+e-mail / special messenger for taking advance action for flood fighting & evacuating population to safer
+places.
+Also Media, Press for the benefit of the likely flood affected population.
+Fig 5.11 shows CWC Flood Category and Alert Colour used by CWC fig 5.13 Red Bulletin issued by
+CWC on 13th July 2023 and fig 5.14 Level Forecast issued by CWC for ORB on 13th July 2023
+
+45
+
+Fig 5.12: Flood Category and Alert Colour Codes used by CWC
+Central Water Commission
+
+Date
+Bulletin No :
+
+Government of India
+Central Water Commission
+Flood Forecast Monitoring Directorate
+Central Flood Control Room
+
+Tele No 011-29583666
+Email : fmdte@nic.in
+
+13/07/23
+74
+
+West Block 2, Ground Floor, Wing
+No 7, R.K. Puram Sector -1 , New
+Delhi 110066
+
+FLOOD SITUATION SUMMARY
+PART – I:LEVEL FORECAST
+
+Total Sites=199
+
+S No
+
+Flood Situations
+
+State-wise Flood Situation
+
+Number of Forecasting Sites
+
+A
+
+Extreme Flood Situation
+(Site (s) where the previous Highest Flood Level (HFL) is exceeded or equaled)
+
+Delhi (1)
+
+1
+
+B
+
+Severe Flood Situation
+(Site (s) where water level is touching or exceeding the Danger Level but below the
+Highest Flood Level (HFL))
+
+Assam (5), Bihar (2), Uttar Pradesh (2),
+West Bengal (2)
+
+11
+
+C
+
+Above Normal Flood Situation
+(Site (s) where water level is touching or exceeding the Warning Level but below
+the Danger Level))
+
+Assam (8), Bihar (5), Uttar Pradesh (5),
+West Bengal (5)
+
+23
+
+Total number of sites above Warning Level (A+B+C)
+PART – II : INFLOW FORECAST
+
+35
+( Total Sites = 134)
+
+Number of sites for which inflow forecast issued
+(Where inflows are equal or exceed the specified Threshold Limit for a particular reservoir /
+barrage)
+
+Tamil Nadu (2), Uttar Pradesh (3)
+
+5
+
+Name
+
+URL FOR FLOOD FORECASTING WEBSITE : https://ffs.india.water.gov.in/
+Officer
+URL FOR FIVE DAYS ADVISORY FLOOD FORECAST (AFF) : https://aff.india.water.gov.in/
+Room
+
+Designation
+
+Fig 5.13: Red Bulletin issued by CWC on 13th July 2023
+(Source: CWC WhatsApp Group “Flood Messages” )
+
+46
+
+Duty
+
+Central Flood Control
+
+Central Water Commission
+
+Date : 13/07/2023
+
+PART – I : DAILY WATER LEVEL AND FORECASTS FOR LEVEL FORECAST SITES
+A : Extreme Flood Situations :
+Sites where the previous Highest Flood Level (HFL) is equaled or exceeded
+River
+
+Highest Flood
+Level (m)
+
+DIstrict
+
+Actual Level
+
+Forecasted Level
+
+Trend
+
+Trend
+
+Trend Magnitude
+(mm/hr)
+
+Date
+(dd-mm-yyyy)
+
+Time
+
+Time
+
+Sl. No.
+Warning Level
+(m)
+
+Danger Level (m)
+
+State
+
+Date
+(dd-mm-yyyy)
+
+Station
+
+Yamuna
+
+NORTH
+
+207.49
+
+1
+
+204.5
+Delhi Railway
+Bridge
+
+208.62
+
+208.75
+
+Steady
+0.0
+14 : 00
+
+Steady
+13-07-2023
+16:00:00
+
+205.33
+
+Delhi
+
+06-09-1978
+
+Fig 5.14: Level Forecast issued by CWC for ORB on 13th July 2023
+(Source CWC WhatsApp Group “Flood Messages”)
+
+th
+
+st
+
+5.4 Flood Events from 9 to 31 July 2023
+The discharge from the Hathnikund barrage and the consequent water levels at the ORB from July
+10th to July 31st are plotted and shown in Fig 5.14 and Fig 5.15. Two distinct peaks in the levels at
+ORB can be distinguished shown as first peak of 208.66 m on 13th July at around 6 PM and a much
+lower second peak of 206.56 m on the 23rd July at 6 PM corrresponding to peak discharge of 10173
+Cumec (3.59 Lakh Cusec) and 7084 cumec (2.52 Lakh cusec) form Hathnikund barrage respectively.
+There has been some surges in between the two waves due to incessant rainfall over the basin. The
+peek level in the first flood wave is reflected in approximately 42 hours after the first peak discharge
+while the peak level in the second wave is reflected in approximately 36 hours after second peak
+discharge from the Hathnikund barrage. The lesser time duration for the second could be ascribed to
+the the reason that water had already spread and basin area become more saturated during the first
+wave. The day to day account of the flood is recorded in the following paragraphs.
+
+47
+
+Fig 5.15: Discharge at Hathikund Barrage and Water Level at ORB July 9th to July 16th (First Peak)
+
+Fig 5.16: Satellite Images Before and during flood (Source: NRSC-ISRO)
+
+48
+
+th
+
+5.4.1 Monday, 10 July 2023
+There was heavy Rainfall in the Northwest India from Saturday the 8th of July to Tuesday the 11 th of
+July, including in the basin states of river Yamuna, while Delhi also recorded heavy rainfall over the
+weekend. As a consequence of this heavy rainfall, water level which was nearly steady around 203.00
+meters began to rise suddenly at around 09-30 hours on July 10th and crossed warning level of 204.22
+meters at 13.30 hours and the danger level of 205.33 meters at 17-30 hours and continued to rise
+further.
+
+5.4.2 Tuesday, 11th July 2023
+The water level in the Yamuna is related to the discharge of water upstream from the Hathnikund
+Barrage in Haryana. The release, which is around 10 Cumec (352 Cusec) in the non-monsoon months
+hit a peak of 10173 Cumec. (3.59 Lakh Cusec) on Tuesday ie July 11 th, on account of heavy rainfall
+over Northwest India. It remained at this level for two hours from 11 AM to around 1 PM. Meanwhile
+the water level at ORB continued the rising trend on the 11th of July.
+
+Fig 5.17: The submergence starts at Monastry Market in Kashmere Gate
+(Source: The Indian Express)
+
+5.4.3
+
+th
+
+Wednesday, 12 July 2023
+
+By 12th of July, parts of Ring Road were submerged, waist-deep water collected at the Monastry
+Market near Kashmere Gate (Fig 5.18) and thousands of people abandoned their homes on the
+Yamuna floodplains as the water level in the river touched the previous H.F.L. of 207.49 m attained in
+1978. At around 11-00 hrs, it further rose to a 45-year high of 208.05 meters and predicted to rise
+further.
+
+49
+
+With the river’s water level breaching the 208 meter mark late on 12th night, parts of the Ring Road,
+and areas abutting the river, including parts of Kashmere Gate, Civil Lines, the areas near ITO and
+some parts of East Delhi were inundated on the 13th of July.
+Over 20000 people who live along the flood plains of the river moved to higher ground either to
+temporary sheds set up by the administration or set up their own makeshift tents on pavements close
+to the floodplains.
+th
+
+5.4.4 Thursday, 13 July 2023
+th
+
+The water level of the Yamuna touched an all- time high 208.66 m on Thursday the 13 of July at
+1900 hours which over a meter more than the previous record of 207.49 meters reported in 1978. It
+was predicted to recede marginally by Friday the 14th morning after submerging the floodplains and
+leaving a few roads and low lying areas in the national capital inundated. According Central Water
+Commission (CWC) forecast marginal improvement was expected by 3 AM with the levels expected
+to fall to 208.45 meters at the old railway bridge. This would be well above the river’s danger mark of
+205.33 meters.
+
+5.4.5 Problems Faced as on 13th July 2023
+•
+
+Leakage / Overtopping of regulator gates – At Matcalf House, Tonga Stand, Ali Drain,
+Suppl. Drain – 08 nos. and Nazafgarh Drain 04 nos.,
+
+•
+
+Overtopping of banks – At Neeli Chhatri, Boat Club, DMRC store, Tibbati colony,
+Monastery Market, Aarti Sthal, Geeta Ghat, Najafgarh Drain (L/B 30 mtr. portion, d/s of Mall
+Road Bridge).
+
+•
+
+Submergence of settlement within flood plain – At Garhi Mandu, Usmanpur, Badarpur
+Khadar, Vishwakarma Colony (Jaitpur), Dhobhi Ghat Jhuggies (Okhla).
+
+•
+
+Backflow of Pipeline – U.P. Jal Nigam treated water Pipeline near Sonia Vihar WTP.
+
+•
+
+Settlement of bank and seepage – At Jahangirpuri Drain, Supplementary Drain, Najafgarh
+Drain.
+
+•
+
+Silted up Closed gates at ITO Barrage.
+
+•
+
+Yamuna Bazar – Despite protection wall, inundation reached 8-10 ft. evacuation arranged.
+
+•
+
+Drain No.12 regulator – The MS gate at the regulator dislocated from the slots due to breach
+in the embankment.
+
+•
+
+Sonia Vihar L.F. Bund – Breach – The embankment breach under the water pipelines and
+heavy discharge started flowing through the breach endangered large populated area of Sonia
+Vihar, Shri Ram Colony.
+
+50
+
+Fig 5.18: Major Inundated areas and the after effects
+(Source: The Indian Express)
+
+Fig 5.19 :Innudation near ISBT
+(Source: The Indian Express)
+
+51
+
+Fig 5.20: Inundation at the Nigambodh Ghat
+(Source: The Indian Express)
+
+Fig 5.21:Inundation at Civil Lines
+(Source: The Indian Express)
+
+Fig 5.22: Inundation at Red Fort
+(Source: The Indian Express)
+
+52
+
+5.4.6
+
+th
+
+Friday, 14 July 2023
+
+Water level maintained a gradual though slow decline throughout on the 14th of July touching 208.12
+meters at 8 PM, still well above the river’s danger mark of 205.33 meters. The peak discharge from
+the Hathnikund barrage which was 10173 Cumec (3.59 Lakh Cusec) on the 10th of July fell to 1643
+cumec (58000 cusec) on the 14th of July.
+
+5.4.7
+
+Saturday, 15th July 2023
+
+On the 15th of July, the water level at the ORB had receded to 206.54 m at 11 P.M. and the discharge
+from Hathnikund had fallen to 1105 Cumec (39000 cusec) at 1 PM.
+
+5.4.8
+
+Sunday, 16th July and Monday, 17th July 2023
+
+The wave receded to its lowest and near to warning level on the 17 th of July morning at around 6 PM.
+Though after 17th of July, there were few surges due to continuing rainfall over the basin, the worst
+flood wave was over.
+Meanwhile, the water level in Yamuna river at the Okhla barrage in Noida reached well below the
+danger level of 200.60 meters at 4 P.M. on the 16th of July. Levels of the Hindon Barrage at
+Ghaziabad at 4PM was 198.95 meters well below the danger mark of 205.80 meters.
+
+5.4.9
+
+18thto 31stJuly 2023
+
+rd
+A much lower second peak of 206.56 m was observed on the 23
+July at 6 PM corrresponding to peak
+discharge of 7084 cumec (2.52 Lakh cusec) form Hathnikund barrage. There has been some surges in
+between the two waves due to incessant rainfall over the basin.
+
+Fig 5.23: Deluge in NOIDA
+(Source: The Indian Express)
+
+53
+
+5.5 Flood Impacts
+5.5.1 Life Disruptions
+Several areas in the city including Red fort, Kashmere Gate, Civil Lines, Rajghat and ITO were
+inundated. Archeological Survey of India (ASI) which manages Red Fort shut the 17th century
+monument to visitors on Friday the 14th July. After heavy rainfall over the weekend in Delhi and other
+parts of Northwest India, the Yamuna’s water level in Delhi crossed the “danger” mark of 205.33
+meters on Monday the 10th of July evening, and kept rising since then. In view of the situation, the
+Delhi Disaster Management Authority directed schools and colleges, and non-essential government
+offices to remain shut till Sunday, the 16th of July. Interstate buses from Haryana, Chandigarh,
+Himachal, Jammu and Kashmir and Uttrakhand which usually terminate at ISBT Kashmere Gate were
+ordered to terminate at Singhu Border. Trucks except those carrying essentials like milk, poultry and
+vegetables not allowed to enter city. An advisory issued to government and private offices asking
+them to get their employees to work from home. Entry/Exit at Yamuna Bank Metro Station stopped
+and metro trains to run slow at four bridges on Yamuna. Meanwhile, movement of around 400
+passenger trains were affected between July 7 and July 13 in addition to 600 mail/express trains being
+affected during the same period. Northern Railway has had to divert 101 mail/express trains and 26
+passenger trains to avoid the Yamuna bridge. Owing to flooding hearings in many of Delhi’s District
+courts shifted to virtual mode.
+Water from the overflowing Yamuna river gushed into the premises of Delhi Government’s Sushruta
+Trauma Center and St Stephen’s Hospital in North Delhi viz Delhi on July 13th prompting the
+evacuation of patients at Sushruta Trauma Cente.
+Water supply to several areas of the national capital including North, Central, East and South Delhi
+were affected for two days after three water treatment plants (WTP’s) at Wazirabad, Chandrawal and
+Okhla were shut down on Thursday the 13th July because of the raging waters of the Yamuna. In
+addition to three WTP’s production at Sonia Vihar WTP was reduced by 25%. Further, drawing water
+from ranney wells and tube wells in the Palla floodplain were also stopped hitting production of
+around 32 MGD of water. Thus water production in the city fell by a total amount of 330 MGD
+according to Delhi Jal Board (DJB).
+
+5.5.2 Record of Rainfall of 16 th July, 2023
+The water level of the Yamuna was set to dip to 206.4 meters by 10 AM on Sunday the 16th of July.
+Meanwhile, the Safdarjung weather station in Southeast Delhi that serves as a marker for the city,
+recorded 10.8 mm of rainfall between 5:30 PM and 8:30 PM, the observatory in Pusa in West Delhi
+recorded 29.5 mm and Mayur Vihar in East Delhi recorded 6 mm. The India Meteorological
+Department (IMD) forecast light to moderate rainfall on the 16th and 17th of July.
+
+54
+
+5.5.3 Disruption in water supply
+Water supply was disrupted in several parts of the city as the two water treatment plants at Wazirabad
+and Chandrawal remained shut. Several parts of North and Central Delhi which receive supply from
+these two plants were affected including Narela, Burari, Timarpur, Adarsh Nagar, Badli, Model Town,
+Sadar Bazar, Chandni Chowk, Matia Mahal, Ballimaran, Karol Bagh, Patel Nagar and Rajender
+Nagar.
+
+5.5.4 Vector-borne diseases
+On July 16th, the Delhi Government directed its officials to determine the serotype of the prevailing
+Dengue virus in identified laboratories. This step facilitated crucial information for developing
+targeted interventions and enhancing the effectiveness of disease management efforts. MCD
+Commissioner was directed to deploy drones for mosquito surveillance and control particularly in
+vulnerable areas such as construction sites, nurseries and abandoned houses to identify breeding sites
+and implement targeted interventions to prevent disease transmission. Representatives from DMRC
+were directed to display precautionary messages provided by DGHS at metro stations and trains. At
+Government and private schools children were to be provided with Dengue homework cards.
+
+5.5.5 Silt Accumulation
+Since 16th of July, the city staring at a long-drawn clean-process as silt had to be removed from drains
+and roads. On 15th and 16th of July, the Municipal Corporation of Delhi lifted carcasses of more than
+500 animals. It also cleaned 300 metric tons of silt from the Tamoor Nagar drain.
+
+5.5.6 Flooding of fields
+Flood waters started receding in several places across Haryana even as relief work continued in
+affected areas. At least 13 districts including Ambala, Fatehabad, Faridabad, Jhajjar and Kaithal
+continued to be heavily affected with flood waters. Thousands of hectares of farmland continued to
+remain waterlogged in several districts including Ambala, Yamuna Nagar, Karnal, Palwal,
+Kurukshetra, Kaithal, Panipat, Sonipat, Sirsa and Jhajjar.
+
+55
+
+5.5.7 Embankment Breach at Alipur
+On the 13th of July, the Alipur embankment of the Yamuna river broke. A day after on the 14th of
+July, the residents of five villages in Ghaziabad's Loni area continued to find their homes in
+water even as the teams of police and NDRF sped up rescue efforts. The embankment breaks
+when there is excessive erosion. Water released form Hathnikund barrage is one of the reasons
+for this. The second reason is that this time, there had been a lot of rain in Saharanpur which
+accumulated in the area. Apart from this, illegal construction in the Yamuna floodplains in the
+Delhi-NCR is another reason.
+
+5.5.8 Malfunctioning and Repair of Regulator and Barrage at ITO
+Even as the water level of the Yamuna began to recede slowly, the Army and the National Disaster
+Response Force (NDRF) were pressed into service on 14th July as the flood water submerged
+parts of the capital-including parts of the arterial Ring Road, the busy ITO intersection, Rajghat,
+and even reached the periphery of the Supreme Court following a breach caused by a
+malfunctioning drain regulator. According to Delhi Disaster Management Authority, a regulator
+at Indraprastha metro station, which has not been used or maintained for several years collapsed
+because of its poor condition as well as strong water pressure and inundated the Ring Road also
+five gates of Barrage at ITO were reported to be jammed.
+
+Fig 5.24: The Ring Road Submergence due to broken Regulator
+(Source: The Indian Express)
+
+56
+
+Fig 5.25: Inundation at the Rajghat and Fixation of Regulator
+(Source: The Indian Express)
+
+Fig 5.26: Submergence of Yamuna Bank Metro Station
+(Source: The Indian Express)
+
+57
+
+Chapter 6: Causes of Floods in Delhi
+Due to rapid urbanization in the basin, the runoff has considerably increased. Consequently, the
+flooding events are now occurring more frequently and with higher magnitudes. A sizeable population
+of the city of Delhi resides in settlements that have mushroomed in the flood plains of Yamuna River.
+Large scale urbanization, reduction in holding capacity of the catchment, the confining of the river
+spread by construction of embankments coupled with the climate change phenomenon are the major
+contributors for increase in peak flow magnitude. The impacts of which are far and wide. Though,
+there has been much more water flow from Hathnikund barrage in the past as compared July 2023
+(Fig 6.1) and much higher water levels observed at the various CWC sites on the upstream in the past
+(Fig 6.2), yet the extent of flood has been much more in July 2023 as compared to the earlier events in
+the past.
+
+6.1 Causes of the July 2023 Event
+Due to heavy to very heavy rainfall from 8th July to 11 th July, starting from July 10th, the water level in
+the Yamuna in Delhi maintained its upward trend on 12th July, it reclaimed the flood plains, which
+cushioned the blow of the flood waters. Though, the river crossed its highest flood level till 12th of
+July and continued to rise thereafter, even as the peak discharge of water from the Hathnikund barrage
+upstream in Haryana was not the highest that has been recorded so far. A higher peak discharge of
+22670 Cumec (8 Lakh Cusec) was recorded even in 2019 from Hathnikund barrage higher than the
+th
+peak of 10173 Cumec (3.59 Lakh cusec) that was recorded on 12 of July, 2023. However, the
+highest flood level so attained in 1978 was not breached in 2019, but this time it was breached. This
+could be due to the reason that there was heavy rainfall downstream of Hathnikund and also due to
+multiple cross-sectional and longitudinal structures along the Delhi stretch of river due to which there
+is silt accumulated and trapped in Delhi stretch of the river. Furthermore, the time of concentration is
+shorter, that the same amount of rainfall has fallen in a shorter period and has moved downstream
+quickly.
+
+Fig 6.1: Yearly Highest Flood Level of Yamuna River Observed at Old Railway Bridge
+(Source: I &FC D, Delhi)
+
+58
+
+CWC monitoring stations upstream of the old Railway Bridge along the Yamuna from Hathnikund
+barrage to Delhi had not breached the highest levels they had recorded in previous years. These were
+the stations of Kalanaur and Karnal in Haryana, Mawi and Baghpat in Uttar Pradesh and Palla which
+is near the point where the river enters Delhi. There could be many reasons for this – flood plain
+encroachments, multiple structures, concretization, the gates of ITO Barrage being closed would have
+also blocked the free flowing water.
+Flooding at this scale is unusual in Delhi. Usually it will first hit areas that lies upstream in Haryana.
+This time however, the water rose quickly and breach in the regulator near ITO made the matters
+worse. Simply put no one was ready for this. The Irrigation and Flood Control Department of Delhi
+Government is small and not the most well prepared since such a situation is rare. One of the answers
+may lie in the way the Yamuna flows through the region. In upstream Haryana, the floodplains are
+mostly unencumbered. Even when it enters Delhi near Palla, a wide floodplain is available for the
+Yamuna to spread across. It is near Wazirabad that the river becomes jacketed between the
+embankments and can only rise vertically.
+
+Fig 6.2: The Central Water Commission Flood Monitoring Stations and Comparative Study
+(Source: The Indian Express)
+
+59
+
+In the wake of the peculiar situation arising in the July 2023 Floods, Central Water Commission has
+set up a committee of various stakeholders under the Chairman, CWC to examine and arrive at the
+particular reasons for the peculiar situation of flood and give its recommendations for mitigation. The
+report of the committee is awaited.
+
+6.2 Causes of current Floods in Delhi
+There have been several broad reasons of floods which have occurred in Delhi in the past as well as in
+July 2023, which are enumerated in the following paragraphs:
+
+The total surface water available in Yamuna Basin is estimated as 90 billion cubic
+metre (bcm), of which 80% is generated in the monsoon season. The present storage
+capacity of major and medium water storage projects in the basin is 17 bcm, and 85%
+of this capacity is in basin area down-stream of Delhi (Narula et al. 2001). There are
+two major barrages on River Yamuna, namely Dak Pather and Hathnikund u/s of
+Delhi. There are no dams on river Yamuna, and therefore most of the monsoon flow
+remains unutilized, resulting in floods in the monsoon season. Due to absence of dams,
+there is a shortage of water during the dry season.
+In nineteenth century, the flow in Yamuna was just on the eastern side of Narela and
+Wazirabad. During 1955–1956, embankments were made to avoid frequent flooding of
+adjoining areas. It resulted in rapid urbanization in protected areas. The encroachment
+on flood plain from 1807 to 1980 was slow in comparison to period from 1980 to 2014,
+when the flood plain was utilized for settlements, civic structures, roads, bridges, flyovers,
+metros etc. (Khan and Bajpai 2014). Decrease in flood plain from 1807 to 2014 is shown
+in Figure 6.3.
+
+Fig 6.3: Reduction in Yamuna flood plains boundaries in Delhi
+(Source: Khan and Bajpai 2014)
+
+60
+
+There are some locations where the active course of the river is close to embankment
+making it vulnerable to breaching. Therefore, a constant vigil is to be maintained
+during high flood and a huge stock of flood fighting materials is to be kept to prevent
+any erosion.
+Some of the drains do not have regulators while some others have temporary
+arrangements for back flow prevention. The major cause of the 1978 flood was a
+breach of embankments of drain number 6 and Bawana Escape in Alipur block.
+After closure of regulator gates, pumping of city side water into Yamuna is required.
+Many of out-falling drains do not have a permanent pumping station due to which
+water from the drains starts flowing back in low lying areas.
+Service lines like, water pipe, sewer pipe, telephone and electricity cables are laid in
+drains or on banks, which reduce the carrying capacity and adversely affects
+maintenance operations.
+Sewage network in a large number of unauthorized colonies, rural villages and other
+regularized areas is yet to be laid. It results in huge quantity of sewage finding its way
+into the drainage system, resulting in additional siltation load, for which drainage
+system is not designed. Interconnected sewage and drainage network is one of the
+major causes of flooding in low-lying colonies due to backflow.
+Although several drainage related works have been carried out in Delhi, but no
+comprehensive planning was undertaken. Therefore, the old drainage system needs to
+be reviewed to carry the increased runoff. Large scale covering of storm water drains
+has been carried out either to construct roads, parking space or to prevent foul smell
+from drains. Consequently, desilting of drains has become difficult.
+In Delhi, the lack of flood plain development policy has led to a growth of
+unauthorized colonies. Several government projects such as Metro Head Quarter,
+Shastri Park and Yamuna Bank Metro stations, CWG village and Millennium depot
+have come up in the Yamuna flood plain.
+
+61
+
+Chapter 7: Response, Relief and Recovery-2023 flood
+Yamuna levels rise to a record high, 208.53 metres and broke the 45 years old record. Several key
+areas in Delhi were flooded on 13th July 2023, Thursday, impairing normal life and traffic movement,
+as authorities scrambled to lead rescue and relief efforts. Delhi Disaster Management
+Authority (DDMA) along with Delhi Government and different emergency support functionaries
+discussed the flood situation in the city.
+
+7.1
+
+Preparedness for Flood Response
+
+All concerned District Magistrates (District North, North-East, Shahdara, Central, East, and SouthEast) and their district Sector Committees, I&FC Department, Delhi Disaster Management Authority,
+Delhi Police and other stakeholders were kept on alert mode to deal with the flood situation in
+coordination with each other. Areas like Boat Club, Pandav Nagar, some parts of Gandhi Nagar,
+Bhajanpura, Delhi Secretariat, Rajghat, were inundated with floodwaters. The road from Rajghat to
+Delhi Secretariat was also flooded, Ring Road stretch between Kashmere Gate and Purana Lohe Ka
+Pul was flooded and closed for traffic movement.
+According to officials, locals in some areas showed reluctance in moving out even as water reached
+their homes.
+th
+
+The water level at the Old Railway Bridge crossed the 208-metre mark on 11 July Wednesday night
+and rose to 208.48 metres by 8:00 am on Thursday. According to the Central Water Commission,
+this was "extreme situation".
+With the situation deteriorating every passing hour, government urged the Centre to intervene, and the
+city police imposed Section 144 of the CrPC in flood-prone areas to prevent unlawful assembly of
+four or more people and public movement in groups.
+
+7.1.1
+
+Delhi Disaster Management Authority and Delhi Police
+All required action to be taken for the people living in the low lying areas, flood prone areas,
+to make aware of the rising water level of river Yamuna by doing munadi/ other mode of
+communication and it was ensured that no person goes near the river water in view of the
+rising water level and high water current.
+Some police personnel/ other officials were stationed round the clock at the vulnerable points/
+low lying areas, where people living in those areas go inside the river water for doing their
+daily chores like bathing, washing clothes etc., to ensure that no such activity takes place so
+as to prevent any untoward incident.
+Delhi police was directed to evacuate people living in low lying areas and shift them to higher
+altitudes. It was monitored at DCP levels.
+District Magistrate asked the SDM & Tehsildar to be in alert mode and evacuate all people
+living in low lying areas and shift them to safer places and provide them food, water,
+medicine etc.
+
+62
+
+7.1.2 Traffic Police
+th
+
+The traffic police on Thursday i.e. 13 July issued an advisory about the restrictions and regulation of
+vehicular movement due to the rise in water level of the Yamuna. According to the advisory, due to
+the rise in water level of the Yamuna and consequent inundation of low-lying areas, traffic movement
+was impaired on Mahatma Gandhi Marg between IP Flyover and Chandgi Ram Akhara, Mahatma
+Gandhi Marg between Kalighat Mandir and Delhi Secretariat and Outer Ring Road between
+Wazirabad Bridge and Chandgi Ram Akhara.
+Non-destined commercial vehicles were not allowed to enter Delhi and diverted to Eastern and
+Western Peripheral Expressway. The commercial vehicles were diverted from Mukarba Chowk. No
+commercial vehicles were to be allowed between Mukarba Chowk and Wazirabad Bridge, as per the
+advisory.
+Commercial vehicles were diverted from Sarai Kale Khan. No such vehicles were allowed between
+Sarai Kale Khan and IP flyover. Commercial vehicles were diverted from Ghazipur border as well as
+from Akshardham towards DND. No such vehicles were allowed between Akshardham and Sarai
+Kale Khan.
+
+7.1.3 Education Dept (Delhi Government, Private & EDMC Schools)
+Some of the schools were identified as relief centers for the flood affected people,
+representative of Education Department were directed to inform the school administration and
+keep them ready in the event of requirement of schools, building as shelter homes in case of
+requirement.
+Education Department was asked to carry out the inspection of all the schools to check the
+dangerous part of any school building including trees.
+
+7.1.4 Instructor Civil Defense
+District Magistrate directed Instructor Civil Defence (ICD) to ensure deployment Civil Defence
+Volunteers (CDVs) on Nishkam seva basis in the flood affected area with the number of CDV
+deployed to be provided to DM office and ICD to continuously monitor the effective use of CDVs.
+
+7.1.5 Delhi Urban Shelter Improvement Board
+DUSIB was asked to make arrangements for mobile toilets at designated locations.
+
+63
+
+7.1.6 Delhi Health Services
+CDMO was directed to provide round the clock deployment of medical camp with team of
+doctors, medicines, and other required equipment at each of the relief camp.
+LBS Hospital were on an alert mode for any kind of emergency for the people, and CNBC
+hospital to be on alert mode for kids. Since there may be cases of snakebites, anti -venom
+vials were made available in the emergency.
+CDMO was asked to provide the details of mobile health workers along with vehicle who will
+visit relief shelters for health checkup during the time of flood.
+
+Fig 7.1: Flood Relief Camps of North East District
+
+64
+
+7.1.7 Municipal Corporation of Delhi
+MCD to ensure cleanliness in the relief camp, proper fogging in these areas, cleaning of
+MTVs.
+Some community centers were identified as relief camp site, MCD to make them available in
+case of requirement of these relief camps.
+MCD was entrusted to ensure that there is no water logging on the roads and drains under
+their supervision.
+
+7.1.8 Public Works Department
+PWD was asked to identify the vulnerable areas of water logging points of East Delhi and to install
+extra functional pump in those vulnerable points.
+
+7.1.9 Delhi Development Authority
+Some community centers were identified as relief camp site. DDA to make them available in
+case of requirement of these relief camps.
+DDA to ensure cleanliness of roads and desilting of drains to avoid water logging and
+installation of pumps in the areas where water logging is high.
+
+7.1.10 Boat Club Incharge
+Boat Club In-charge was asked to station boats at vulnerable points of Yamuna river in case of
+emergency and to provide the list of locations, where the boats are deployed to flood control
+room/DDMA.
+
+7.1.11 Delhi Transport Corporation
+DTC was required to ensure availability to buses in case of requirement of shifting the evacuated
+people, in case the water level reaches the evacuation level for their concerned areas and oversee the
+activities like pitching of tents, deployment of CDVs, availability of power, food, medical facilities,
+water, sanitation and all other required amenities.
+
+7.2 Evacuation, Rescue and Relief
+People living in low-lying areas and who were required to be evacuated at this stage, were evacuated
+and shifted to safer places at higher altitude. Regular 'Munadi' was done to make people aware of the
+flood situation by deploying Police personnel and CDVs at each such location and advisories issued
+to people to keep away from the river water.
+A Special meeting of the Delhi Disaster Management Authority (DDMA) chaired by Hon’ble Lt
+th
+Governor, Delhi was held on 13 July 2023. The agenda of the meeting was to review the prevailing
+flooding situation in Delhi. Hon’ble Chief Minister, Delhi/Vice Chairperson, DDMA, Revenue
+Minister, Minister of Water, Irrigation & Flood Control, along with Chief Secretary, Commissioner of
+Police and senior officers of Departments concerned, apart from DG (NDRF) and representative from
+NDMA, CWC, and IMD etc. were present in the meeting. Following decisions were taken in the
+meeting:-
+
+65
+
+People who have been evacuated out of the flooded areas to be shifted to neighboring
+Government school buildings/community Halls/govt. buildings.
+Sufficient food, drinking water, medical aid and toilets/mobile toilets to be ensured at relief
+camps.
+Schools and colleges / universities across Delhi to remain closed till Sunday, 16th July, 2023.
+Non-essential government offices (i.e. those not involved in monitoring, relief, rehabilitation
+of flood work) to remain closed till Sunday, 16th July, 2023.
+Private establishments / offices to be advised to work from home.
+Inter-state buses coming to ISBT, Kashmere Gate to be stopped at Singhu Border - DTC
+buses to be provided to ferry passengers from there.
+Additional provisioning of personnel to be done for traffic management in affected areas.
+Borders at Chilla, Loni and Badarpur to be restricted for entry of only those heavy vehicles
+carrying essential goods.
+Business / commercial establishments in and around Kashmere Gate to be asked to close till
+the situation improves.
+Precautionary and proactive relief and preventive measures to be undertaken in areas like
+Sonia Vihar, Mukherjee Nagar, Haqeeqat Nagar, etc., susceptible to flooding.
+Apart from the 12 NDRF teams operational in the city, additional teams already in place, to
+help in the relief and rescue measures at sites prone to flooding. Concerned DMs / DCPs to
+ensure action accordingly.
+All control rooms to work in total coordination to address any emergent situation.
+Crematoriums in the vicinity of those closed down due to rising water levels, to remain in
+state of preparedness.
+Rationalization of water supply in the city, in light of closing down of WTPs at Wazirabad,
+Chandrawal and Okhla to ensure drinking water supply.
+Health infrastructure in the city to remain on alert mode to deal with any eventuality and
+ensure preparedness to handle the situation once the water recedes.
+General appeal to the residents of the city to avoid unnecessary travel and commute.
+
+66
+
+7.3 Decisions made with increasing water level
+Wazirabad, Chandrawal and Okhla water treatment plants were shut down, which could
+affect the water supply in the national capital.
+All officials to reach relief camps and provide all possible support to people who stayed
+there.
+45 boats (17 pertaining to Boat Club and 28 pertaining to I&FC Department) were put on duty
+for 'Munadi' / awareness, evacuation & rescue work.
+Road Traffic at Old Railway Bridge was closed since Morning of 13th July.
+All gates at Okhla Barrage were kept open to release excess water; so as to ensure that
+water level in River Yamuna does not remain at high level for long.
+All concerned DMs and their sector committees were put on alert mode and they worked
+in coordination with I&FC Department, Police, DJB, DUSIB and other stakeholders to
+deal with flood situation and relief / rescue work.
+I&FC Department of Delhi also worked in close coordination with its counterparts in UP
+and Haryana for smooth passage of water through Delhi.
+
+Fig 7.2: Response of NDRF
+
+67
+
+Fig 7.3: Relief Material Distributed with photographs
+
+Fig 7.4: Saving Lives and Beyond
+
+68
+
+Fig 7.5: Medical / Vet Camps
+
+Fig 7.6: Challenges faced
+
+69
+
+Facilities of food, drinking water, medical teams, ambulances, electricity, mobile toilets,
+sanitation, etc. were provided to the evacuated people staying in relief camps.
+Approximately, 26401 people were evacuated from flood-affected low- areas of these six
+districts, out of which approximately 21,504 people stayed in 44 camps (including temporary
+relief camps as well as Pucca Buildings i.e. schools, community centers etc.). Rest of the
+evacuated people were shifted to the places of their choice i.e. at their relatives’ houses,
+rented accommodation, etc.
+17 teams of NDRF were deployed in flood affected districts in rescue work. 1606 people
+were rescued & also 7241 people & 956 livestock were evacuated by these NDRF teams.
+Further, pre -hospital treatment were given to 908 rescued persons.
+NGOs were engaged for providing relief (Food, Shelter Kit, Medicines, etc.) to the evacuated
+persons.
+Anti-viral spray was done by MCD, safai karmcharis deployed and bleaching powder
+sprinkled every 12 hours.
+Fans, Mattresses, Mobile toilet, female bathing enclosure etc. placed and adequate food and
+water arrangement was done.
+Adequate number of medical teams and ambulances were deployed by the Health Department
+at all the relief camp sites.
+Munadi was done to ensure that they stay in relief camp as there was possibility that water
+level can rise again. Sufficient arrangement to continue in relief camp for all the person.
+All concerned DMs and their sector committees were kept at alert mode and worked in
+coordination with I&FC Department, Police, DJB, DUSIB and other stakeholders to deal with
+flood situation and relief / rescue work.
+th
+
+Decisions taken in the Delhi Disaster Management Authority (DDMA) meeting, held on 13
+July, 2023, under the chairmanship of Hon’ble Lt. Governor, Delhi were implemented.
+
+FSOs and FSIs of the Food & Civil Supplies department were deployed at all the relief camps
+on 24 X 7 basis for coordination purpose with the Revenue Department.
+Senior IAS and DANICS officers were deployed for monitoring and assistance of all the
+flood-affected districts /sub-divisions.
+Hon’ble Chief Minister and other Hon’ble Minsters, Govt. of NCT of Delhi also inspected
+some of the relief camps installed across flood-affected districts of Delhi.
+Govt. of NCT of Delhi decided to make Ex-Gratia relief payment of Rs.10000 to flood
+affected families residing in relief camps.
+Flood Situation Bulletins were issued.
+
+70
+
+Fig 7.7: Cattle being rescued
+
+71
+
+Chapter 8: Flood Disaster Risk Management
+Strategies for Delhi
+Rapid urbanization of Delhi combined with unplanned development, encroachments of flood
+plains, multiple bridges, further confinement of the Yamuna River and accumulation of silt
+has complicated the problems and associated flood risk management strategies for Delhi. The
+solutions call for an integrated approach by multiple stake holders combined with appropriate
+model studies and formulation and implementation of an action plan. Following measures are
+however broadly suggested for flood risk management for the NCT of Delhi.
+
+8.1 Structural Measures
+Storage reservoirs can help in peak attenuation and thus reduce the magnitude of flood in
+3
+the downstream. Storage of around 400 mm is required to be carried upstream of
+Hathnikund barrage at Sambar Khera in Dehradun district of Uttrakhand on Tons River,
+which is a tributary of Yamuna river (Mukesh Kumar et al 2017).
+Barrages can be utilized for flood protection through the attenuation of flood peak.
+Construction of the barrage at Palla will provide Delhi the additional storage facility.
+An 8 m high barrage at the end of pondage of Wazirabad near Jagatpur might create
+storage capacity of around 120 MCM. During the flood season, barrage can moderate
+the peak of the flood. Thus, it has the potential to reduce the stress on embankments
+downstream of Palla. (Mukesh Kumar et al 2017).
+To avoid back flow of water from Yamuna into the drains, it is suggested that all out
+falling drains should have permanent pumping stations. Power supply failure is a
+common feature during heavy storms. Hence, generators should be deployed as a
+standby arrangement at all regulators in addition to local power supply for ensuring
+smooth pumping even in case of power failure.
+The capacity of the water bodies needs to be increased through dredging. Adequate
+number of retention basins should be constructed in the reach upstream of Wazirabad
+Barrage when the flood level exceeds a pre-defined critical stage. Providing retention
+basins will facilitate conservation of flood water as well as attenuate flood peaks.
+All vulnerable portions of the embankments may be identified and be strengthened to
+avoid any imminent breach in future.
+
+72
+
+76
+
+Chapter 9: Key Suggestions from Stakeholders
+Consultative Workshop
+It is in the context of the Yamuna urban floods of Delhi with focus on July 2023 event that a stakeholders'
+workshop was conducted on 12th December 2023, so as to bring into limelight the experiences and lessons
+learnt and visualize strategies and actions for a way forward. Various stakeholders viz. India Meteorological
+Department (IMD), Irrigation and Flood Control Department (I&FCD) of Delhi, I&FCD, of UP, I& FCD of
+Haryana, Central Water Commission (CWC), Delhi Disaster Management Authority (DDMA), Municipal
+Corporation of Dlehi (MCD), Delhi Development Authority (DDA), Health and Revenue Departments of
+National Capital Territory of Delhi, Delhi Jal Board (DJB), National Disaster Relief Force (NDRF), Public
+Works Department (PWD), BSES, Delhi Urban Shelter Improvement Board (DUSIB), Boat Club and
+Centralized Accident and Trauma Services (CATS) Ambulance demonstrated enthusiasm in sending
+delegates and participants to this workshop. Actions taken and proposed solutions and road ahead were
+showcased by various resource persons.
+
+9.1 Objectives
+The workshop was conducted with following objectives:
+To disseminate the experiences of stakeholders, Administration and Line Departments about urban
+flooding in Delhi.
+To bring forth all issues and concerns of all stakeholders, Administration and Line Department for a more
+coordinated response to the floods in Delhi in future.
+To equip participants with the necessary knowledge, skills, and abilities to respond effectively to floods
+in Delhi in future.
+To draw a future roadmap for flood mitigation in Delhi.
+
+9.2 Contents of the Workshop
+Contents of the workshop touched upon following aspects in order to achieve the
+objectives:
+Problems faced
+Actions taken
+Urban flood vulnerability of Delhi
+Urban Flood Risk Management
+Flood Forecasting
+Early Warning System
+Flood impacts
+Response and Recovery Needs
+
+77
+
+Relief Operations
+Building System Resilience
+Institutional framework
+Causes of floods in Delhi
+Mitigation and management strategies
+
+9.3 Summary and Over all Key Suggestions
+This concise summary encapsulates the key discussions, presentations, and outcomes
+of the workshop, providing valuable insights for future flood mitigation strategies in
+Delhi. The workshop served as a platform for stakeholders to share experiences,
+challenges, and solutions related to flood mitigation and disaster management in Delhi.
+Insights from experts, government officials, and frontline responders highlighted the
+need for improved coordination, early warning systems, infrastructure development,
+and community engagement in flood preparedness and response efforts. Discussions
+were held on the economic, social, and infrastructural repercussions of the flood.
+Insights were shared by experts on the existing flood monitoring systems and early
+warning mechanisms in Delhi. Discussions were also held on the effectiveness and
+challenges of the current systems and suggestions for improvement. Presentation were
+given by representatives from various departments and agencies on flood preparedness
+measures and response planning along with emphasis on coordination, resource
+allocation, and community engagement in flood response efforts. Along with
+acknowledgment of achievements, identification of areas for improvement, and
+commitment to continuous collaboration, emphasis was laid upon coordination,
+communication, safety measures, and infrastructure development. Following are the
+overall key suggestions that emanated from the workshop:India Meteorological Department provides Hydro meteorological Support for
+Flood Forecasting by providing observed rainfall and Quantitative
+Precipitation Forecast (QPF) for 156 river sub basins. Based on which Joint
+advisories on Flood Status are issued by IMD, CWC and NDRF.
+Even though IMD has made several achievements like increase in lead time
+from 5 to 7 days, increase of rain gauge network to 5896 and use of high
+resolution dynamical model yet IMD needs to improve upon coordination and
+exchange of information among stakeholders.
+According to the study presented by Dr Gosain Professor emeritus IIT Delhi, a
+model is simulated for the two scenarios, first with the natural terrain and
+second by incorporating the constant thickness of silt by raising the bed level
+by 1.8 meters (6 feet) from downstream of Palla to ITO barrage, showed that
+the actual observed level matched with the simulated water level which points
+to dredging the entire channel from downstream of Palla to ITO barrage as a
+possible solution to the problem. However, dredging the entire channel is not
+recommended as per extant CWC guidelines.
+In the wake of July 2023 Yamuna urban floods, a committee has been set up
+
+78
+
+consisting of various stakeholders under the Chairmanship of Chairman,
+(CWC), to examine and arrive at reasons for the peculiar situation of flood of
+July 2023 and give its recommendations for flood mitigation in Delhi. The
+report of the committee is awaited.
+As per DDMA and other resource persons, major problems faced during the
+flood event of July 2023 have been leakage or overtopping of regulator gates,
+over topping of banks due to rise in river water level, submergence of
+settlements on the flood plains, jamming of some gates due to silting up,
+breach of embankment and regulator gates, lack of effective storm water
+drainage system and shut down of three water treatment plants.
+Even as the peak discharge of water from the Hathnikund barrage upstream in
+Haryana was not the highest that has been recorded so far. A higher peak
+discharge of 8 Lakh Cusecs was recorded even in 2019 from Hathnikund
+Barrage which is larger than the peak of 3.59 Lakh cusecs that was recorded on
+th
+12 of July 2023. However, the highest flood level so attained in 1978
+(207.49m) at ORB was not exceeded in 2019, but during the July 2023 event it
+was exceeded by 1.17m (208.66m) at ORB.
+As per DDMA and other resource persons, the peculiar situation mentioned
+above could likely be due to the heavy rainfall downstream of Hathnikund and
+also due to multiple cross-sectional and longitudinal structures along the Delhi
+stretch of river due to which, there is silt accumulated and trapped in Delhi
+stretch of the river. Furthermore, the time of concentration is shorter such that
+the same amount of rainfall has fallen in a shorter period and has moved
+downstream quickly. Flood plain encroachments, constrictions due to various
+bridges in the course of the river, concretization are the other reasons. The gates
+of ITO Barrage being closed would have also blocked the free flowing water.
+More effective drainage system, better management of Water Treatment Plants
+and Sewerage system is called for by improving coordination among different
+agencies.
+Standard Operating Procedures for pumping operations, WTPs, STPs and SPSs
+should be formulated to mitigate the effect of flooding.
+DJB highlighted that storm water drains and sewerage system should not be
+interconnected as sewerage system is not designed to take load of storm water.
+
+79
+
+PWD representative highlighted major causes and remedial measures for road
+flooding during heavy rainfall. He suggested proper drainage management, sewer
+line maintenance and rain water harvesting to reduce its impact.
+Floodplain restoration and rejuvenation initiatives by DDA and discussion on
+projects aimed at restoring wetlands, creating green spaces, and enhancing
+floodplain ecosystems were highlighted by representatives from DDA.
+Insights were shared by NDRF representatives on the role of NDRF in flood
+response, including rescue operations and humanitarian aid and discussion on
+challenges faced and proposed solutions for effective flood response.
+Discussion also took place on evacuation, rescue operations, and relief
+measures implemented during the flood.
+Case presentation was made by SDM, Sarita Vihar, Delhi on the flood situation
+in Vishwakarma Colony, Jaitpur, and the response efforts undertaken by the
+District Administration.
+There was active participation from representatives of Districts and line
+departments, including DUSIB, BSES, Health Department, CATS Ambulance,
+Boat Club, and MCD with discussion on challenges faced during flood relief
+operations and suggestions for improvement in the open forum discussion.
+
+80
+
+Chapter 10: The lessons, challenges
+and the way forward
+The lessons, challenges and the way forward are synthesized based on the research from
+various sources including published journals and reports, newspapers, internet, various
+websites, analysis of data and information supplied by the concerned departments, resource
+persons and suggestions made by stakeholders and line departments in the stakeholders’
+consultative workshop of 12th December 2023.
+
+10.1 Lessons
+The flood in Delhi has been a case of human accelerated natural disaster as it has been not
+only due to peculiar meteorological conditions, heavy rainfall over a short period but also
+exacerbated due to anthropogenic reasons of increase in urbanization, growth of
+population and human encroachments.
+The reasons for the flooding in Delhi in July 2023 were threefold
+(i)
+Due to heavy to very heavy rainfall over Delhi.
+(ii)
+Due to river Yamuna being in spate resulting in backflow in the drains and
+inundation of the low lying areas.
+(iii) Due to congestion in the drainage system.
+A two pronged approach with both riverine and urban flooding combined may have to be
+adopted by the various stakeholders for mitigation of floods in Delhi.
+The river Yamuna crosses several states viz. Uttrakhand, Himachal Pradesh, Haryana and
+Uttar Pradesh besides flowing through Delhi and urbanization and industrialization has
+taken place in the basin in last couple of decades. It appears that all stakeholders
+including the states of Yamuna Basin i.e. Uttarakhand, Himachal Pradesh, Uttar Pradesh,
+Haryana and Delhi may have to collaborate with an integrated and holistic approach.
+Besides judicious combination of structural and non- structural methods for the flood
+problem of Delhi, it is also important to look beyond in the context of risk assessment,
+modernizing and improving early warning systems, response and recovery needs, relief
+operations, policy change and revamping institutional mechanisms.
+
+81
+
+82
+
+83
+
+84
+
+85
+
+86
+
+87
+
+References
+
+88
+
+89
+
+Notes
+
+90
+
+Notes
+
+91
+
+Notes
+
+92
+
+

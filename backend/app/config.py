@@ -101,6 +101,18 @@ class Settings(BaseSettings):
     db_command_timeout: int = 30
     db_echo: bool = False
 
+    # ── Phase 6.32: Security & Production Hardening ─────────────────────
+    environment: str = "development"  # "development" | "staging" | "production"
+    auth_enabled: bool = False
+    api_key: str = ""
+    secret_key: str = "aapdanetra-dev-secret-change-in-production"
+    rate_limit_enabled: bool = True
+    rate_limit_per_minute: int = 60
+    max_request_body_bytes: int = 1_048_576  # 1MB
+    max_sse_subscriptions_per_ip: int = 10
+    sse_auth_required: bool = False
+    max_replay_events: int = 100
+
     @property
     def effective_database_url(self) -> str:
         """Build the async database URL from components or use the override.
@@ -121,6 +133,18 @@ class Settings(BaseSettings):
             f"@{self.postgres_server}:{self.postgres_port}"
             f"/{self.postgres_db}"
         )
+
+    def validate_production_security(self) -> None:
+        """Validate production deployment settings and fail safely if mandatory security settings are missing."""
+        if self.environment.lower() == "production":
+            if not self.auth_enabled and not self.api_key:
+                raise ValueError("Production deployment requires auth_enabled=True or non-empty api_key.")
+            if self.secret_key == "aapdanetra-dev-secret-change-in-production":
+                raise ValueError("Production deployment requires custom secret_key.")
+            if "*" in self.cors_origins:
+                raise ValueError("Production deployment cannot use wildcard '*' in cors_origins.")
+            if self.persistence_mode == "required" and not self.database_url and not self.postgres_password:
+                raise ValueError("Production persistence mode 'required' requires explicit database credentials or DATABASE_URL.")
 
     class Config:
         env_file = ".env"

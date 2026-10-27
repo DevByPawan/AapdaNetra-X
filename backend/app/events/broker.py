@@ -30,8 +30,11 @@ class EventBroker:
     """In-process and cross-worker event broker for real-time SSE streaming."""
 
     def __init__(self) -> None:
+        from collections import defaultdict
+        from app.config import settings
         self.broker_id: str = f"broker-{uuid.uuid4().hex[:8]}"
         self._subscribers: Set[asyncio.Queue[EventEnvelope]] = set()
+        self._ip_subscribers: dict[str, int] = defaultdict(int)
         self._replay_buffer: deque[EventEnvelope] = deque(maxlen=MAX_REPLAY_BUFFER_SIZE)
         self._total_published: int = 0
         self._total_dropped: int = 0
@@ -72,6 +75,7 @@ class EventBroker:
         If last_event_id is found, returns (events_after_id, True).
         If last_event_id is not found in buffer, returns ([], False).
         """
+        from app.config import settings
         buffer_snapshot = list(self._replay_buffer)
         match_idx = None
         for idx, evt in enumerate(buffer_snapshot):
@@ -80,36 +84,49 @@ class EventBroker:
                 break
 
         if match_idx is not None:
-            return buffer_snapshot[match_idx + 1:], True
+            max_r = getattr(settings, "max_replay_events", 100)
+            return buffer_snapshot[match_idx + 1 : match_idx + 1 + max_r], True
 
         return [], False
 
-    def subscribe(self) -> asyncio.Queue[EventEnvelope]:
-        """Register a new client subscriber queue with bounded maxsize."""
+    def subscribe(self, client_ip: str = "127.0.0.1") -> asyncio.Queue[EventEnvelope]:
+        """Register a new client subscriber queue with bounded maxsize and per-IP limit."""
+        from app.config import settings
+        if self._ip_subscribers[client_ip] >= settings.max_sse_subscriptions_per_ip:
+            logger.warning("[EventBroker] Per-IP SSE connection limit (%d) reached for IP '%s'", settings.max_sse_subscriptions_per_ip, client_ip)
+            raise HTTPException(
+                status_code=429,
+                detail=f"Maximum SSE subscriptions per IP ({settings.max_sse_subscriptions_per_ip}) reached.",
+            )
+
         if len(self._subscribers) >= MAX_SUBSCRIBERS:
             logger.warning("[EventBroker] Capacity exceeded (%d/%d max subscribers)", len(self._subscribers), MAX_SUBSCRIBERS)
             raise HTTPException(
                 status_code=503,
-                detail=f"Maximum SSE subscriber capacity ({MAX_SUBSCRIBERS}) reached."
+                detail=f"Maximum SSE subscriber capacity ({MAX_SUBSCRIBERS}) reached.",
             )
 
         queue: asyncio.Queue[EventEnvelope] = asyncio.Queue(maxsize=QUEUE_MAX_SIZE)
         self._subscribers.add(queue)
+        self._ip_subscribers[client_ip] += 1
         self._total_subscribed += 1
         logger.debug(
-            "New SSE client subscribed to %s. Total active subscribers: %d",
+            "New SSE client (%s) subscribed to %s. Total active subscribers: %d",
+            client_ip,
             self.broker_id,
             len(self._subscribers),
         )
         return queue
 
-    def unsubscribe(self, queue: asyncio.Queue[EventEnvelope]) -> None:
+    def unsubscribe(self, queue: asyncio.Queue[EventEnvelope], client_ip: str = "127.0.0.1") -> None:
         """Unregister a client subscriber queue on disconnect."""
         if queue in self._subscribers:
             self._subscribers.discard(queue)
+            self._ip_subscribers[client_ip] = max(0, self._ip_subscribers[client_ip] - 1)
             self._total_unsubscribed += 1
             logger.debug(
-                "SSE client unsubscribed from %s. Total active subscribers: %d",
+                "SSE client (%s) unsubscribed from %s. Total active subscribers: %d",
+                client_ip,
                 self.broker_id,
                 len(self._subscribers),
             )

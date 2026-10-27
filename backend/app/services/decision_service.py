@@ -188,6 +188,9 @@ def compute_emergency_decision(
             f"MAINTAIN STANDARD OPERATIONAL READINESS ON {recommended_route.name}."
         )
 
+    contract_dict = getattr(risk_state, "data_contract", None) or getattr(risk_state, "input_contract", None)
+    eligibility_str = contract_dict.get("inference_eligibility", "ELIGIBLE_SIMULATED") if isinstance(contract_dict, dict) else "ELIGIBLE_SIMULATED"
+
     # Evidence points
     evidence = [
         f"ML Risk Prediction: {current_risk:.1f}% ({risk_category})",
@@ -196,6 +199,7 @@ def compute_emergency_decision(
         f"Route Spatial Exposure: {spatial_hazard.get('spatial_exposure_ratio', 0.0) * 100:.0f}% hazard line intersection",
         f"Active System Alerts: {len(active_alert_records)} firing rules",
         f"Telemetry Freshness: {freshness_status} (Provider: {adapter_meta.get('provider_name', 'default')})",
+        f"Risk Contract Eligibility: {eligibility_str}",
     ]
 
     decision_id = f"dec-{uuid.uuid4().hex[:8]}"
@@ -237,7 +241,7 @@ def compute_emergency_decision(
         },
         "rationale": (
             f"Deterministic decision engine evaluated risk score of {current_risk:.1f}% ({risk_category}) "
-            f"with {len(active_alert_records)} active alert signals. {recommended_route.name} provides optimal modeled safety."
+            f"with {len(active_alert_records)} active alert signals under contract '{eligibility_str}'. {recommended_route.name} provides optimal modeled safety."
         ),
         "limitations": [
             "AI-assisted decision-support recommendation only — requires human emergency responder approval.",
@@ -249,7 +253,10 @@ def compute_emergency_decision(
         "model_version": "v1.0.0",
         "source": "AapdaNetra-X Decision Engine",
         "hazard_type": h_val,
+        "data_contract": contract_dict,
+        "input_contract": contract_dict,
     }
+
 
     # Register decision in memory
     _DECISION_REGISTRY[decision_id] = decision_data

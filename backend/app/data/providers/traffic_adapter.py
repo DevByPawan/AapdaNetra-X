@@ -58,6 +58,9 @@ class TrafficAdapter(DataProvider):
             self.status = DataProviderStatus.FALLBACK
             self.last_error = "No traffic provider endpoint or API key configured"
             self.fallback_used = True
+            self.freshness_status = "MISSING"
+            self.cache_status = "none"
+            self.unavailability_reason = "No traffic provider endpoint or API key configured"
             logger.debug("[TrafficAdapter] No endpoint/key configured — using fallback.")
             return result
 
@@ -65,6 +68,8 @@ class TrafficAdapter(DataProvider):
             raw = self._fetch_with_cache()
             if raw is None:
                 self.fallback_used = True
+                self.freshness_status = "MISSING"
+                self.unavailability_reason = self.last_error or "Traffic fetch returned None"
                 return result
 
             actual_speed = raw.get("actual_speed")
@@ -78,6 +83,8 @@ class TrafficAdapter(DataProvider):
                     if v_free <= 0.0 or v_act < 0.0:
                         logger.warning(f"[TrafficAdapter] Invalid speed values: actual={v_act}, freeflow={v_free}")
                         self.fallback_used = True
+                        self.freshness_status = "MISSING"
+                        self.unavailability_reason = f"Invalid speed values: actual={v_act}, freeflow={v_free}"
                         return result
 
                     # Congestion = 1.0 - (actual / freeflow)
@@ -89,12 +96,16 @@ class TrafficAdapter(DataProvider):
                     self.status = DataProviderStatus.LIVE
                     self.last_error = None
                     self.fallback_used = False
+                    self.unavailability_reason = None
+                    self.freshness_status = "FRESH" if not self.is_stale else "STALE"
                     logger.info(f"[TrafficAdapter] Live traffic data: road_congestion={result['road_congestion']}")
 
                 except (ValueError, TypeError) as e:
                     self.status = DataProviderStatus.ERROR
                     self.last_error = f"Malformed speed data: {e}"
                     self.fallback_used = True
+                    self.freshness_status = "MISSING"
+                    self.unavailability_reason = self.last_error
 
             elif "road_congestion" in raw and raw["road_congestion"] is not None:
                 # Direct congestion ratio in payload
@@ -104,18 +115,26 @@ class TrafficAdapter(DataProvider):
                     self.status = DataProviderStatus.LIVE
                     self.last_error = None
                     self.fallback_used = False
+                    self.unavailability_reason = None
+                    self.freshness_status = "FRESH" if not self.is_stale else "STALE"
                 except (ValueError, TypeError) as e:
                     self.status = DataProviderStatus.ERROR
                     self.last_error = f"Malformed congestion value: {e}"
                     self.fallback_used = True
+                    self.freshness_status = "MISSING"
+                    self.unavailability_reason = self.last_error
             else:
                 self.status = DataProviderStatus.FALLBACK
                 self.fallback_used = True
+                self.freshness_status = "MISSING"
+                self.unavailability_reason = "Payload missing speed or congestion data"
 
         except Exception as e:
             self.status = DataProviderStatus.ERROR
             self.last_error = str(e)
             self.fallback_used = True
+            self.freshness_status = "MISSING"
+            self.unavailability_reason = str(e)
             logger.warning(f"[TrafficAdapter] Error fetching traffic data: {e}")
 
         return result
@@ -127,9 +146,12 @@ class TrafficAdapter(DataProvider):
         if self._cached_response is not None and (now_mono - self._cache_timestamp) < self.cache_ttl:
             self.age_seconds = round(now_mono - self._cache_timestamp, 1)
             self.is_stale = self.age_seconds > (2 * self.cache_ttl)
+            self.cache_status = "cached"
+            self.freshness_status = "STALE" if self.is_stale else "FRESH"
             return self._cached_response
 
         if not self.endpoint_url:
+            self.cache_status = "none"
             return None
 
         try:
@@ -143,14 +165,20 @@ class TrafficAdapter(DataProvider):
             if resp.status_code != 200:
                 self.status = DataProviderStatus.ERROR
                 self.last_error = f"HTTP {resp.status_code}"
+                self.cache_status = "none"
+                self.freshness_status = "MISSING"
+                self.unavailability_reason = self.last_error
                 return None
 
             data = resp.json()
             self._cached_response = data
             self._cache_timestamp = now_mono
-            self.observed_at = datetime.now(timezone.utc).isoformat()
+            self.received_at = datetime.now(timezone.utc).isoformat()
+            self.observed_at = self.received_at
             self.age_seconds = 0.0
             self.is_stale = False
+            self.cache_status = "newly_fetched"
+            self.freshness_status = "FRESH"
             return data
 
         except (httpx.TimeoutException, httpx.RequestError) as e:
@@ -160,7 +188,13 @@ class TrafficAdapter(DataProvider):
             if self._cached_response is not None:
                 self.age_seconds = round(now_mono - self._cache_timestamp, 1)
                 self.is_stale = True
+                self.cache_status = "stale_cache"
+                self.freshness_status = "STALE"
                 return self._cached_response
+
+            self.cache_status = "none"
+            self.freshness_status = "MISSING"
+            self.unavailability_reason = str(e)
             return None
 
     def invalidate_cache(self):

@@ -22,6 +22,7 @@ FEATURE_SPECS = {
 }
 
 FEATURE_NAMES = list(FEATURE_SPECS.keys())
+FEATURE_ORDER = FEATURE_NAMES
 
 
 def categorize_risk(score: float) -> str:

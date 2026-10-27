@@ -64,19 +64,35 @@ class SHAPExplainer:
             except Exception as e:
                 print(f"[SHAPExplainer] Failed initializing TreeExplainer: {e}")
 
-    def explain(self, raw_features: Dict[str, Any]) -> Dict[str, Any]:
+    def explain(
+        self,
+        raw_features: Dict[str, Any],
+        data_mode: str = "simulated",
+        provenance: Optional[Dict[str, str]] = None,
+        freshness: Optional[Dict[str, Dict[str, Any]]] = None,
+    ) -> Dict[str, Any]:
         """
-        Executes SHAP feature attribution calculation.
-        Returns:
-          {
-            "prediction": float,
-            "base_value": float,
-            "total_shap_delta": float,
-            "features": list of feature attribution dicts sorted by absolute impact,
-            "decision_trace": list of formatted trace dicts for UI panel
-          }
+        Executes SHAP feature attribution calculation with Phase 6.25 Data Contract integration.
         """
+        from app.services.risk_contract import evaluate_risk_engine_contract
+        contract = evaluate_risk_engine_contract(
+            raw_features=raw_features,
+            data_mode=data_mode,
+            provenance=provenance,
+            freshness=freshness,
+        )
+        contract_dict = contract.to_dict()
+
         cleaned = validate_and_clean_features(raw_features)
+
+        if not contract.is_valid_structure or contract.inference_eligibility == "INELIGIBLE_INVALID_INPUT":
+            fb = self._fallback_explanation(cleaned)
+            fb["data_contract"] = contract_dict
+            fb["input_contract"] = contract_dict
+            fb["is_eligible"] = False
+            fb["eligibility_status"] = contract.inference_eligibility
+            return fb
+
         df_vector = pd.DataFrame([cleaned])[FEATURE_NAMES]
 
         if self.explainer is None:
@@ -102,9 +118,17 @@ class SHAPExplainer:
                 )
             except Exception as e:
                 print(f"[SHAPExplainer] SHAP computation exception: {e}")
-                return self._fallback_explanation(cleaned)
+                fb = self._fallback_explanation(cleaned)
+                fb["data_contract"] = contract_dict
+                fb["input_contract"] = contract_dict
+                fb["is_eligible"] = True
+                return fb
         else:
-            return self._fallback_explanation(cleaned)
+            fb = self._fallback_explanation(cleaned)
+            fb["data_contract"] = contract_dict
+            fb["input_contract"] = contract_dict
+            fb["is_eligible"] = True
+            return fb
 
         prediction = round(float(np.clip(raw_pred, 0.0, 100.0)), 1)
         base_value = round(float(expected_val), 1)
@@ -137,6 +161,9 @@ class SHAPExplainer:
             else:
                 attr_statement = "Had a neutral SHAP contribution to predicted risk (0.00)"
 
+            prov_tag = contract.feature_provenance.get(name, "")
+            cls_tag = contract.feature_classification.get(name, "")
+
             feature_items.append({
                 "feature": name,
                 "label": FEATURE_LABEL_MAP.get(name, name),
@@ -148,6 +175,8 @@ class SHAPExplainer:
                 "attribution_statement": attr_statement,
                 "formatted_contribution": f"{direction_symbol} {pct:.0f}%" if direction != "neutral" else f"{pct:.0f}%",
                 "raw_value": cleaned[name],
+                "provenance": prov_tag,
+                "classification": cls_tag,
             })
 
         # Rank features descending by absolute SHAP contribution
@@ -176,6 +205,9 @@ class SHAPExplainer:
             "is_shap_consistent": is_consistent,
             "features": sorted_features,
             "decision_trace": decision_trace,
+            "data_contract": contract_dict,
+            "input_contract": contract_dict,
+            "is_eligible": True,
         }
 
     def _fallback_explanation(self, cleaned: Dict[str, float]) -> Dict[str, Any]:
@@ -192,6 +224,8 @@ class SHAPExplainer:
                 "contribution_percent": 14.3,
                 "formatted_contribution": "14%",
                 "raw_value": val,
+                "provenance": "simulated",
+                "classification": "SIMULATED",
             })
         return {
             "prediction": 50.0,
@@ -213,6 +247,16 @@ def get_explainer() -> SHAPExplainer:
     return _global_explainer
 
 
-def explain_prediction(raw_features: Dict[str, Any]) -> Dict[str, Any]:
+def explain_prediction(
+    raw_features: Dict[str, Any],
+    data_mode: str = "simulated",
+    provenance: Optional[Dict[str, str]] = None,
+    freshness: Optional[Dict[str, Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
     """Public helper function to explain a feature dict."""
-    return get_explainer().explain(raw_features)
+    return get_explainer().explain(
+        raw_features,
+        data_mode=data_mode,
+        provenance=provenance,
+        freshness=freshness,
+    )

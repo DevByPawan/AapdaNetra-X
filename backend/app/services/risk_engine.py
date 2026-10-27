@@ -77,11 +77,23 @@ def compute_risk_state(horizon: int = 0) -> RiskResponse:
     """
     Runs ML risk inference for requested horizon and returns populated RiskResponse model.
     """
+    from app.data.providers.data_adapter import get_data_adapter
+    adapter = get_data_adapter()
     now_features = get_horizon_features(0)
     horizon_features = get_horizon_features(horizon)
 
-    now_ml = predict_risk(now_features)
-    horizon_ml = predict_risk(horizon_features)
+    now_ml = predict_risk(
+        now_features,
+        data_mode=adapter.data_mode,
+        provenance=adapter.provenance,
+        freshness=adapter.get_feature_freshness(),
+    )
+    horizon_ml = predict_risk(
+        horizon_features,
+        data_mode=adapter.data_mode,
+        provenance=adapter.provenance,
+        freshness=adapter.get_feature_freshness(),
+    )
 
     current_risk = now_ml["risk_score"]
     predicted_risk = horizon_ml["risk_score"]
@@ -109,9 +121,33 @@ def compute_risk_state(horizon: int = 0) -> RiskResponse:
         else f"High-risk flood zone expanding toward Sector B — Score {predicted_risk:.1f} ({category})"
     )
 
+    from app.data.providers.data_adapter import get_data_adapter
     from app.models.schemas import PredictionInterval
+    from app.services.risk_contract import evaluate_risk_engine_contract
+    adapter = get_data_adapter()
+
+    # Phase 6.25 Data Contract Evaluation
+    contract_res = evaluate_risk_engine_contract(
+        raw_features=horizon_features,
+        data_mode=adapter.data_mode,
+        provenance=adapter.provenance,
+        freshness=adapter.get_feature_freshness(),
+    )
+    contract_dict = contract_res.to_dict()
 
     unc = horizon_ml.get("uncertainty", {})
+    if adapter.data_mode == "real":
+        data_status_val = "real_derived_provisional"
+        disclaimer_val = (
+            unc.get("disclaimer", "Prediction interval calibrated on synthetic data under split-conformal assumptions.")
+            + " Real-derived inputs used; model weights are synthetic-trained."
+        )
+        note_suffix = " [DATA MODE: REAL - ERA5/CWC/WorldPop/Traffic 2020 derived; model unvalidated on real data]"
+    else:
+        data_status_val = unc.get("data_status", "synthetic")
+        disclaimer_val = unc.get("disclaimer", "Prediction interval calibrated on synthetic data under split-conformal assumptions.")
+        note_suffix = ""
+
     pred_interval = PredictionInterval(
         lower=unc.get("lower_bound", max(0.0, predicted_risk - 6.6)),
         upper=unc.get("upper_bound", min(100.0, predicted_risk + 6.6)),
@@ -120,12 +156,12 @@ def compute_risk_state(horizon: int = 0) -> RiskResponse:
         nominalCoverage=unc.get("nominal_coverage", 0.90),
         nominal_coverage=unc.get("nominal_coverage", 0.90),
         method=unc.get("uncertainty_method", "conformal_regression"),
-        dataStatus=unc.get("data_status", "synthetic"),
-        data_status=unc.get("data_status", "synthetic"),
+        dataStatus=data_status_val,
+        data_status=data_status_val,
         isClipped=unc.get("is_clipped", False),
         is_clipped=unc.get("is_clipped", False),
         status=unc.get("status", "AVAILABLE"),
-        disclaimer=unc.get("disclaimer", "Prediction interval calibrated on synthetic data under split-conformal assumptions."),
+        disclaimer=disclaimer_val,
     )
 
     return RiskResponse(
@@ -143,10 +179,12 @@ def compute_risk_state(horizon: int = 0) -> RiskResponse:
         affectedAssets=4 + horizon * 2,
         trend=trend_str,
         mapStatusText=map_text,
-        predictionNote=f"ML GBR Prediction ({label}): Sector B flood risk = {predicted_risk:.1f} ({category}). Interval: [{pred_interval.lower:.1f}, {pred_interval.upper:.1f}] (90% Conformal).",
+        predictionNote=f"ML GBR Prediction ({label}): Sector B flood risk = {predicted_risk:.1f} ({category}). Interval: [{pred_interval.lower:.1f}, {pred_interval.upper:.1f}] (90% Conformal).{note_suffix}",
         heatmapZones=heatmap_zones,
         predictionInterval=pred_interval,
         prediction_interval=unc,
+        data_contract=contract_dict,
+        input_contract=contract_dict,
     )
 
 
@@ -195,18 +233,23 @@ async def compute_risk_state_async(horizon: int = 0) -> RiskResponse:
     from ml.explainability import explain_prediction
     from ml.routing import optimize_routes
 
+    from app.data.providers.data_adapter import get_data_adapter
+    adapter = get_data_adapter()
+    adapter_provenance = adapter.provenance or {"source": "risk_engine_pipeline"}
+
     now_features = get_horizon_features(0)
     horizon_features = get_horizon_features(horizon)
-    exp = explain_prediction(horizon_features)
+    exp = explain_prediction(
+        horizon_features,
+        data_mode=adapter.data_mode,
+        provenance=adapter.provenance,
+        freshness=adapter.get_feature_freshness(),
+    )
     opt = optimize_routes(
         predicted_risk_score=response.predictedRisk,
         route_blockage=False,
         horizon_index=horizon,
     )
-
-    from app.data.providers.data_adapter import get_data_adapter
-    adapter = get_data_adapter()
-    adapter_provenance = adapter.provenance or {"source": "risk_engine_pipeline"}
 
     obs = TelemetryObservation(
         id=uuid.uuid4(),
